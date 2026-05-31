@@ -1,33 +1,46 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
+
 import PublicSearch from './pages/PublicSearch';
 import PublicDetail from './pages/PublicDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
+
 import GraduateDashboard from './pages/GraduateDashboard';
 import MyWorks from './pages/MyWorks';
 import WorkForm from './pages/WorkForm';
 import Profile from './pages/Profile';
 import ActivityHistory from './pages/ActivityHistory';
+
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UserManagement from './pages/admin/UserManagement';
 import WorkManagement from './pages/admin/WorkManagement';
 import CategoryTagManagement from './pages/admin/CategoryTagManagement';
 import AuditLogs from './pages/admin/AuditLogs';
 
+import './index.css';
+
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+
         <Layout>
+
           <Routes>
+
+            {/* HOME */}
             <Route path="/" element={<PublicSearch />} />
+
+            {/* PUBLIC */}
             <Route path="/projects/:id" element={<PublicDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
+            {/* GRADUATE */}
             <Route
               path="/graduate"
               element={
@@ -36,6 +49,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/graduate/works"
               element={
@@ -44,6 +58,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/graduate/works/new"
               element={
@@ -52,6 +67,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/graduate/works/:id/edit"
               element={
@@ -60,6 +76,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/graduate/profile"
               element={
@@ -68,6 +85,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/graduate/activity"
               element={
@@ -77,6 +95,7 @@ export default function App() {
               }
             />
 
+            {/* ADMIN */}
             <Route
               path="/admin"
               element={
@@ -85,6 +104,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/admin/users"
               element={
@@ -93,6 +113,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/admin/works"
               element={
@@ -101,6 +122,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/admin/categories"
               element={
@@ -109,6 +131,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/admin/audit"
               element={
@@ -117,8 +140,11 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
           </Routes>
+
         </Layout>
+
       </BrowserRouter>
     </AuthProvider>
   );
