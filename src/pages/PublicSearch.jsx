@@ -1,21 +1,3 @@
-/**
- * PublicSearch Page (Index / Home)
- * ========================================
- * Main landing page for the Research Portal
- *
- * Layout:
- * 1. Hero Banner (gradient background)
- * 2. Search Section (large search bar + popular tags)
- * 3. Statistics (4 stat cards)
- * 4. Category Grid (responsive grid)
- * 5. Latest Research Table (with pagination)
- * 6. Footer
- *
- * Logic preserved from original:
- * - API call to /api/public/projects with filters
- * - Search by q, studentName, major, academicYear
- * - Loading and empty states
- */
 import { useEffect, useState, useRef } from 'react';
 import api from '../api/client';
 
