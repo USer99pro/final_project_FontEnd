@@ -1,11 +1,14 @@
 
 @import "tailwindcss";
 
+/* ─── Global Base ──────────────────────────────────── */
 :root {
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  line-height: 1.5;
-  color: #1a1a2e;
-  background: #f4f6fb;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  color: #0F172A;
+  background: #F8FAFC;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
@@ -21,6 +24,36 @@ a {
   text-decoration: none;
 }
 
+/* ─── Scrollbar Styling ────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F8FAFC;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* ─── Selection ────────────────────────────────────── */
+::selection {
+  background: #BFDBFE;
+  color: #1E3A5F;
+}
+
+/* ─── Smooth Scrolling ─────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ─── Existing Styles (for other pages) ────────────── */
 .app {
   min-height: 100vh;
   display: flex;

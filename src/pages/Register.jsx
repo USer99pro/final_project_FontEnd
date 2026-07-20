@@ -91,13 +91,29 @@ export default function Register() {
                 สาขาวิชา
               </label>
   
-              <input
+              <select
                 value={form.major}
                 onChange={set('major')}
                 required
-                placeholder="วิทยาการคอมพิวเตอร์"
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-              />
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-white"
+              >
+                <option value="" disabled>-- เลือกสาขาวิชา --</option>
+                  <option value="สาขาวิชาการบัญชี">สาขาวิชาการบัญชี</option>
+                  <option value="สาขาวิชาการตลาด">สาขาวิชาการตลาด</option>
+                  <option value="สาขาวิชาการจัดการธุรกิจค้าปลีก">สาขาวิชาการจัดการธุรกิจค้าปลีก</option>
+                  <option value="สาขาวิชาการจัดการสำนักงานดิจิทัล">สาขาวิชาการจัดการสำนักงานดิจิทัล</option>
+                  <option value="สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล">สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล</option>
+                  <option value="สาขาวิชาเทคโนโลยีสารสนเทศ">สาขาวิชาเทคโนโลยีสารสนเทศ</option>
+                  <option value="สาขาวิชาการจัดการโลจิสติกส์และซัพพลายเชน">สาขาวิชาการจัดการโลจิสติกส์และซัพพลายเชน</option>
+                  <option value="สาขาวิชาธุรกิจการบิน">สาขาวิชาธุรกิจการบิน</option>
+                  <option value="สาขาวิชาดิจิทัลกราฟิก">สาขาวิชาดิจิทัลกราฟิก</option>
+                  <option value="สาขาวิชาเทคโนโลยีแฟชั่นและเครื่องแต่งกาย">สาขาวิชาเทคโนโลยีแฟชั่นและเครื่องแต่งกาย</option>
+                  <option value="สาขาวิชาอาหารและโภชนาการ">สาขาวิชาอาหารและโภชนาการ</option>
+                  <option value="สาขาวิชาการบริหารงานคหกรรมศาสตร์">สาขาวิชาการบริหารงานคหกรรมศาสตร์</option>
+                  <option value="สาขาวิชาการโรงแรม">สาขาวิชาการโรงแรม</option>
+                  <option value="สาขาวิชาการท่องเที่ยว">สาขาวิชาการท่องเที่ยว</option>
+              
+              </select>
             </div>
   
             {/* EMAIL */}
@@ -159,7 +175,7 @@ export default function Register() {
             {/* BUTTON */}
             <button
               type="submit"
-              className="w-full py-3 rounded-xl text-white font-semibold shadow-lg hover:scale-[1.02] hover:shadow-xl transition duration-300"
+              className="w-full py-3 rounded-xl font-semibold shadow-lg hover:scale-[1.02] hover:shadow-xl transition duration-300"
             >
               สมัครสมาชิก
             </button>

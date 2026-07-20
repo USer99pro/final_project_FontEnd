@@ -23,6 +23,29 @@ export default function UserManagement() {
     alert('รีเซ็ตรหัสผ่านสำเร็จ');
   };
 
+  const deleteUser = async (id) => {
+    const confirmed = window.confirm(
+      'คุณต้องการลบผู้ใช้งานนี้ใช่หรือไม่?'
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await api.delete(`/api/users/${id}`);
+
+      // รีเฟรชข้อมูล
+      load();
+
+      alert('ลบผู้ใช้งานสำเร็จ');
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error.response?.data?.error ||
+        'ไม่สามารถลบผู้ใช้งานได้'
+      );
+    }
+  };
   return (
     <div>
       <h1>จัดการผู้ใช้งาน</h1>
@@ -60,15 +83,32 @@ export default function UserManagement() {
               </td>
               <td>{u.isActive === false ? 'ระงับ' : 'ใช้งาน'}</td>
               <td>
-                {u.isActive === false ? (
-                  <button type="button" onClick={() => activate(u._id)}>
-                    เปิดใช้
+                <div className="flex gap-2">
+                  {u.isActive === false ? (
+                    <button
+                      type="button"
+                      onClick={() => activate(u._id)}
+                    >
+                      เปิดใช้
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn-danger"
+                      onClick={() => suspend(u._id)}
+                    >
+                      ระงับ
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                    onClick={() => deleteUser(u._id)}
+                  >
+                    ลบ
                   </button>
-                ) : (
-                  <button type="button" className="btn-danger" onClick={() => suspend(u._id)}>
-                    ระงับ
-                  </button>
-                )}
+                </div>
               </td>
             </tr>
           ))}

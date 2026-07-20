@@ -8,32 +8,26 @@ export default function SearchBar({ filters, onChange, onSearch }) {
           onSearch();
         }}
       >
-        <div className="relative w-full">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
-            🔍
-          </span>
+        <div className="mt-10 flex justify-center">
 
-          <input
-            type="text"
-            placeholder="ค้นหาชื่อผลงาน, นักศึกษา, แผนกวิชา หรือปีการศึกษา"
-            value={filters.keyword}
-            onChange={(e) =>
-              onChange({
-                ...filters,
-                keyword: e.target.value,
-              })
-            }
-            className="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 text-lg"
-          />
+          <div className="flex bg-white rounded-xl shadow-lg overflow-hidden w-full max-w-3xl">
+
+            <input
+              className="flex-1 px-6 py-4 outline-none"
+              placeholder="ค้นหาชื่องานวิจัย นักศึกษา แผนกวิชา หรืออาจารย์ที่ปรึกษา"
+            />
+
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-8"
+            >
+              ค้นหา
+            </button>
+
+          </div>
+
         </div>
 
-        <button
-          type="submit"
-          className="w-full md:w-auto px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition duration-200 shadow-md"
-        >
-          ค้นหา
-        </button>
       </form>
     </div>
+
   );
 }
