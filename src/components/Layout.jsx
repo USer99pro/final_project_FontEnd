@@ -1,14 +1,3 @@
-/**
- * Layout Component
- * ─────────────────
- * - Sticky Navbar with subtle shadow
- * - Logo + system name on the left
- * - Navigation links: ค้นหา, เข้าสู่ระบบ, สมัครสมาชิก
- * - Responsive mobile menu
- * - Renders children in main content area
- *
- * Logic preserved: Auth links, admin links, graduate links, logout
- */
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
@@ -72,11 +61,10 @@ export default function Layout({ children }) {
                   เข้าสู่ระบบ
                 </Link>
 
-                <Link
-                  to="/register"
-                  className="flex items-center gap-2 ml-1 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#2563EB] to-blue-700 text-white text-sm font-semibold shadow-md shadow-blue-200/50 hover:shadow-lg hover:shadow-blue-300/50 hover:scale-[1.02] transition-all duration-200"
+                <Link to="/register"
+                  className="flex items-center gap-2 ml-1 px-5 py-2.5 t rounded-xl bg-gradient-to-r from-[#2563EB] to-blue-700 text-white text-sm font-semibold shadow-md shadow-blue-200/50 hover:shadow-lg hover:shadow-blue-300/50 hover:scale-[1.02] transition-all duration-200"
                 >
-                  <UserPlus className="w-4 h-4" />
+                  <UserPlus className="w-4 h-4 text-white" />
                   สมัครสมาชิก
                 </Link>
               </>
@@ -190,7 +178,7 @@ export default function Layout({ children }) {
                     onClick={closeMobile}
                     className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-[#2563EB] bg-blue-50 hover:bg-blue-100 transition-all"
                   >
-                    <UserPlus className="w-4 h-4" />
+                    <UserPlus className="w-4 h-4 text-white " />
                     สมัครสมาชิก
                   </Link>
                 </>

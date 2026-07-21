@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
-import { X, Save, FileText, Check, AlertCircle } from 'lucide-react';
+import { X, Save, FileText, Check, AlertCircle, Plus } from 'lucide-react';
 
 export default function WorkForm() {
   const { id } = useParams();
@@ -11,7 +11,7 @@ export default function WorkForm() {
   const { user } = useAuth();
   
   const [categories, setCategories] = useState([]);
-  const [tags, setTags] = useState([]);
+  const [keywordInput, setKeywordInput] = useState('');
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -20,7 +20,7 @@ export default function WorkForm() {
     major: user?.major || '',
     studentName: user?.fullName || '',
     category: '',
-    tags: '',
+    keywords: [],
     status: 'draft',
   });
   const [pdf, setPdf] = useState(null);
@@ -28,10 +28,7 @@ export default function WorkForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    Promise.all([api.get('/api/public/categories'), api.get('/api/public/tags')]).then(([c, t]) => {
-      setCategories(c.data);
-      setTags(t.data);
-    });
+    api.get('/api/public/categories').then((res) => setCategories(res.data));
     
     if (isEdit) {
       api.get(`/api/contents/${id}`).then((res) => {
@@ -44,7 +41,10 @@ export default function WorkForm() {
           major: w.major || '',
           studentName: w.studentName || '',
           category: w.category?._id || '',
-          tags: (w.tags || []).map((t) => t._id).join(','),
+          // Keep the readable keyword, not the database ID, so users can edit it.
+          keywords: (w.keywords || w.tags || [])
+            .map((tag) => (typeof tag === 'string' ? tag : tag.name))
+            .filter(Boolean),
           status: w.status || 'draft',
         });
       });
@@ -56,6 +56,28 @@ export default function WorkForm() {
     setError('');
   };
 
+  const addKeyword = () => {
+    const keywords = keywordInput
+      .split(',')
+      .map((keyword) => keyword.trim())
+      .filter(Boolean);
+
+    if (!keywords.length) return;
+
+    setForm((current) => ({
+      ...current,
+      keywords: [...new Set([...current.keywords, ...keywords])],
+    }));
+    setKeywordInput('');
+  };
+
+  const removeKeyword = (keyword) => {
+    setForm((current) => ({
+      ...current,
+      keywords: current.keywords.filter((item) => item !== keyword),
+    }));
+  };
+
   const handleAction = async (e, targetStatus) => {
     e.preventDefault();
     setError('');
@@ -65,7 +87,14 @@ export default function WorkForm() {
     // Use targetStatus if provided (e.g. from Save Draft button), otherwise use form.status
     const finalStatus = targetStatus || form.status;
     
-    Object.entries({ ...form, status: finalStatus }).forEach(([k, v]) => {
+    const submission = {
+      ...form,
+      // The API accepts an array (or comma-separated text); the UI keeps an array
+      // so users can add and remove individual keywords easily.
+      keywords: form.keywords,
+      status: finalStatus,
+    };
+    Object.entries(submission).forEach(([k, v]) => {
       body.append(k, v);
     });
     
@@ -244,14 +273,41 @@ export default function WorkForm() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">แท็ก (ID คั่นด้วยลูกน้ำ)</label>
-                  <input 
-                    value={form.tags} 
-                    onChange={set('tags')} 
-                    placeholder={tags.length > 0 ? `${tags[0]?._id || 'id1'},${tags[1]?._id || 'id2'}` : 'ระบุ ID ของแท็ก'}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                  />
-                  <p className="text-xs text-gray-400 mt-2">ใช้สำหรับจัดกลุ่มและช่วยให้ผู้ใช้อื่นค้นหาผลงานได้ง่ายขึ้น</p>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">คำสำคัญ (Keyword)</label>
+                  <div className="flex gap-2">
+                    <input
+                      value={keywordInput}
+                      onChange={(e) => setKeywordInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addKeyword();
+                        }
+                      }}
+                      placeholder="เช่น AI, ระบบแนะนำ, การศึกษา"
+                      className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                    />
+                    <button
+                      type="button"
+                      onClick={addKeyword}
+                      className="inline-flex items-center gap-1 px-4 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+                    >
+                      <Plus className="w-4 h-4" /> เพิ่ม
+                    </button>
+                  </div>
+                  {form.keywords.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {form.keywords.map((keyword) => (
+                        <span key={keyword} className="inline-flex items-center gap-1 rounded-full bg-blue-50 border border-blue-100 px-3 py-1 text-sm text-blue-700">
+                          {keyword}
+                          <button type="button" onClick={() => removeKeyword(keyword)} className="rounded-full hover:text-blue-950" aria-label={`ลบคำสำคัญ ${keyword}`}>
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-xs text-gray-400 mt-2">พิมพ์คำสำคัญแล้วกด Enter หรือปุ่มเพิ่ม สามารถใส่หลายคำโดยคั่นด้วยลูกน้ำ</p>
                 </div>
               </div>
             </div>

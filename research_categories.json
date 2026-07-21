@@ -1,0 +1,206 @@
+[
+  {
+    "department": "สาขาวิชาการบัญชี",
+    "categories": [
+      "การบัญชีการเงิน",
+      "การบัญชีต้นทุน",
+      "การบัญชีภาษีอากร",
+      "การสอบบัญชี",
+      "ระบบสารสนเทศทางการบัญชี",
+      "การวิเคราะห์งบการเงิน",
+      "การเงินและการลงทุน",
+      "การบริหารความเสี่ยงทางการเงิน"
+    ],
+    "isActive": true
+  },
+  {
+    "department": "สาขาวิชาการตลาด",
+    "categories": [
+      "การตลาดดิจิทัล",
+      "พฤติกรรมผู้บริโภค",
+      "การสร้างแบรนด์",
+      "การสื่อสารการตลาด",
+      "E-Commerce",
+      "การตลาดออนไลน์",
+      "การวิจัยการตลาด",
+      "CRM"
+    ],
+    "isActive": true
+  },
+  {
+    "department": "สาขาวิชาการจัดการธุรกิจค้าปลีก",
+    "categories": [
+      "การบริหารร้านค้าปลีก",
+      "การจัดการสินค้า",
+      "ระบบ POS",
+      "การบริการลูกค้า",
+      "E-Commerce",
+      "การบริหารสต็อกสินค้า",
+      "การจัดซื้อ",
+      "การวิเคราะห์ยอดขาย"
+    ],
+    "isActive": true
+  },
+  {
+    "department": "สาขาวิชาการจัดการสำนักงานดิจิทัล",
+    "categories": [
+      "Digital Office",
+      "Smart Office",
+      "Workflow",
+      "e-Document",
+      "ระบบสารบรรณอิเล็กทรอนิกส์",
+      "การจัดการเอกสาร",
+      "ระบบสำนักงานอัตโนมัติ",
+      "การบริหารสำนักงาน"
+    ],
+    "isActive": true
+  },
+  {
+    "department": "สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล",
+    "categories": [
+      "Digital Business",
+      "Business Intelligence",
+      "ERP",
+      "CRM",
+      "Data Analytics",
+      "E-Commerce",
+      "Digital Transformation",
+      "FinTech"
+    ],
+    "isActive": true
+  },
+  {
+    "department": "สาขาวิชาเทคโนโลยีสารสนเทศ",
+    "categories": [
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Web Development",
+      "Mobile Application",
+      "Software Development",
+      "Database Systems",
+      "Information Systems",
+      "Cyber Security",
+      "Cloud Computing",
+      "Computer Networks",
+      "Internet of Things (IoT)",
+      "Data Science",
+      "Big Data",
+      "UX/UI Design",
+      "API Development"
+    ],
+    "isActive": true
+  },
+  {
+    "department": "สาขาวิชาการจัดการโลจิสติกส์และซัพพลายเชน",
+    "categories": [
+      "Supply Chain",
+      "Logistics Management",
+      "Warehouse Management",
+      "Transportation",
+      "Inventory Management",
+      "Route Optimization",
+      "Smart Logistics",
+      "GPS Tracking"
+    ],
+    "isActive": true
+  },
+  {
+    "department": "สาขาวิชาธุรกิจการบิน",
+    "categories": [
+      "Airport Management",
+      "Airline Business",
+      "Ground Service",
+      "Cabin Service",
+      "Passenger Service",
+      "Aviation Safety",
+      "Airport Technology",
+      "Customer Experience"
+    ],
+    "isActive": true
+  },
+  {
+    "department": "สาขาวิชาดิจิทัลกราฟิก",
+    "categories": [
+      "Graphic Design",
+      "Motion Graphic",
+      "Animation",
+      "3D Modeling",
+      "Branding",
+      "Multimedia",
+      "Video Production",
+      "UI Design",
+      "UX Design"
+    ],
+    "isActive": true
+  },
+  {
+    "department": "สาขาวิชาเทคโนโลยีแฟชั่นและเครื่องแต่งกาย",
+    "categories": [
+      "Fashion Design",
+      "Garment Design",
+      "Pattern Design",
+      "Textile Technology",
+      "Garment Production",
+      "Fashion Marketing",
+      "Smart Textile",
+      "Sustainable Fashion"
+    ],
+    "isActive": true
+  },
+  {
+    "department": "สาขาวิชาอาหารและโภชนาการ",
+    "categories": [
+      "Food Innovation",
+      "Food Processing",
+      "Food Safety",
+      "Nutrition",
+      "Healthy Food",
+      "Food Packaging",
+      "Local Food",
+      "Product Development"
+    ],
+    "isActive": true
+  },
+  {
+    "department": "สาขาวิชาการบริหารงานคหกรรมศาสตร์",
+    "categories": [
+      "Home Economics",
+      "Home Management",
+      "Community Products",
+      "Handicraft",
+      "Service Management",
+      "Catering",
+      "Product Design",
+      "Entrepreneurship"
+    ],
+    "isActive": true
+  },
+  {
+    "department": "สาขาวิชาการโรงแรม",
+    "categories": [
+      "Hotel Management",
+      "Front Office",
+      "Housekeeping",
+      "Food and Beverage",
+      "Hospitality Technology",
+      "Customer Satisfaction",
+      "Hotel Marketing",
+      "Smart Hotel"
+    ],
+    "isActive": true
+  },
+  {
+    "department": "สาขาวิชาการท่องเที่ยว",
+    "categories": [
+      "Cultural Tourism",
+      "Eco Tourism",
+      "Smart Tourism",
+      "Digital Tourism",
+      "Tourism Marketing",
+      "Tour Guide",
+      "Destination Management",
+      "Sustainable Tourism"
+    ],
+    "isActive": true
+  }
+]

@@ -1,17 +1,14 @@
 /**
  * SearchSection Component
  * - Large search bar with rounded-xl and shadow-lg
- * - Supports searching by: research title, student, department, advisor
+ * - Supports searching by: research title, researcher, category, and keyword
  * - Blue search button
- * - Popular keyword tags below
  */
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { forwardRef } from 'react';
 
-const POPULAR_TAGS = ['AI', 'IoT', 'Web', 'Mobile', 'Database', 'Cloud', 'Business'];
-
-const SearchSection = forwardRef(function SearchSection({ filters, onChange, onSearch, onTagClick }, ref) {
+const SearchSection = forwardRef(function SearchSection({ filters, onChange, onSearch }, ref) {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSearch();
@@ -36,7 +33,7 @@ const SearchSection = forwardRef(function SearchSection({ filters, onChange, onS
             ค้นหาผลงานวิจัย
           </h2>
           <p className="text-gray-500">
-            ค้นหาได้ทั้งชื่องานวิจัย นักศึกษา แผนกวิชา หรืออาจารย์ที่ปรึกษา
+            ค้นหาได้ทั้งประเภท ชื่อผู้วิจัย ชื่องานวิจัย และคำสำคัญ (Keyword)
           </p>
         </motion.div>
 
@@ -57,7 +54,7 @@ const SearchSection = forwardRef(function SearchSection({ filters, onChange, onS
               type="text"
               value={filters.q || ''}
               onChange={(e) => handleInputChange(e.target.value)}
-              placeholder="ค้นหาชื่องานวิจัย นักศึกษา แผนกวิชา หรืออาจารย์ที่ปรึกษา..."
+              placeholder="ค้นหาประเภท ชื่อผู้วิจัย ชื่องานวิจัย หรือ keyword..."
               className="flex-1 px-4 py-4 md:py-5 text-base md:text-lg outline-none bg-transparent text-[#0F172A] placeholder:text-gray-400"
               aria-label="Search research projects"
             />
@@ -72,31 +69,6 @@ const SearchSection = forwardRef(function SearchSection({ filters, onChange, onS
           </div>
         </motion.form>
 
-        {/* Popular Tags */}
-        <motion.div
-          className="mt-6 flex flex-wrap items-center justify-center gap-2 md:gap-3"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          <span className="text-sm text-gray-500 mr-1">คำค้นหายอดนิยม:</span>
-          {POPULAR_TAGS.map((tag) => (
-            <motion.button
-              key={tag}
-              type="button"
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                onChange({ ...filters, q: tag });
-                if (onTagClick) onTagClick(tag);
-              }}
-              className="px-4 py-1.5 bg-blue-50 text-[#2563EB] text-sm font-medium rounded-full border border-blue-100 hover:bg-blue-100 hover:border-blue-200 transition-all duration-200 cursor-pointer"
-            >
-              {tag}
-            </motion.button>
-          ))}
-        </motion.div>
       </div>
     </section>
   );

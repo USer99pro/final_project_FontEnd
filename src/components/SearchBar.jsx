@@ -14,7 +14,10 @@ export default function SearchBar({ filters, onChange, onSearch }) {
 
             <input
               className="flex-1 px-6 py-4 outline-none"
-              placeholder="ค้นหาชื่องานวิจัย นักศึกษา แผนกวิชา หรืออาจารย์ที่ปรึกษา"
+              value={filters.q || ''}
+              onChange={(e) => onChange({ ...filters, q: e.target.value })}
+              placeholder="ค้นหาประเภท ชื่อผู้วิจัย ชื่องานวิจัย หรือ keyword"
+              aria-label="ค้นหาผลงานวิจัย"
             />
 
             <button className="bg-blue-600 hover:bg-blue-700 text-white px-8"

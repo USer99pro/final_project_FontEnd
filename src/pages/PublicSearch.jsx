@@ -87,12 +87,6 @@ export default function PublicSearch() {
     searchRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
-  const handleTagClick = (tag) => {
-    const newFilters = { ...filters, q: tag };
-    setFilters(newFilters);
-    load(newFilters);
-  };
-
   const handleSearch = () => {
     load(filters);
   };
@@ -109,7 +103,6 @@ export default function PublicSearch() {
         filters={filters}
         onChange={setFilters}
         onSearch={handleSearch}
-        onTagClick={handleTagClick}
       />
 
       {/* Statistics Section */}
