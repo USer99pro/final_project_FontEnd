@@ -30,12 +30,7 @@ export default function PublicFooter() {
 
           {/* Center - Copyright */}
           <div className="text-center">
-            <p className="text-sm text-gray-500 flex items-center gap-1">
-              © {currentYear} วิทยาลัยอาชีวศึกษาอุดรธานี
-            </p>
-            <p className="text-xs text-gray-400 mt-0.5 flex items-center justify-center gap-1">
-              สร้างด้วย <Heart className="w-3 h-3 text-red-400 fill-red-400" /> เพื่อการศึกษา
-            </p>
+            <p className="text-sm text-gray-500 flex items-center gap-1">© {currentYear} วิทยาลัยอาชีวศึกษาอุดรธานี</p>
           </div>
 
           {/* Right - Links */}

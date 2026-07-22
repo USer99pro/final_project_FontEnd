@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
-import { X, Save, FileText, Check, AlertCircle, Plus } from 'lucide-react';
+import { X, Save, FileText, Check, AlertCircle, Plus, Users } from 'lucide-react';
 
 export default function WorkForm() {
   const { id } = useParams();
@@ -11,6 +11,8 @@ export default function WorkForm() {
   const { user } = useAuth();
   
   const [categories, setCategories] = useState([]);
+  const [availableUsers, setAvailableUsers] = useState([]);
+  const [selectedParticipantId, setSelectedParticipantId] = useState('');
   const [keywordInput, setKeywordInput] = useState('');
   const [form, setForm] = useState({
     title: '',
@@ -21,6 +23,7 @@ export default function WorkForm() {
     studentName: user?.fullName || '',
     category: '',
     keywords: [],
+    participants: [],
     status: 'draft',
   });
   const [pdf, setPdf] = useState(null);
@@ -28,22 +31,25 @@ export default function WorkForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    api.get('/api/public/categories').then((res) => setCategories(res.data));
+    api.get('/api/public/categories').then((res) => setCategories(res.data)).catch(() => {});
+    api.get('/api/users').then((res) => setAvailableUsers(res.data)).catch(() => {});
     
     if (isEdit) {
       api.get(`/api/contents/${id}`).then((res) => {
         const w = res.data;
         setForm({
-          title: w.title,
+          title: w.title || '',
           description: w.description || '',
           abstract: w.abstract || '',
           academicYear: w.academicYear || '',
           major: w.major || '',
           studentName: w.studentName || '',
-          category: w.category?._id || '',
-          // Keep the readable keyword, not the database ID, so users can edit it.
+          category: w.category?._id || w.category || '',
           keywords: (w.keywords || w.tags || [])
             .map((tag) => (typeof tag === 'string' ? tag : tag.name))
+            .filter(Boolean),
+          participants: (w.participants || [])
+            .map((p) => (typeof p === 'string' ? p : p._id))
             .filter(Boolean),
           status: w.status || 'draft',
         });
@@ -78,24 +84,45 @@ export default function WorkForm() {
     }));
   };
 
+  const addParticipant = () => {
+    if (!selectedParticipantId) return;
+    if (form.participants.includes(selectedParticipantId)) {
+      setSelectedParticipantId('');
+      return;
+    }
+    setForm((current) => ({
+      ...current,
+      participants: [...current.participants, selectedParticipantId],
+    }));
+    setSelectedParticipantId('');
+  };
+
+  const removeParticipant = (pId) => {
+    setForm((current) => ({
+      ...current,
+      participants: current.participants.filter((id) => id !== pId),
+    }));
+  };
+
   const handleAction = async (e, targetStatus) => {
     e.preventDefault();
     setError('');
     setIsSubmitting(true);
     
     const body = new FormData();
-    // Use targetStatus if provided (e.g. from Save Draft button), otherwise use form.status
     const finalStatus = targetStatus || form.status;
     
     const submission = {
       ...form,
-      // The API accepts an array (or comma-separated text); the UI keeps an array
-      // so users can add and remove individual keywords easily.
-      keywords: form.keywords,
       status: finalStatus,
     };
+
     Object.entries(submission).forEach(([k, v]) => {
-      body.append(k, v);
+      if (Array.isArray(v)) {
+        v.forEach((item) => body.append(k, item));
+      } else {
+        body.append(k, v);
+      }
     });
     
     if (pdf) body.append('pdf', pdf);
@@ -106,7 +133,7 @@ export default function WorkForm() {
       } else {
         await api.post('/api/contents', body, { headers: { 'Content-Type': 'multipart/form-data' } });
       }
-      navigate('/graduate/works');
+      navigate(user?.role === 'admin' ? '/admin/works' : '/graduate/works');
     } catch (err) {
       setError(err.response?.data?.error || 'บันทึกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
       setIsSubmitting(false);
@@ -123,7 +150,7 @@ export default function WorkForm() {
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50/50">
           <button 
             type="button" 
-            onClick={() => navigate('/graduate/works')}
+            onClick={() => navigate(user?.role === 'admin' ? '/admin/works' : '/graduate/works')}
             className="p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition"
             aria-label="Close"
           >
@@ -160,7 +187,7 @@ export default function WorkForm() {
               {isEdit ? 'แก้ไขผลงาน' : 'เพิ่มผลงานวิจัย'}
             </h1>
             <p className="text-gray-500 mt-2 text-sm">
-              กรอกข้อมูลรายละเอียดของผลงานวิจัยเพื่อให้ผู้อื่นสามารถค้นหาและอ้างอิงได้
+              กรอกข้อมูลรายละเอียดของผลงานวิจัย เพิ่มผู้ร่วมจัดทำ และอัปโหลดไฟล์เอกสาร
             </p>
           </div>
 
@@ -218,19 +245,19 @@ export default function WorkForm() {
               </div>
             </div>
 
-            {/* Section 2: Student & Academic Info */}
+            {/* Section 2: Student, Participants & Academic Info */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-12 border-b border-gray-100">
               <div className="md:col-span-4">
-                <h2 className="text-lg font-semibold text-gray-900">2. ข้อมูลนักศึกษาและการศึกษา</h2>
+                <h2 className="text-lg font-semibold text-gray-900">2. ผู้จัดทำและหมวดหมู่</h2>
                 <p className="text-sm text-gray-500 mt-1">
-                  ข้อมูลผู้จัดทำ หมวดหมู่ และแท็กเพื่อช่วยในการค้นหา
+                  ข้อมูลผู้จัดทำหลัก ผู้ร่วมจัดทำ หมวดหมู่ และแท็ก
                 </p>
               </div>
               
               <div className="md:col-span-8 space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">ชื่อนักศึกษา</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">ชื่อผู้จัดทำหลัก</label>
                     <input 
                       value={form.studentName} 
                       onChange={set('studentName')} 
@@ -242,9 +269,71 @@ export default function WorkForm() {
                     <input 
                       value={form.major} 
                       onChange={set('major')} 
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-gray-50 text-gray-500"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-gray-50 text-gray-700"
                     />
                   </div>
+                </div>
+
+                {/* Project Participants (ผู้ร่วมจัดทำโครงการ) */}
+                <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-xl space-y-3">
+                  <label className="block text-sm font-semibold text-gray-900 flex items-center gap-2">
+                    <Users className="w-4 h-4 text-blue-600" />
+                    เพิ่มผู้ร่วมจัดทำโครงการ (Project Participants)
+                  </label>
+                  <p className="text-xs text-gray-500">
+                    เลือกผู้ใช้งานในระบบเพื่อเพิ่มเป็นผู้ร่วมจัดทำผลงานวิจัยนี้
+                  </p>
+                  
+                  <div className="flex gap-2">
+                    <select
+                      value={selectedParticipantId}
+                      onChange={(e) => setSelectedParticipantId(e.target.value)}
+                      className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white text-sm"
+                    >
+                      <option value="">— เลือกผู้ใช้งานเพื่อเพิ่มเป็นผู้ร่วมจัดทำ —</option>
+                      {availableUsers
+                        .filter((u) => u._id !== user?._id && !form.participants.includes(u._id))
+                        .map((u) => (
+                          <option key={u._id} value={u._id}>
+                            {u.fullName} {u.studentId ? `(${u.studentId})` : ''} — {u.email}
+                          </option>
+                        ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={addParticipant}
+                      className="inline-flex items-center gap-1 px-4 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-sm font-medium transition shrink-0"
+                    >
+                      <Plus className="w-4 h-4" /> เพิ่มผู้ร่วมจัดทำ
+                    </button>
+                  </div>
+
+                  {/* Display Selected Participants */}
+                  {form.participants.length > 0 && (
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {form.participants.map((pId) => {
+                        const pUser = availableUsers.find((u) => u._id === pId);
+                        const displayName = pUser ? `${pUser.fullName} ${pUser.studentId ? `(${pUser.studentId})` : ''}` : pId;
+                        return (
+                          <span
+                            key={pId}
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-blue-200 px-3 py-1.5 text-xs font-medium text-blue-900 shadow-sm"
+                          >
+                            <Users className="w-3.5 h-3.5 text-blue-500" />
+                            {displayName}
+                            <button
+                              type="button"
+                              onClick={() => removeParticipant(pId)}
+                              className="ml-1 text-gray-400 hover:text-red-600 rounded"
+                              aria-label={`ลบ ${displayName}`}
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

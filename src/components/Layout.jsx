@@ -234,7 +234,7 @@ export default function Layout({ children }) {
       </header>
 
       {/* ── MAIN CONTENT ───────────────────────────────────── */}
-      <main className="flex-1 w-full">
+      <main className="flex-1 w-full pt-16 md:pt-20">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
           {children}
         </div>

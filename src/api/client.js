@@ -17,4 +17,14 @@ export function getApiBase() {
   return API_URL;
 }
 
+export async function loadData(endpoint) {
+  try {
+    const response = await api.get(endpoint);
+    return response.data;
+  } catch (error) {
+    console.error('Error loading data:', error);
+    throw error;
+  }
+}
+
 export default api;
