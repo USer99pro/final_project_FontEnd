@@ -71,7 +71,7 @@ export default function UserManagement() {
 
     setIsSubmitting(true);
     try {
-      await api.post('/api/admin/users', addForm);
+      await api.post('/api/users', addForm);
       setShowAddModal(false);
       setAddForm({
         studentId: '',

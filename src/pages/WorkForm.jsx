@@ -295,7 +295,7 @@ export default function WorkForm() {
                         .filter((u) => u._id !== user?._id && !form.participants.includes(u._id))
                         .map((u) => (
                           <option key={u._id} value={u._id}>
-                            {u.fullName} {u.studentId ? `(${u.studentId})` : ''} — {u.email}
+                            {u.fullName}
                           </option>
                         ))}
                     </select>
@@ -313,7 +313,7 @@ export default function WorkForm() {
                     <div className="flex flex-wrap gap-2 pt-2">
                       {form.participants.map((pId) => {
                         const pUser = availableUsers.find((u) => u._id === pId);
-                        const displayName = pUser ? `${pUser.fullName} ${pUser.studentId ? `(${pUser.studentId})` : ''}` : pId;
+                        const displayName = pUser ? pUser.fullName : pId;
                         return (
                           <span
                             key={pId}
