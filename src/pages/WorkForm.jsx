@@ -31,12 +31,20 @@ export default function WorkForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    api.get('/api/public/categories').then((res) => setCategories(res.data)).catch(() => {});
-    api.get('/api/users').then((res) => setAvailableUsers(res.data)).catch(() => {});
+    api
+      .get('/api/public/categories')
+      .then((res) => setCategories(res.data.categories || res.data || []))
+      .catch(() => {});
+
+    api
+      .get('/api/admin/users')
+      .catch(() => api.get('/api/users'))
+      .then((res) => setAvailableUsers(res.data.users || res.data || []))
+      .catch(() => {});
     
     if (isEdit) {
       api.get(`/api/contents/${id}`).then((res) => {
-        const w = res.data;
+        const w = res.data.work || res.data;
         setForm({
           title: w.title || '',
           description: w.description || '',
@@ -109,6 +117,21 @@ export default function WorkForm() {
     setError('');
     setIsSubmitting(true);
     
+    let uploadedPaperUrl = null;
+    if (pdf) {
+      try {
+        const uploadFormData = new FormData();
+        uploadFormData.append('paper', pdf);
+        uploadFormData.append('file', pdf);
+        const uploadRes = await api.post('/api/uploads/paper', uploadFormData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        uploadedPaperUrl = uploadRes.data?.url || uploadRes.data?.fileUrl || uploadRes.data?.path;
+      } catch (err) {
+        console.warn('POST /api/uploads/paper fallback to inline pdf upload', err);
+      }
+    }
+
     const body = new FormData();
     const finalStatus = targetStatus || form.status;
     
@@ -116,6 +139,11 @@ export default function WorkForm() {
       ...form,
       status: finalStatus,
     };
+
+    if (uploadedPaperUrl) {
+      submission.paperUrl = uploadedPaperUrl;
+      submission.fileUrl = uploadedPaperUrl;
+    }
 
     Object.entries(submission).forEach(([k, v]) => {
       if (Array.isArray(v)) {
@@ -125,11 +153,20 @@ export default function WorkForm() {
       }
     });
     
-    if (pdf) body.append('pdf', pdf);
+    if (pdf) {
+      body.append('pdf', pdf);
+      body.append('paper', pdf);
+    }
 
     try {
       if (isEdit) {
-        await api.patch(`/api/contents/${id}`, body, { headers: { 'Content-Type': 'multipart/form-data' } });
+        if (user?.role === 'admin') {
+          await api.patch(`/api/admin/works/${id}`, body, { headers: { 'Content-Type': 'multipart/form-data' } }).catch(() =>
+            api.patch(`/api/contents/${id}`, body, { headers: { 'Content-Type': 'multipart/form-data' } })
+          );
+        } else {
+          await api.patch(`/api/contents/${id}`, body, { headers: { 'Content-Type': 'multipart/form-data' } });
+        }
       } else {
         await api.post('/api/contents', body, { headers: { 'Content-Type': 'multipart/form-data' } });
       }

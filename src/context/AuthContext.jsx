@@ -7,43 +7,85 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const fetchMe = async () => {
+    try {
+      const res = await api.get('/api/auth/me');
+      const userData = res.data.user || res.data;
+      setUser(userData);
+      return userData;
+    } catch (err) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      setUser(null);
+      throw err;
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       setLoading(false);
       return;
     }
-    api
-      .get('/api/auth/me')
-      .then((res) => setUser(res.data))
-      .catch(() => {
-        localStorage.removeItem('token');
-        setUser(null);
-      })
-      .finally(() => setLoading(false));
+    fetchMe().finally(() => setLoading(false));
   }, []);
 
   const login = async (email, password) => {
     const { data } = await api.post('/api/auth/login', { email, password });
-    localStorage.setItem('token', data.token);
-    setUser(data.user);
-    return data.user;
+    if (data.accessToken || data.token) {
+      localStorage.setItem('token', data.accessToken || data.token);
+    }
+    if (data.refreshToken) {
+      localStorage.setItem('refreshToken', data.refreshToken);
+    }
+    const userData = data.user || (await fetchMe());
+    setUser(userData);
+    return userData;
   };
 
   const register = async (payload) => {
     const { data } = await api.post('/api/auth/register', payload);
-    localStorage.setItem('token', data.token);
-    setUser(data.user);
-    return data.user;
+    if (data.accessToken || data.token) {
+      localStorage.setItem('token', data.accessToken || data.token);
+    }
+    if (data.refreshToken) {
+      localStorage.setItem('refreshToken', data.refreshToken);
+    }
+    const userData = data.user || (await fetchMe());
+    setUser(userData);
+    return userData;
+  };
+
+  const loginWithToken = async (token, refreshToken) => {
+    localStorage.setItem('token', token);
+    if (refreshToken) {
+      localStorage.setItem('refreshToken', refreshToken);
+    }
+    const userData = await fetchMe();
+    return userData;
   };
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, isAdmin: user?.role === 'admin', isGraduate: user?.role === 'graduate' || user?.role === 'user' }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        login,
+        register,
+        loginWithToken,
+        logout,
+        fetchMe,
+        isAdmin: user?.role === 'admin',
+        // Keep private navigation hidden until a user has been authenticated.
+        isGraduate: Boolean(user) && (user.role === 'graduate' || user.role === 'user'),
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -52,3 +94,4 @@ export function AuthProvider({ children }) {
 export function useAuth() {
   return useContext(AuthContext);
 }
+

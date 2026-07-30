@@ -62,7 +62,7 @@ export default function Layout({ children }) {
                 </Link>
 
                 <Link to="/register"
-                  className="flex items-center gap-2 ml-1 px-5 py-2.5 t rounded-xl bg-gradient-to-r from-[#2563EB] to-blue-700 text-white text-sm font-semibold shadow-md shadow-blue-200/50 hover:shadow-lg hover:shadow-blue-300/50 hover:scale-[1.02] transition-all duration-200"
+                  className="flex items-center gap-2 ml-1 px-5 py-2.5 t rounded-xl bg-gradient-to-r from-[#2563EB] to-blue-700 text-white text-sm font-semibold shadow-md shadow-blue-200/50 hover:shadow-lg hover:shadow-blue-300/50 hover:scale-[1.02] transition-all "
                 >
                   <UserPlus className="w-4 h-4 text-white" />
                   สมัครสมาชิก

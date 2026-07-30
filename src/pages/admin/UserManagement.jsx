@@ -20,7 +20,11 @@ export default function UserManagement() {
   const [addError, setAddError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const load = () => api.get('/api/users').then((res) => setUsers(res.data));
+  const load = () =>
+    api
+      .get('/api/admin/users')
+      .catch(() => api.get('/api/users'))
+      .then((res) => setUsers(res.data?.users || res.data || []));
 
   useEffect(() => {
     load();

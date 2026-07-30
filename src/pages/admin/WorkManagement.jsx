@@ -16,10 +16,10 @@ export default function WorkManagement() {
     try {
       const [worksRes, usersRes] = await Promise.all([
         api.get('/api/admin/works'),
-        api.get('/api/users'),
+        api.get('/api/admin/users').catch(() => api.get('/api/users')),
       ]);
-      setWorks(worksRes.data);
-      setUsers(usersRes.data);
+      setWorks(worksRes.data.works || worksRes.data || []);
+      setUsers(usersRes.data.users || usersRes.data || []);
     } catch (err) {
       console.error(err);
     }
@@ -32,7 +32,7 @@ export default function WorkManagement() {
   const remove = async (id) => {
     if (!confirm('ต้องการลบผลงานนี้ใช่หรือไม่?')) return;
     try {
-      await api.delete(`/api/contents/${id}`);
+      await api.delete(`/api/admin/works/${id}`).catch(() => api.delete(`/api/contents/${id}`));
       setWorks((prev) => prev.filter((w) => w._id !== id));
       alert('ลบผลงานเรียบร้อยแล้ว');
     } catch (err) {
@@ -76,9 +76,13 @@ export default function WorkManagement() {
       const body = new FormData();
       editingWork.participants.forEach((pId) => body.append('participants', pId));
 
-      await api.patch(`/api/contents/${editingWork._id}`, body, {
+      await api.patch(`/api/admin/works/${editingWork._id}`, body, {
         headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      }).catch(() =>
+        api.patch(`/api/contents/${editingWork._id}`, body, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+      );
 
       alert('อัปเดตผู้ร่วมจัดทำโครงการสำเร็จ');
       setEditingWork(null);
