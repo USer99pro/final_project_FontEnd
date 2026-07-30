@@ -3,6 +3,7 @@ import api from '../../api/client';
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
+  const [roleFilter, setRoleFilter] = useState('all');
   const [resetId, setResetId] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
@@ -29,6 +30,8 @@ export default function UserManagement() {
   useEffect(() => {
     load();
   }, []);
+
+  const filteredUsers = users.filter((user) => roleFilter === 'all' || user.role === roleFilter);
 
   const suspend = (id) => api.patch(`/api/admin/users/${id}/suspend`).then(load);
   const activate = (id) => api.patch(`/api/admin/users/${id}/activate`).then(load);
@@ -142,6 +145,24 @@ export default function UserManagement() {
       </div>
 
       {/* Users Table */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h2 className="text-base font-semibold text-gray-900">รายชื่อผู้ใช้งาน</h2>
+          <p className="text-sm text-gray-500">แสดง {filteredUsers.length} จาก {users.length} รายการ</p>
+        </div>
+        <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+          กรองตาม Role
+          <select
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="all">ทุก Role</option>
+            <option value="graduate">จบการศึกษา</option>
+            <option value="admin">ผู้ดูแลระบบ</option>
+          </select>
+        </label>
+      </div>
       <div className="overflow-x-auto border border-gray-200 rounded-xl bg-white shadow-sm">
         <table className="table w-full text-left">
           <thead className="bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-600 uppercase">
@@ -150,13 +171,13 @@ export default function UserManagement() {
               <th className="px-4 py-3">ชื่อ-นามสกุล</th>
               <th className="px-4 py-3">อีเมล</th>
               <th className="px-4 py-3">สาขาวิชา</th>
-              <th className="px-4 py-3">บทบาท (Role)</th>
+              <th className="px-4 py-3">บทบาท</th>
               <th className="px-4 py-3">สถานะ</th>
               <th className="px-4 py-3 text-right">การจัดการ</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 text-sm">
-            {users.map((u) => (
+            {filteredUsers.map((u) => (
               <tr key={u._id} className="hover:bg-gray-50/50">
                 <td className="px-4 py-3 font-mono text-gray-700">{u.studentId || '-'}</td>
                 <td className="px-4 py-3 font-medium text-gray-900">{u.fullName}</td>
@@ -168,8 +189,8 @@ export default function UserManagement() {
                     onChange={(e) => setRole(u._id, e.target.value)}
                     className="px-2 py-1 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-blue-500"
                   >
-                    <option value="graduate">graduate</option>
-                    <option value="admin">admin</option>
+                    <option value="graduate">จบการศึกษา</option>
+                    <option value="admin">ผู้ดูแลระบบ</option>
                   </select>
                 </td>
                 <td className="px-4 py-3">
@@ -213,6 +234,13 @@ export default function UserManagement() {
                 </td>
               </tr>
             ))}
+            {filteredUsers.length === 0 && (
+              <tr>
+                <td colSpan="7" className="px-4 py-8 text-center text-sm text-gray-500">
+                  ไม่พบผู้ใช้งานใน Role ที่เลือก
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

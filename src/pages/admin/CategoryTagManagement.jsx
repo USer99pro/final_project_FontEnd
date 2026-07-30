@@ -1,343 +1,171 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import api from "../../api/client";
 
+const TYPES = {
+  categories: { label: "หมวดหมู่", endpoint: "categories" },
+  tags: { label: "แท็ก", endpoint: "tags" },
+  departments: { label: "สาขาวิชา / แผนก", endpoint: "departments" },
+};
+
 export default function CategoryTagManagement() {
-  const [categories, setCategories] = useState([]);
-  const [tags, setTags] = useState([]);
-  const [departments, setDepartments] = useState([]);
-  
-  const [catName, setCatName] = useState("");
-  const [tagName, setTagName] = useState("");
-  const [deptName, setDeptName] = useState("");
+  const [data, setData] = useState({ categories: [], tags: [], departments: [] });
+  const [activeType, setActiveType] = useState("categories");
+  const [search, setSearch] = useState("");
+  const [newName, setNewName] = useState("");
+  const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState(1);
+  const [selected, setSelected] = useState({ categories: [], tags: [], departments: [] });
+  const selectAllRef = useRef(null);
 
   const load = async () => {
     try {
-      const [categoriesRes, tagsRes, deptsRes] = await Promise.all([
+      const [categoriesRes, tagsRes, departmentsRes] = await Promise.all([
         api.get("/api/public/categories").catch(() => api.get("/api/categories")),
         api.get("/api/public/tags").catch(() => api.get("/api/tags")),
         api.get("/api/departments").catch(() => ({ data: [] })),
       ]);
-
-      setCategories(categoriesRes.data?.categories || categoriesRes.data || []);
-      setTags(tagsRes.data?.tags || tagsRes.data || []);
-      setDepartments(deptsRes.data?.departments || deptsRes.data || []);
+      setData({
+        categories: categoriesRes.data?.categories || categoriesRes.data || [],
+        tags: tagsRes.data?.tags || tagsRes.data || [],
+        departments: departmentsRes.data?.departments || departmentsRes.data || [],
+      });
     } catch (error) {
       console.error(error);
     }
   };
 
+  useEffect(() => { load(); }, []);
+  useEffect(() => { setPage(1); }, [activeType, search, pageSize]);
+
+  const type = TYPES[activeType];
+  const items = data[activeType];
+  const filteredItems = useMemo(
+    () => items.filter((item) => item.name?.toLowerCase().includes(search.trim().toLowerCase())),
+    [items, search]
+  );
+  const totalPages = Math.max(1, Math.ceil(filteredItems.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const pageItems = filteredItems.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const selectedIds = selected[activeType];
+  const allSelected = filteredItems.length > 0 && filteredItems.every((item) => selectedIds.includes(item._id));
+  const someSelected = !allSelected && filteredItems.some((item) => selectedIds.includes(item._id));
+
   useEffect(() => {
+    if (selectAllRef.current) selectAllRef.current.indeterminate = someSelected;
+  }, [someSelected]);
+
+  const updateSelected = (ids) => setSelected((previous) => ({ ...previous, [activeType]: ids }));
+  const toggleItem = (id) => updateSelected(selectedIds.includes(id)
+    ? selectedIds.filter((selectedId) => selectedId !== id)
+    : [...selectedIds, id]);
+  const toggleAll = () => {
+    const filteredIds = filteredItems.map((item) => item._id);
+    updateSelected(allSelected
+      ? selectedIds.filter((id) => !filteredIds.includes(id))
+      : [...new Set([...selectedIds, ...filteredIds])]);
+  };
+
+  const addItem = async () => {
+    if (!newName.trim()) return;
+    try {
+      await api.post(`/api/${type.endpoint}`, { name: newName.trim() });
+      setNewName("");
+      load();
+    } catch (error) {
+      alert(error.response?.data?.error || "ไม่สามารถเพิ่มข้อมูลได้");
+    }
+  };
+
+  const editItem = async (item) => {
+    const name = prompt(`แก้ไขชื่อ${type.label}`, item.name);
+    if (!name?.trim() || name.trim() === item.name) return;
+    try {
+      await api.patch(`/api/${type.endpoint}/${item._id}`, { name: name.trim() });
+      load();
+    } catch (error) {
+      alert(error.response?.data?.error || "ไม่สามารถแก้ไขข้อมูลได้");
+    }
+  };
+
+  const deleteItems = async (ids) => {
+    if (!ids.length || !window.confirm(`ต้องการลบ${type.label} ${ids.length} รายการใช่หรือไม่?`)) return;
+    const results = await Promise.allSettled(ids.map((id) => api.delete(`/api/${type.endpoint}/${id}`)));
+    const failed = results.filter((result) => result.status === "rejected").length;
+    if (failed) alert(`ลบข้อมูลไม่สำเร็จ ${failed} รายการ`);
+    updateSelected(selectedIds.filter((id) => !ids.includes(id)));
     load();
-  }, []);
-
-  const addCategory = async () => {
-    if (!catName.trim()) return;
-    try {
-      await api.post('/api/categories', { name: catName });
-      setCatName("");
-      load();
-    } catch (err) {
-      alert(err.response?.data?.error || "ไม่สามารถเพิ่มหมวดหมู่ได้");
-    }
-  };
-
-  const addTag = async () => {
-    if (!tagName.trim()) return;
-    try {
-      await api.post("/api/tags", { name: tagName });
-      setTagName("");
-      load();
-    } catch (err) {
-      alert(err.response?.data?.error || "ไม่สามารถเพิ่มแท็กได้");
-    }
-  };
-
-  const addDepartment = async () => {
-    if (!deptName.trim()) return;
-    try {
-      await api.post("/api/departments", { name: deptName });
-      setDeptName("");
-      load();
-    } catch (err) {
-      alert(err.response?.data?.error || "ไม่สามารถเพิ่มสาขาวิชา/แผนกได้");
-    }
-  };
-
-  const editCategory = async (item) => {
-    const name = prompt("แก้ไขชื่อหมวดหมู่", item.name);
-    if (!name || name === item.name) return;
-    try {
-      await api.patch(`/api/categories/${item._id}`, { name });
-      load();
-    } catch (err) {
-      alert(err.response?.data?.error || "ไม่สามารถแก้ไขหมวดหมู่ได้");
-    }
-  };
-
-  const deleteCategory = async (id) => {
-    if (!window.confirm("ต้องการลบหมวดหมู่นี้ใช่หรือไม่?")) return;
-    try {
-      await api.delete(`/api/categories/${id}`);
-      load();
-    } catch (err) {
-      alert(err.response?.data?.error || "ไม่สามารถลบหมวดหมู่ได้");
-    }
-  };
-
-  const editTag = async (item) => {
-    const name = prompt("แก้ไขชื่อแท็ก", item.name);
-    if (!name || name === item.name) return;
-    try {
-      await api.patch(`/api/tags/${item._id}`, { name });
-      load();
-    } catch (err) {
-      alert(err.response?.data?.error || "ไม่สามารถแก้ไขแท็กได้");
-    }
-  };
-
-  const deleteTag = async (id) => {
-    if (!window.confirm("ต้องการลบแท็กนี้ใช่หรือไม่?")) return;
-    try {
-      await api.delete(`/api/tags/${id}`);
-      load();
-    } catch (err) {
-      alert(err.response?.data?.error || "ไม่สามารถลบแท็กได้");
-    }
-  };
-
-  const editDepartment = async (item) => {
-    const name = prompt("แก้ไขชื่อสาขาวิชา/แผนก", item.name);
-    if (!name || name === item.name) return;
-    try {
-      await api.patch(`/api/departments/${item._id}`, { name });
-      load();
-    } catch (err) {
-      alert(err.response?.data?.error || "ไม่สามารถแก้ไขสาขาวิชาได้");
-    }
-  };
-
-  const deleteDepartment = async (id) => {
-    if (!window.confirm("ต้องการลบสาขาวิชานี้ใช่หรือไม่?")) return;
-    try {
-      await api.delete(`/api/departments/${id}`);
-      load();
-    } catch (err) {
-      alert(err.response?.data?.error || "ไม่สามารถลบสาขาวิชาได้");
-    }
   };
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">
-          จัดการหมวดหมู่และแท็ก
-        </h1>
-        <p className="text-gray-500 mt-2">
-          เพิ่ม แก้ไข และลบข้อมูลหมวดหมู่และแท็ก
-        </p>
-      </div>
-
-      {/* หมวดหมู่ */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8 w-full">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">หมวดหมู่</h2>
-
-          <div className="flex gap-3">
-            <input
-              value={catName}
-              onChange={(e) => setCatName(e.target.value)}
-              placeholder="เพิ่มหมวดหมู่"
-              className="w-72 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-
-            <button
-              onClick={addCategory}
-              className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              เพิ่ม
-            </button>
+    <div className="min-h-screen w-full bg-[#f7f9fc] p-4 md:p-6">
+      <div className="mx-auto max-w-[1440px] space-y-5">
+        <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-[0_4px_18px_rgba(45,55,75,0.08)]">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_230px_250px] lg:items-end">
+            <label className="block">
+              <span className="mb-2 block text-base font-bold text-slate-800">ค้นหารายการ</span>
+              <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 px-3">
+                <span className="mr-2 text-slate-400">⌕</span>
+                <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="ค้นหาจากชื่อหมวดหมู่, แท็ก หรือสาขาวิชา" className="h-11 w-full bg-transparent text-lg outline-none placeholder:text-slate-400" />
+              </div>
+            </label>
+            <label className="block">
+              <span className="mb-2 block text-base font-bold text-slate-800">ประเภทข้อมูล</span>
+              <select value={activeType} onChange={(event) => setActiveType(event.target.value)} className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-lg text-slate-600 outline-none focus:ring-2 focus:ring-indigo-200">
+                {Object.entries(TYPES).map(([key, value]) => <option key={key} value={key}>{value.label}</option>)}
+              </select>
+            </label>
+            <div className="flex gap-2">
+              <input value={newName} onChange={(event) => setNewName(event.target.value)} onKeyDown={(event) => event.key === "Enter" && addItem()} placeholder={`เพิ่ม${type.label}`} className="h-11 min-w-0 flex-1 rounded-lg border border-slate-200 px-3 text-lg outline-none focus:ring-2 focus:ring-indigo-200" />
+              <button onClick={addItem} className="h-11 rounded-lg bg-indigo-600 px-5 text-base font-bold text-white shadow-sm transition hover:bg-indigo-700">เพิ่ม</button>
+            </div>
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full table-auto">
-            <thead>
-              <tr className="bg-gray-100 border-b">
-                <th className="px-4 py-3 text-left w-20">ลำดับ</th>
-                <th className="px-4 py-3 text-left">ชื่อหมวดหมู่</th>
-                <th className="px-4 py-3 text-center w-48">จัดการ</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {categories.map((c, index) => (
-                <tr
-                  key={c._id}
-                  className="border-b hover:bg-gray-50 transition"
-                >
-                  <td className="px-4 py-3">{index + 1}</td>
-
-                  <td className="px-4 py-3">{c.name}</td>
-
-                  <td className="px-4 py-3">
-                    <div className="flex justify-center gap-2">
-                      <button
-                        onClick={() => editCategory(c)}
-                        className="px-3 py-1.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
-                      >
-                        แก้ไข
-                      </button>
-
-                      <button
-                        onClick={() => deleteCategory(c._id)}
-                        className="px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                      >
-                        ลบ
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* แท็ก */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 w-full">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">แท็ก</h2>
-
-          <div className="flex gap-3">
-            <input
-              value={tagName}
-              onChange={(e) => setTagName(e.target.value)}
-              placeholder="เพิ่มแท็ก"
-              className="w-72 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
-            />
-
-            <button
-              onClick={addTag}
-              className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-            >
-              เพิ่ม
-            </button>
+        <section className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[0_4px_18px_rgba(45,55,75,0.08)]">
+          <div className="flex flex-col gap-3 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 className="text-xl font-bold text-slate-800">สรุป{type.label}</h1>
+              <p className="mt-0.5 text-base text-slate-400">จัดการข้อมูลทั้งหมด {filteredItems.length} รายการ</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-base text-slate-500">แสดง</span>
+              <select value={pageSize} onChange={(event) => setPageSize(Number(event.target.value))} className="h-10 rounded-md border border-slate-200 bg-white px-2 text-base font-semibold text-slate-600">
+                <option value={10}>10 รายการ</option><option value={25}>25 รายการ</option><option value={50}>50 รายการ</option>
+              </select>
+              <button disabled={!selectedIds.length} onClick={() => deleteItems(selectedIds)} className="h-10 rounded-md bg-indigo-600 px-4 text-[15px] font-bold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-200">ลบที่เลือก ({selectedIds.length})</button>
+            </div>
           </div>
-        </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full table-auto">
-            <thead>
-              <tr className="bg-gray-100 border-b">
-                <th className="px-4 py-3 text-left w-20">ลำดับ</th>
-                <th className="px-4 py-3 text-left">ชื่อแท็ก</th>
-                <th className="px-4 py-3 text-center w-48">จัดการ</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {tags.map((t, index) => (
-                <tr
-                  key={t._id}
-                  className="border-b hover:bg-gray-50 transition"
-                >
-                  <td className="px-4 py-3">{index + 1}</td>
-
-                  <td className="px-4 py-3">{t.name}</td>
-
-                  <td className="px-4 py-3">
-                    <div className="flex justify-center gap-2">
-                      <button
-                        onClick={() => editTag(t)}
-                        className="px-3 py-1.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
-                      >
-                        แก้ไข
-                      </button>
-
-                      <button
-                        onClick={() => deleteTag(t._id)}
-                        className="px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                      >
-                        ลบ
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* สาขาวิชา / แผนก */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mt-8 w-full">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">สาขาวิชา / แผนก (Departments)</h2>
-
-          <div className="flex gap-3">
-            <input
-              value={deptName}
-              onChange={(e) => setDeptName(e.target.value)}
-              placeholder="เพิ่มสาขาวิชา"
-              className="w-72 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"
-            />
-
-            <button
-              onClick={addDepartment}
-              className="px-5 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
-            >
-              เพิ่ม
-            </button>
-          </div>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full table-auto">
-            <thead>
-              <tr className="bg-gray-100 border-b">
-                <th className="px-4 py-3 text-left w-20">ลำดับ</th>
-                <th className="px-4 py-3 text-left">ชื่อสาขาวิชา / แผนก</th>
-                <th className="px-4 py-3 text-center w-48">จัดการ</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {departments.length === 0 ? (
+          <div className="max-h-[520px] overflow-auto">
+            <table className="w-full min-w-[760px] text-left text-base">
+              <thead className="sticky top-0 z-10 bg-[#f7f8fc] text-[14px] font-bold uppercase tracking-wide text-slate-500 shadow-sm">
                 <tr>
-                  <td colSpan={3} className="px-4 py-6 text-center text-gray-400">
-                    — ไม่มีข้อมูลสาขาวิชา —
-                  </td>
+                  <th className="w-14 px-5 py-3 text-center"><input ref={selectAllRef} type="checkbox" checked={allSelected} onChange={toggleAll} disabled={!filteredItems.length} aria-label="เลือกทั้งหมด" className="h-4 w-4 cursor-pointer accent-indigo-600" /></th>
+                  <th className="w-28 px-3 py-3">ลำดับ</th>
+                  <th className="px-3 py-3">ชื่อ{type.label}</th>
+                  <th className="w-40 px-3 py-3">สถานะ</th>
+                  <th className="w-44 px-5 py-3 text-center">จัดการ</th>
                 </tr>
-              ) : (
-                departments.map((d, index) => (
-                  <tr
-                    key={d._id || index}
-                    className="border-b hover:bg-gray-50 transition"
-                  >
-                    <td className="px-4 py-3">{index + 1}</td>
-                    <td className="px-4 py-3 font-medium text-gray-800">{d.name}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex justify-center gap-2">
-                        <button
-                          onClick={() => editDepartment(d)}
-                          className="px-3 py-1.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition"
-                        >
-                          แก้ไข
-                        </button>
-                        <button
-                          onClick={() => deleteDepartment(d._id)}
-                          className="px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-                        >
-                          ลบ
-                        </button>
-                      </div>
-                    </td>
+              </thead>
+              <tbody className="text-slate-600">
+                {pageItems.length ? pageItems.map((item, index) => (
+                  <tr key={item._id} className="border-b border-slate-100 transition hover:bg-indigo-50/30">
+                    <td className="px-5 py-3 text-center"><input type="checkbox" checked={selectedIds.includes(item._id)} onChange={() => toggleItem(item._id)} aria-label={`เลือก ${item.name}`} className="h-4 w-4 cursor-pointer accent-indigo-600" /></td>
+                    <td className="px-3 py-3 font-medium text-slate-500">{(currentPage - 1) * pageSize + index + 1}</td>
+                    <td className="px-3 py-3 font-semibold text-slate-700">{item.name}</td>
+                    <td className="px-3 py-3"><span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[14px] font-semibold text-emerald-600">ใช้งานอยู่</span></td>
+                    <td className="px-5 py-3"><div className="flex justify-center gap-2"><button onClick={() => editItem(item)} className="rounded-md border border-slate-200 px-3 py-1.5 text-[15px] font-semibold text-slate-600 hover:bg-slate-50">แก้ไข</button><button onClick={() => deleteItems([item._id])} className="rounded-md px-3 py-1.5 text-[15px] font-semibold text-rose-600 hover:bg-rose-50">ลบ</button></div></td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                )) : <tr><td colSpan={5} className="px-5 py-12 text-center text-lg text-slate-400">ไม่พบข้อมูล{type.label}</td></tr>}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="flex flex-col gap-3 border-t border-slate-100 px-5 py-4 text-base sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-slate-400">แสดง {(currentPage - 1) * pageSize + (pageItems.length ? 1 : 0)}–{(currentPage - 1) * pageSize + pageItems.length} จาก {filteredItems.length} รายการ</span>
+            <div className="flex items-center gap-1.5"><button onClick={() => setPage(currentPage - 1)} disabled={currentPage === 1} className="rounded-md px-2 py-1 text-slate-500 hover:bg-slate-100 disabled:text-slate-300">‹</button>{Array.from({ length: totalPages }, (_, index) => index + 1).slice(Math.max(0, currentPage - 3), currentPage + 2).map((number) => <button key={number} onClick={() => setPage(number)} className={`h-7 min-w-7 rounded-md px-2 font-semibold ${number === currentPage ? "bg-indigo-600 text-white" : "text-slate-500 hover:bg-slate-100"}`}>{number}</button>)}<button onClick={() => setPage(currentPage + 1)} disabled={currentPage === totalPages} className="rounded-md px-2 py-1 text-slate-500 hover:bg-slate-100 disabled:text-slate-300">›</button></div>
+          </div>
+        </section>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
-import { X, Save, FileText, Check, AlertCircle, Plus, Users } from 'lucide-react';
+import { X, Save, FileText, Check, AlertCircle, Plus, Users, GraduationCap } from 'lucide-react';
 
 export default function WorkForm() {
   const { id } = useParams();
@@ -12,7 +12,10 @@ export default function WorkForm() {
   
   const [categories, setCategories] = useState([]);
   const [availableUsers, setAvailableUsers] = useState([]);
+  const [availableAdvisors, setAvailableAdvisors] = useState([]);
   const [selectedParticipantId, setSelectedParticipantId] = useState('');
+  const [selectedAdvisorId, setSelectedAdvisorId] = useState('');
+  const [advisorSearch, setAdvisorSearch] = useState('');
   const [keywordInput, setKeywordInput] = useState('');
   const [form, setForm] = useState({
     title: '',
@@ -24,9 +27,11 @@ export default function WorkForm() {
     category: '',
     keywords: [],
     participants: [],
+    advisors: [],
     status: 'draft',
   });
   const [pdf, setPdf] = useState(null);
+  const [hasExistingPdf, setHasExistingPdf] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -36,11 +41,11 @@ export default function WorkForm() {
       .then((res) => setCategories(res.data.categories || res.data || []))
       .catch(() => {});
 
-    api
-      .get('/api/admin/users')
-      .catch(() => api.get('/api/users'))
-      .then((res) => setAvailableUsers(res.data.users || res.data || []))
-      .catch(() => {});
+    if (user?.major) {
+      api.get('/api/public/advisors', { params: { department: user.major } })
+        .then((res) => setAvailableAdvisors(res.data.advisors || res.data || []))
+        .catch(() => setAvailableAdvisors([]));
+    }
     
     if (isEdit) {
       api.get(`/api/contents/${id}`).then((res) => {
@@ -59,11 +64,36 @@ export default function WorkForm() {
           participants: (w.participants || [])
             .map((p) => (typeof p === 'string' ? p : p._id))
             .filter(Boolean),
+          advisors: (w.advisors || (w.advisor ? [w.advisor] : []))
+            .map((advisor) => (typeof advisor === 'string' ? advisor : advisor._id))
+            .filter(Boolean),
           status: w.status || 'draft',
         });
+        setHasExistingPdf(Boolean(w.hasPdf || w.pdfFilename || w.pdfUrl));
       });
     }
-  }, [id, isEdit]);
+  }, [id, isEdit, user?.major]);
+
+  const department = form.major || user?.major || '';
+
+  useEffect(() => {
+    if (!department) return;
+
+    const usersRequest =
+      user?.role === 'admin'
+        ? api.get('/api/admin/users', { params: { major: department, isActive: 'true' } }).catch(() =>
+            api.get('/api/users', { params: { major: department } })
+          )
+        : api.get('/api/users', { params: { major: department } });
+
+    usersRequest
+      .then((res) => setAvailableUsers(res.data.users || res.data || []))
+      .catch(() => setAvailableUsers([]));
+
+    api.get('/api/public/advisors', { params: { department } })
+      .then((res) => setAvailableAdvisors(res.data.advisors || res.data || []))
+      .catch(() => setAvailableAdvisors([]));
+  }, [department, user?.role]);
 
   const set = (key) => (e) => {
     setForm({ ...form, [key]: e.target.value });
@@ -112,38 +142,53 @@ export default function WorkForm() {
     }));
   };
 
+  const addAdvisor = () => {
+    if (!selectedAdvisorId || form.advisors.includes(selectedAdvisorId)) return;
+    if (form.advisors.length >= 5) {
+      alert('เพิ่มครูที่ปรึกษาได้สูงสุด 5 รายชื่อ');
+      return;
+    }
+    setForm((current) => ({ ...current, advisors: [...current.advisors, selectedAdvisorId] }));
+    setSelectedAdvisorId('');
+  };
+
+  const removeAdvisor = (advisorId) => {
+    setForm((current) => ({ ...current, advisors: current.advisors.filter((id) => id !== advisorId) }));
+  };
+
+  const handlePdfChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf' || !file.name.toLowerCase().endsWith('.pdf')) {
+      alert('กรุณาเลือกไฟล์ PDF เท่านั้น');
+      e.target.value = '';
+      setPdf(null);
+      return;
+    }
+    setPdf(file);
+  };
+
   const handleAction = async (e, targetStatus) => {
     e.preventDefault();
     setError('');
+    const finalStatus = targetStatus || form.status;
+
+    if (pdf && (pdf.type !== 'application/pdf' || !pdf.name.toLowerCase().endsWith('.pdf'))) {
+      alert('กรุณาเลือกไฟล์ PDF เท่านั้น');
+      return;
+    }
+    if (finalStatus === 'published' && !pdf && !hasExistingPdf) {
+      alert('กรุณาอัปโหลดไฟล์ PDF ก่อนเผยแพร่ผลงาน');
+      return;
+    }
     setIsSubmitting(true);
     
-    let uploadedPaperUrl = null;
-    if (pdf) {
-      try {
-        const uploadFormData = new FormData();
-        uploadFormData.append('paper', pdf);
-        uploadFormData.append('file', pdf);
-        const uploadRes = await api.post('/api/uploads/paper', uploadFormData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-        uploadedPaperUrl = uploadRes.data?.url || uploadRes.data?.fileUrl || uploadRes.data?.path;
-      } catch (err) {
-        console.warn('POST /api/uploads/paper fallback to inline pdf upload', err);
-      }
-    }
-
     const body = new FormData();
-    const finalStatus = targetStatus || form.status;
     
     const submission = {
       ...form,
       status: finalStatus,
     };
-
-    if (uploadedPaperUrl) {
-      submission.paperUrl = uploadedPaperUrl;
-      submission.fileUrl = uploadedPaperUrl;
-    }
 
     Object.entries(submission).forEach(([k, v]) => {
       if (Array.isArray(v)) {
@@ -155,7 +200,6 @@ export default function WorkForm() {
     
     if (pdf) {
       body.append('pdf', pdf);
-      body.append('paper', pdf);
     }
 
     try {
@@ -305,7 +349,7 @@ export default function WorkForm() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">สาขาวิชา</label>
                     <input 
                       value={form.major} 
-                      onChange={set('major')} 
+                      readOnly
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-gray-50 text-gray-700"
                     />
                   </div>
@@ -318,7 +362,7 @@ export default function WorkForm() {
                     เพิ่มผู้ร่วมจัดทำโครงการ (Project Participants)
                   </label>
                   <p className="text-xs text-gray-500">
-                    เลือกผู้ใช้งานในระบบเพื่อเพิ่มเป็นผู้ร่วมจัดทำผลงานวิจัยนี้
+                    แสดงเฉพาะผู้ใช้ในแผนก {department} เพื่อเพิ่มเป็นผู้ร่วมจัดทำผลงานวิจัยนี้
                   </p>
                   
                   <div className="flex gap-2">
@@ -329,7 +373,7 @@ export default function WorkForm() {
                     >
                       <option value="">— เลือกผู้ใช้งานเพื่อเพิ่มเป็นผู้ร่วมจัดทำ —</option>
                       {availableUsers
-                        .filter((u) => u._id !== user?._id && !form.participants.includes(u._id))
+                        .filter((u) => u._id !== user?._id && u.major === department && !form.participants.includes(u._id))
                         .map((u) => (
                           <option key={u._id} value={u._id}>
                             {u.fullName}
@@ -371,6 +415,43 @@ export default function WorkForm() {
                       })}
                     </div>
                   )}
+                </div>
+
+                <div className="p-4 bg-violet-50/50 border border-violet-100 rounded-xl space-y-3">
+                  <label className="block text-sm font-semibold text-gray-900 flex items-center gap-2">
+                    <GraduationCap className="w-4 h-4 text-violet-600" /> ครูที่ปรึกษา (สูงสุด 5 รายชื่อ)
+                  </label>
+                  <p className="text-xs text-gray-500">แสดงเฉพาะครูที่ปรึกษาในแผนกของคุณ</p>
+                  <input
+                    value={advisorSearch}
+                    onChange={(e) => setAdvisorSearch(e.target.value)}
+                    placeholder="ค้นหาชื่อหรืออีเมลครูที่ปรึกษา"
+                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm"
+                  />
+                  <div className="flex gap-2">
+                    <select value={selectedAdvisorId} onChange={(e) => setSelectedAdvisorId(e.target.value)} className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm" disabled={form.advisors.length >= 5}>
+                      <option value="">— เลือกครูที่ปรึกษา —</option>
+                      {availableAdvisors.filter((advisor) => {
+                        const query = advisorSearch.trim().toLocaleLowerCase();
+                        const searchable = `${advisor.prefix || ''} ${advisor.fullName || ''} ${advisor.email || ''}`.toLocaleLowerCase();
+                        return !form.advisors.includes(advisor._id) && (!query || searchable.includes(query));
+                      }).map((advisor) => (
+                        <option key={advisor._id} value={advisor._id}>{advisor.prefix} {advisor.fullName}</option>
+                      ))}
+                    </select>
+                    <button type="button" onClick={addAdvisor} disabled={form.advisors.length >= 5} className="inline-flex items-center gap-1 px-4 py-2.5 rounded-lg bg-violet-600 text-white hover:bg-violet-700 text-sm font-medium disabled:opacity-50">
+                      <Plus className="w-4 h-4" /> เพิ่ม
+                    </button>
+                  </div>
+                  {form.advisors.length > 0 && <div className="flex flex-wrap gap-2 pt-2">
+                    {form.advisors.map((advisorId) => {
+                      const advisor = availableAdvisors.find((item) => item._id === advisorId);
+                      return <span key={advisorId} className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-violet-200 px-3 py-1.5 text-xs font-medium text-violet-900">
+                        <GraduationCap className="w-3.5 h-3.5" /> {advisor ? `${advisor.prefix} ${advisor.fullName}` : advisorId}
+                        <button type="button" onClick={() => removeAdvisor(advisorId)} className="ml-1 text-gray-400 hover:text-red-600" aria-label="ลบครูที่ปรึกษา"><X className="w-3.5 h-3.5" /></button>
+                      </span>;
+                    })}
+                  </div>}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -460,16 +541,20 @@ export default function WorkForm() {
                             id="file-upload" 
                             name="file-upload" 
                             type="file" 
-                            accept="application/pdf" 
+                            accept="application/pdf,.pdf"
                             className="sr-only"
-                            onChange={(e) => setPdf(e.target.files[0])}
+                            onChange={handlePdfChange}
                           />
                         </label>
                       </div>
                       <p className="text-xs text-gray-500">
-                        {pdf ? `เลือกไฟล์แล้ว: ${pdf.name}` : 'หรือลากไฟล์มาวางที่นี่'}
+                        {pdf
+                          ? `เลือกไฟล์แล้ว: ${pdf.name}`
+                          : hasExistingPdf
+                            ? 'มีไฟล์ PDF อยู่แล้ว — เลือกไฟล์ใหม่เพื่อแทนที่'
+                            : 'หรือลากไฟล์มาวางที่นี่'}
                       </p>
-                      <p className="text-xs text-gray-400">PDF สูงสุด 10MB</p>
+                      <p className="text-xs text-gray-400">รองรับเฉพาะไฟล์ PDF สูงสุด 15MB</p>
                     </div>
                   </div>
                 </div>

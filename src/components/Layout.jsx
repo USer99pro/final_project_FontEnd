@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
-import { Search, LogIn, UserPlus, LayoutDashboard, FileText, User, Shield, Users, LogOut, Menu, X } from 'lucide-react';
+import { Search, LogIn, UserPlus, LayoutDashboard, FileText, User, Shield, Users, LogOut, Menu, X, GraduationCap } from 'lucide-react';
 
 export default function Layout({ children }) {
   const { user, logout, isAdmin, isGraduate } = useAuth();
@@ -66,6 +66,9 @@ export default function Layout({ children }) {
                 >
                   <UserPlus className="w-4 h-4 text-white" />
                   สมัครสมาชิก
+                </Link>
+                <Link to="/admin/advisors" className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200">
+                  <GraduationCap className="w-4 h-4" /> ครูที่ปรึกษา
                 </Link>
               </>
             )}
@@ -180,6 +183,9 @@ export default function Layout({ children }) {
                   >
                     <UserPlus className="w-4 h-4 text-white " />
                     สมัครสมาชิก
+                  </Link>
+                  <Link to="/admin/advisors" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all">
+                    <GraduationCap className="w-4 h-4" /> ครูที่ปรึกษา
                   </Link>
                 </>
               )}

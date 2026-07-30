@@ -21,6 +21,7 @@ import UserManagement from "./pages/admin/UserManagement";
 import WorkManagement from "./pages/admin/WorkManagement";
 import CategoryTagManagement from "./pages/admin/CategoryTagManagement";
 import AuditLogs from "./pages/admin/AuditLogs";
+import AdvisorManagement from "./pages/admin/AdvisorManagement";
 
 import "./index.css";
 
@@ -140,6 +141,10 @@ export default function App() {
                   <AuditLogs />
                 </ProtectedRoute>
               }
+            />
+            <Route
+              path="/admin/advisors"
+              element={<ProtectedRoute role="admin"><AdvisorManagement /></ProtectedRoute>}
             />
           </Routes>
         </Layout>

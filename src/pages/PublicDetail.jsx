@@ -19,6 +19,7 @@ export default function PublicDetail() {
 
   const fileUrl = work.fileUrl || `${getApiBase()}/api/public/projects/${id}/file`;
   const participants = work.participants || [];
+  const advisors = work.advisors?.length ? work.advisors : work.advisor ? [work.advisor] : [];
 
   return (
     <div className="detail max-w-4xl mx-auto py-8 px-4 space-y-6">
@@ -44,6 +45,26 @@ export default function PublicDetail() {
                 return (
                   <span key={idx} className="inline-block bg-white px-2.5 py-1 rounded border border-blue-200 text-blue-800 font-medium">
                     {name}{studentId}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {advisors.length > 0 && (
+          <div className="p-3 bg-violet-50/70 border border-violet-100 rounded-lg text-xs space-y-1">
+            <span className="font-semibold text-violet-900">ครูที่ปรึกษา:</span>
+            <div className="flex flex-wrap gap-2 pt-1">
+              {advisors.map((advisor, idx) => {
+                const name =
+                  typeof advisor === 'object'
+                    ? `${advisor.prefix || ''} ${advisor.fullName || ''}`.trim()
+                    : advisor;
+                const position = typeof advisor === 'object' && advisor.academicPosition ? ` (${advisor.academicPosition})` : '';
+                return (
+                  <span key={idx} className="inline-block bg-white px-2.5 py-1 rounded border border-violet-200 text-violet-800 font-medium">
+                    {name}{position}
                   </span>
                 );
               })}

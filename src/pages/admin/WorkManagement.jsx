@@ -40,12 +40,23 @@ export default function WorkManagement() {
     }
   };
 
-  const openParticipantModal = (work) => {
+  const openParticipantModal = async (work) => {
     setEditingWork({
       ...work,
       participants: (work.participants || []).map((p) => (typeof p === 'string' ? p : p._id)),
     });
     setSelectedParticipantId('');
+
+    if (work.major) {
+      try {
+        const res = await api
+          .get('/api/admin/users', { params: { major: work.major, isActive: 'true' } })
+          .catch(() => api.get('/api/users', { params: { major: work.major } }));
+        setUsers(res.data.users || res.data || []);
+      } catch {
+        /* keep existing users list */
+      }
+    }
   };
 
   const addParticipantToWork = () => {
@@ -214,7 +225,7 @@ export default function WorkManagement() {
             <div className="p-6 space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  เลือกผู้ใช้งานเพื่อเพิ่มเป็นผู้ร่วมจัดทำ (Participants)
+                  เลือกผู้ใช้งานเพื่อเพิ่มเป็นผู้ร่วมจัดทำ (แผนก {editingWork.major})
                 </label>
                 <div className="flex gap-2">
                   <select
@@ -224,7 +235,7 @@ export default function WorkManagement() {
                   >
                     <option value="">— เลือกผู้ใช้งาน —</option>
                     {users
-                      .filter((u) => !editingWork.participants.includes(u._id))
+                      .filter((u) => u.major === editingWork.major && !editingWork.participants.includes(u._id))
                       .map((u) => (
                         <option key={u._id} value={u._id}>
                           {u.fullName} {u.studentId ? `(${u.studentId})` : ''} — {u.email}
