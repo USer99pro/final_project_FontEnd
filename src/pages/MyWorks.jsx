@@ -75,10 +75,10 @@ export default function MyWorks() {
         </div>
         <Link
           to="/graduate/works/new"
-          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-[#2563EB] to-blue-700 text-white text-sm font-semibold shadow-md shadow-blue-200/50 hover:shadow-lg hover:shadow-blue-300/50 hover:scale-[1.02] transition-all duration-200 cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white text-sm font-bold shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/35 hover:scale-[1.03] active:scale-95 transition-all duration-200 cursor-pointer"
         >
-          <Plus className="w-4 h-4 text-white" />
-          เพิ่มผลงานใหม่
+          <Plus className="w-4 h-4 text-white shrink-0" />
+          <span>เพิ่มผลงานใหม่</span>
         </Link>
       </div>
 
@@ -145,18 +145,20 @@ export default function MyWorks() {
                           <div className="flex items-center justify-center gap-2">
                             <Link
                               to={`/graduate/works/${w._id}/edit`}
-                              className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200 shadow-sm"
+                              className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white transition-all duration-200 shadow-sm text-xs font-semibold"
                               title="แก้ไขผลงาน"
                             >
-                              <Edit className="w-4 h-4" />
+                              <Edit className="w-3.5 h-3.5" />
+                              <span>แก้ไข</span>
                             </Link>
                             <button
                               type="button"
                               onClick={() => handleDelete(w._id)}
-                              className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200 shadow-sm cursor-pointer"
+                              className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-50 text-red-700 hover:bg-red-600 hover:text-white transition-all duration-200 shadow-sm text-xs font-semibold cursor-pointer"
                               title="ลบผลงาน"
                             >
-                              <Trash2 className="w-4 h-4" />
+                              <Trash2 className="w-3.5 h-3.5" />
+                              <span>ลบ</span>
                             </button>
                           </div>
                         </td>

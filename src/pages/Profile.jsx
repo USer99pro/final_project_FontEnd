@@ -1,7 +1,25 @@
 import { useState } from 'react';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
+import SearchableSelect from '../components/SearchableSelect';
 import { User, Camera, CheckCircle2, AlertCircle } from 'lucide-react';
+
+const MAJOR_OPTIONS = [
+  'สาขาวิชาการบัญชี',
+  'สาขาวิชาการตลาด',
+  'สาขาวิชาการจัดการธุรกิจค้าปลีก',
+  'สาขาวิชาการจัดการสำนักงานดิจิทัล',
+  'สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล',
+  'สาขาวิชาเทคโนโลยีสารสนเทศ',
+  'สาขาวิชาการจัดการโลจิสติกส์และซัพพลายเชน',
+  'สาขาวิชาธุรกิจการบิน',
+  'สาขาวิชาดิจิทัลกราฟิก',
+  'สาขาวิชาเทคโนโลยีแฟชั่นและเครื่องแต่งกาย',
+  'สาขาวิชาอาหารและโภชนาการ',
+  'สาขาวิชาการบริหารงานคหกรรมศาสตร์',
+  'สาขาวิชาการโรงแรม',
+  'สาขาวิชาการท่องเที่ยว',
+];
 
 export default function Profile() {
   const { user } = useAuth();
@@ -101,12 +119,15 @@ export default function Profile() {
                 <label className="block text-sm font-medium text-gray-600 mb-2">
                   สาขาวิชา
                 </label>
-                <input
-                  type="text"
+                <SearchableSelect
+                  options={MAJOR_OPTIONS}
                   value={form.major}
-                  onChange={set('major')}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-gray-50/50"
-                  placeholder="สาขาวิชา"
+                  onChange={(val) => {
+                    setForm({ ...form, major: val });
+                    setMsg('');
+                  }}
+                  placeholder="-- ค้นหาและเลือกสาขาวิชา --"
+                  searchPlaceholder="พิมพ์ค้นหาสาขาวิชา..."
                 />
               </div>
 

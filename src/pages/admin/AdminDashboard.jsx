@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../api/client';
-import { Users, BookOpen, Activity, Download, Settings, FileText, Layers, ShieldCheck } from 'lucide-react';
+import { Users, BookOpen, Activity, Download, Settings, FileText, Layers, ShieldCheck, GraduationCap } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [data, setData] = useState(null);
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
       {/* QUICK ACTIONS GRID */}
       <div>
         <h2 className="text-lg font-bold text-gray-900 mb-4">เมนูการจัดการระบบ (Admin Controls)</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
           <Link
             to="/admin/users"
             className="p-5 bg-white border border-gray-200 rounded-2xl hover:border-blue-500 hover:shadow-md transition flex items-center gap-4 group"
@@ -140,6 +140,19 @@ export default function AdminDashboard() {
           </Link>
 
           <Link
+            to="/admin/advisors"
+            className="p-5 bg-white border border-gray-200 rounded-2xl hover:border-teal-500 hover:shadow-md transition flex items-center gap-4 group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center group-hover:bg-teal-600 group-hover:text-white transition">
+              <GraduationCap className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 group-hover:text-teal-600 transition">ครูที่ปรึกษา</h3>
+              <p className="text-xs text-gray-400">เพิ่ม แก้ไข ลบ รายชื่อครู</p>
+            </div>
+          </Link>
+
+          <Link
             to="/admin/categories"
             className="p-5 bg-white border border-gray-200 rounded-2xl hover:border-purple-500 hover:shadow-md transition flex items-center gap-4 group"
           >
@@ -147,7 +160,7 @@ export default function AdminDashboard() {
               <Layers className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 group-hover:text-purple-600 transition">หมวดหมู่/แท็ก/สาขา</h3>
+              <h3 className="font-semibold text-gray-900 group-hover:text-purple-600 transition">หมวดหมู่/แท็ก</h3>
               <p className="text-xs text-gray-400">จัดการข้อมูลหลักในระบบ</p>
             </div>
           </Link>
@@ -161,7 +174,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 group-hover:text-slate-800 transition">ประวัติระบบ Logs</h3>
-              <p className="text-xs text-gray-400">Audit Logs & Login History</p>
+              <p className="text-xs text-gray-400">Audit Logs & History</p>
             </div>
           </Link>
         </div>

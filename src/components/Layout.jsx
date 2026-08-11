@@ -20,7 +20,7 @@ export default function Layout({ children }) {
     <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
 
       {/* ── NAVBAR ─────────────────────────────────────────── */}
-      <header className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-[#E2E8F0] shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <header className="fixed top-0 left-0 w-full z-50 bg-white border-b border-[#E2E8F0] shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
 
           {/* Logo + Name */}
@@ -61,14 +61,12 @@ export default function Layout({ children }) {
                   เข้าสู่ระบบ
                 </Link>
 
-                <Link to="/register"
-                  className="flex items-center gap-2 ml-1 px-5 py-2.5 t rounded-xl bg-gradient-to-r from-[#2563EB] to-blue-700 text-white text-sm font-semibold shadow-md shadow-blue-200/50 hover:shadow-lg hover:shadow-blue-300/50 hover:scale-[1.02] transition-all "
+                <Link
+                  to="/register"
+                  className="flex items-center gap-2 ml-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white text-sm font-semibold shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/35 hover:scale-[1.03] active:scale-95 transition-all duration-200"
                 >
-                  <UserPlus className="w-4 h-4 text-white" />
-                  สมัครสมาชิก
-                </Link>
-                <Link to="/admin/advisors" className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200">
-                  <GraduationCap className="w-4 h-4" /> ครูที่ปรึกษา
+                  <UserPlus className="w-4 h-4 text-white shrink-0" />
+                  <span>สมัครสมาชิก</span>
                 </Link>
               </>
             )}
@@ -126,6 +124,14 @@ export default function Layout({ children }) {
                   <FileText className="w-4 h-4" />
                   ผลงานทั้งหมด
                 </Link>
+
+                <Link
+                  to="/admin/advisors"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
+                >
+                  <GraduationCap className="w-4 h-4" />
+                  ครูที่ปรึกษา
+                </Link>
               </>
             )}
 
@@ -154,89 +160,90 @@ export default function Layout({ children }) {
 
         {/* ── Mobile Menu ─────────────────────────────────── */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-[#E2E8F0] bg-white/95 backdrop-blur-xl">
-            <nav className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1">
-              <Link
-                to="/"
-                onClick={closeMobile}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all"
-              >
-                <Search className="w-4 h-4" />
-                ค้นหา
-              </Link>
+                  <div className="lg:hidden border-t border-[#E2E8F0] bg-white/95">
+                    <nav className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1">
+                      <Link
+                        to="/"
+                        onClick={closeMobile}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all"
+                      >
+                        <Search className="w-4 h-4" />
+                        ค้นหา
+                      </Link>
 
-              {!user && (
-                <>
-                  <Link
-                    to="/login"
-                    onClick={closeMobile}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 transition-all"
-                  >
-                    <LogIn className="w-4 h-4" />
-                    เข้าสู่ระบบ
-                  </Link>
+                      {!user && (
+                        <>
+                          <Link
+                            to="/login"
+                            onClick={closeMobile}
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 transition-all"
+                          >
+                            <LogIn className="w-4 h-4" />
+                            เข้าสู่ระบบ
+                          </Link>
 
-                  <Link
-                    to="/register"
-                    onClick={closeMobile}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-[#2563EB] bg-blue-50 hover:bg-blue-100 transition-all"
-                  >
-                    <UserPlus className="w-4 h-4 text-white " />
-                    สมัครสมาชิก
-                  </Link>
-                  <Link to="/admin/advisors" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all">
-                    <GraduationCap className="w-4 h-4" /> ครูที่ปรึกษา
-                  </Link>
-                </>
-              )}
+                          <Link
+                            to="/register"
+                            onClick={closeMobile}
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md shadow-blue-500/20 hover:from-blue-700 hover:to-indigo-700 transition-all"
+                          >
+                            <UserPlus className="w-4 h-4 text-white shrink-0" />
+                            สมัครสมาชิก
+                          </Link>
+                        </>
+                      )}
 
-              {isGraduate && (
-                <>
-                  <Link to="/graduate" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all">
-                    <LayoutDashboard className="w-4 h-4" />
-                    แดชบอร์ด
-                  </Link>
-                  <Link to="/graduate/works" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all">
-                    <FileText className="w-4 h-4" />
-                    ผลงานของฉัน
-                  </Link>
-                  <Link to="/graduate/profile" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all">
-                    <User className="w-4 h-4" />
-                    โปรไฟล์
-                  </Link>
-                </>
-              )}
+                      {isGraduate && (
+                        <>
+                          <Link to="/graduate" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all">
+                            <LayoutDashboard className="w-4 h-4" />
+                            แดชบอร์ด
+                          </Link>
+                          <Link to="/graduate/works" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all">
+                            <FileText className="w-4 h-4" />
+                            ผลงานของฉัน
+                          </Link>
+                          <Link to="/graduate/profile" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all">
+                            <User className="w-4 h-4" />
+                            โปรไฟล์
+                          </Link>
+                        </>
+                      )}
 
-              {isAdmin && (
-                <>
-                  <Link to="/admin" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all">
-                    <Shield className="w-4 h-4" />
-                    ผู้ดูแล
-                  </Link>
-                  <Link to="/admin/users" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all">
-                    <Users className="w-4 h-4" />
-                    ผู้ใช้
-                  </Link>
-                  <Link to="/admin/works" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all">
-                    <FileText className="w-4 h-4" />
-                    ผลงานทั้งหมด
-                  </Link>
-                </>
-              )}
+                      {isAdmin && (
+                        <>
+                          <Link to="/admin" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all">
+                            <Shield className="w-4 h-4" />
+                            ผู้ดูแล
+                          </Link>
+                          <Link to="/admin/users" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all">
+                            <Users className="w-4 h-4" />
+                            ผู้ใช้
+                          </Link>
+                          <Link to="/admin/works" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all">
+                            <FileText className="w-4 h-4" />
+                            ผลงานทั้งหมด
+                          </Link>
+                          <Link to="/admin/advisors" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all">
+                            <GraduationCap className="w-4 h-4" />
+                            ครูที่ปรึกษา
+                          </Link>
+                        </>
+                      )}
 
-              {user && (
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 transition-all mt-1 cursor-pointer"
-                >
-                  <LogOut className="w-4 h-4" />
-                  ออกจากระบบ ({user.fullName})
-                </button>
-              )}
-            </nav>
-          </div>
-        )}
+                      {user && (
+                        <button
+                          type="button"
+                          onClick={handleLogout}
+                          className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 transition-all mt-1 cursor-pointer"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          ออกจากระบบ ({user.fullName})
+                        </button>
+                      )}
+                    </nav>
+                  </div>
+                )}
       </header>
 
       {/* ── MAIN CONTENT ───────────────────────────────────── */}

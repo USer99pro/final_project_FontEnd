@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
+import SearchableSelect from '../components/SearchableSelect';
 import { X, Save, FileText, Check, AlertCircle, Plus, Users, GraduationCap } from 'lucide-react';
 
 export default function WorkForm() {
@@ -15,7 +16,6 @@ export default function WorkForm() {
   const [availableAdvisors, setAvailableAdvisors] = useState([]);
   const [selectedParticipantId, setSelectedParticipantId] = useState('');
   const [selectedAdvisorId, setSelectedAdvisorId] = useState('');
-  const [advisorSearch, setAdvisorSearch] = useState('');
   const [keywordInput, setKeywordInput] = useState('');
   const [form, setForm] = useState({
     title: '',
@@ -76,6 +76,9 @@ export default function WorkForm() {
 
   const department = form.major || user?.major || '';
 
+  // advisors limit: maximum 3 advisors per research work (N-to-N)
+  const advisorLimit = 3;
+
   useEffect(() => {
     if (!department) return;
 
@@ -122,15 +125,16 @@ export default function WorkForm() {
     }));
   };
 
-  const addParticipant = () => {
-    if (!selectedParticipantId) return;
-    if (form.participants.includes(selectedParticipantId)) {
+  const addParticipant = (pId) => {
+    const targetId = pId || selectedParticipantId;
+    if (!targetId) return;
+    if (form.participants.includes(targetId)) {
       setSelectedParticipantId('');
       return;
     }
     setForm((current) => ({
       ...current,
-      participants: [...current.participants, selectedParticipantId],
+      participants: [...current.participants, targetId],
     }));
     setSelectedParticipantId('');
   };
@@ -142,13 +146,14 @@ export default function WorkForm() {
     }));
   };
 
-  const addAdvisor = () => {
-    if (!selectedAdvisorId || form.advisors.includes(selectedAdvisorId)) return;
-    if (form.advisors.length >= 5) {
-      alert('เพิ่มครูที่ปรึกษาได้สูงสุด 5 รายชื่อ');
+  const addAdvisor = (advId) => {
+    const targetId = advId || selectedAdvisorId;
+    if (!targetId || form.advisors.includes(targetId)) return;
+    if (form.advisors.length >= advisorLimit) {
+      alert(`เพิ่มครูที่ปรึกษาได้สูงสุด ${advisorLimit} รายชื่อ`);
       return;
     }
-    setForm((current) => ({ ...current, advisors: [...current.advisors, selectedAdvisorId] }));
+    setForm((current) => ({ ...current, advisors: [...current.advisors, targetId] }));
     setSelectedAdvisorId('');
   };
 
@@ -232,10 +237,11 @@ export default function WorkForm() {
           <button 
             type="button" 
             onClick={() => navigate(user?.role === 'admin' ? '/admin/works' : '/graduate/works')}
-            className="p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition"
+            className="flex items-center gap-1.5 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition text-xs font-semibold"
             aria-label="Close"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
+            <span>ปิดหน้าต่าง / ย้อนกลับ</span>
           </button>
           
           <div className="flex items-center gap-3">
@@ -366,27 +372,21 @@ export default function WorkForm() {
                   </p>
                   
                   <div className="flex gap-2">
-                    <select
-                      value={selectedParticipantId}
-                      onChange={(e) => setSelectedParticipantId(e.target.value)}
-                      className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white text-sm"
-                    >
-                      <option value="">— เลือกผู้ใช้งานเพื่อเพิ่มเป็นผู้ร่วมจัดทำ —</option>
-                      {availableUsers
-                        .filter((u) => u._id !== user?._id && u.major === department && !form.participants.includes(u._id))
-                        .map((u) => (
-                          <option key={u._id} value={u._id}>
-                            {u.fullName}
-                          </option>
-                        ))}
-                    </select>
-                    <button
-                      type="button"
-                      onClick={addParticipant}
-                      className="inline-flex items-center gap-1 px-4 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-sm font-medium transition shrink-0"
-                    >
-                      <Plus className="w-4 h-4" /> เพิ่มผู้ร่วมจัดทำ
-                    </button>
+                    <div className="flex-1">
+                      <SearchableSelect
+                        options={availableUsers
+                          .filter((u) => u._id !== user?._id && u.major === department && !form.participants.includes(u._id))
+                          .map((u) => ({ value: u._id, label: u.fullName, sublabel: u.studentId }))}
+                        value={selectedParticipantId}
+                        onChange={(val) => {
+                          setSelectedParticipantId(val);
+                          if (val) addParticipant(val);
+                        }}
+                        placeholder="— ค้นหาและเลือกผู้ร่วมจัดทำโครงการ —"
+                        searchPlaceholder="พิมพ์ค้นหาชื่อเพื่อนหรือรหัสนักศึกษา..."
+                        icon={Users}
+                      />
+                    </div>
                   </div>
 
                   {/* Display Selected Participants */}
@@ -417,37 +417,40 @@ export default function WorkForm() {
                   )}
                 </div>
 
+                {/* Advisor Selection */}
                 <div className="p-4 bg-violet-50/50 border border-violet-100 rounded-xl space-y-3">
                   <label className="block text-sm font-semibold text-gray-900 flex items-center gap-2">
-                    <GraduationCap className="w-4 h-4 text-violet-600" /> ครูที่ปรึกษา (สูงสุด 5 รายชื่อ)
+                    <GraduationCap className="w-4 h-4 text-violet-600" /> ครูที่ปรึกษา <span className="text-xs text-violet-700 font-medium">(เลือกได้สูงสุด 3 ท่าน — เชื่อมต่อแบบ N to N)</span>
                   </label>
-                  <p className="text-xs text-gray-500">แสดงเฉพาะครูที่ปรึกษาในแผนกของคุณ</p>
-                  <input
-                    value={advisorSearch}
-                    onChange={(e) => setAdvisorSearch(e.target.value)}
-                    placeholder="ค้นหาชื่อหรืออีเมลครูที่ปรึกษา"
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm"
-                  />
+                  <p className="text-xs text-gray-500">พิมพ์ค้นหาชื่อ คำนำหน้า หรืออีเมลครูที่ปรึกษา</p>
+                  
                   <div className="flex gap-2">
-                    <select value={selectedAdvisorId} onChange={(e) => setSelectedAdvisorId(e.target.value)} className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm" disabled={form.advisors.length >= 5}>
-                      <option value="">— เลือกครูที่ปรึกษา —</option>
-                      {availableAdvisors.filter((advisor) => {
-                        const query = advisorSearch.trim().toLocaleLowerCase();
-                        const searchable = `${advisor.prefix || ''} ${advisor.fullName || ''} ${advisor.email || ''}`.toLocaleLowerCase();
-                        return !form.advisors.includes(advisor._id) && (!query || searchable.includes(query));
-                      }).map((advisor) => (
-                        <option key={advisor._id} value={advisor._id}>{advisor.prefix} {advisor.fullName}</option>
-                      ))}
-                    </select>
-                    <button type="button" onClick={addAdvisor} disabled={form.advisors.length >= 5} className="inline-flex items-center gap-1 px-4 py-2.5 rounded-lg bg-violet-600 text-white hover:bg-violet-700 text-sm font-medium disabled:opacity-50">
-                      <Plus className="w-4 h-4" /> เพิ่ม
-                    </button>
+                    <div className="flex-1">
+                      <SearchableSelect
+                        options={availableAdvisors
+                          .filter((adv) => !form.advisors.includes(adv._id))
+                          .map((adv) => ({
+                            value: adv._id,
+                            label: `${adv.prefix || ''} ${adv.fullName}`,
+                            sublabel: adv.email || adv.departmentName || '',
+                          }))}
+                        value={selectedAdvisorId}
+                        onChange={(val) => {
+                          setSelectedAdvisorId(val);
+                          if (val) addAdvisor(val);
+                        }}
+                        disabled={form.advisors.length >= advisorLimit}
+                        placeholder="— ค้นหาและเลือกครูที่ปรึกษา —"
+                        searchPlaceholder="พิมพ์ค้นหาชื่อหรืออีเมลครูที่ปรึกษา..."
+                        icon={GraduationCap}
+                      />
+                    </div>
                   </div>
                   {form.advisors.length > 0 && <div className="flex flex-wrap gap-2 pt-2">
                     {form.advisors.map((advisorId) => {
                       const advisor = availableAdvisors.find((item) => item._id === advisorId);
-                      return <span key={advisorId} className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-violet-200 px-3 py-1.5 text-xs font-medium text-violet-900">
-                        <GraduationCap className="w-3.5 h-3.5" /> {advisor ? `${advisor.prefix} ${advisor.fullName}` : advisorId}
+                      return <span key={advisorId} className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-violet-200 px-3 py-1.5 text-xs font-medium text-violet-900 shadow-sm">
+                        <GraduationCap className="w-3.5 h-3.5 text-violet-600" /> {advisor ? `${advisor.prefix || ''} ${advisor.fullName}` : advisorId}
                         <button type="button" onClick={() => removeAdvisor(advisorId)} className="ml-1 text-gray-400 hover:text-red-600" aria-label="ลบครูที่ปรึกษา"><X className="w-3.5 h-3.5" /></button>
                       </span>;
                     })}
@@ -457,16 +460,13 @@ export default function WorkForm() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">หมวดหมู่</label>
-                    <select 
-                      value={form.category} 
-                      onChange={set('category')}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white"
-                    >
-                      <option value="">— เลือกหมวดหมู่ —</option>
-                      {categories.map((c) => (
-                        <option key={c._id} value={c._id}>{c.name}</option>
-                      ))}
-                    </select>
+                    <SearchableSelect
+                      options={categories.map((c) => ({ value: c._id, label: c.name }))}
+                      value={form.category}
+                      onChange={(val) => setForm({ ...form, category: val })}
+                      placeholder="— ค้นหาและเลือกหมวดหมู่ —"
+                      searchPlaceholder="พิมพ์ค้นหาหมวดหมู่..."
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">ปีการศึกษา</label>

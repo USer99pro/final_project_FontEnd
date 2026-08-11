@@ -1,6 +1,25 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import SearchableSelect from '../components/SearchableSelect';
+import { UserPlus } from 'lucide-react';
+
+const MAJOR_OPTIONS = [
+  'สาขาวิชาการบัญชี',
+  'สาขาวิชาการตลาด',
+  'สาขาวิชาการจัดการธุรกิจค้าปลีก',
+  'สาขาวิชาการจัดการสำนักงานดิจิทัล',
+  'สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล',
+  'สาขาวิชาเทคโนโลยีสารสนเทศ',
+  'สาขาวิชาการจัดการโลจิสติกส์และซัพพลายเชน',
+  'สาขาวิชาธุรกิจการบิน',
+  'สาขาวิชาดิจิทัลกราฟิก',
+  'สาขาวิชาเทคโนโลยีแฟชั่นและเครื่องแต่งกาย',
+  'สาขาวิชาอาหารและโภชนาการ',
+  'สาขาวิชาการบริหารงานคหกรรมศาสตร์',
+  'สาขาวิชาการโรงแรม',
+  'สาขาวิชาการท่องเที่ยว',
+];
 
 export default function Register() {
   const { register } = useAuth();
@@ -20,6 +39,10 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    if (!form.major) {
+      setError('กรุณาเลือกสาขาวิชา');
+      return;
+    }
     try {
       await register(form);
       navigate('/graduate');
@@ -88,32 +111,16 @@ export default function Register() {
             {/* MAJOR */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                สาขาวิชา
+                สาขาวิชา <span className="text-red-500">*</span>
               </label>
   
-              <select
+              <SearchableSelect
+                options={MAJOR_OPTIONS}
                 value={form.major}
-                onChange={set('major')}
-                required
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-white"
-              >
-                <option value="" disabled>-- เลือกสาขาวิชา --</option>
-                  <option value="สาขาวิชาการบัญชี">สาขาวิชาการบัญชี</option>
-                  <option value="สาขาวิชาการตลาด">สาขาวิชาการตลาด</option>
-                  <option value="สาขาวิชาการจัดการธุรกิจค้าปลีก">สาขาวิชาการจัดการธุรกิจค้าปลีก</option>
-                  <option value="สาขาวิชาการจัดการสำนักงานดิจิทัล">สาขาวิชาการจัดการสำนักงานดิจิทัล</option>
-                  <option value="สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล">สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล</option>
-                  <option value="สาขาวิชาเทคโนโลยีสารสนเทศ">สาขาวิชาเทคโนโลยีสารสนเทศ</option>
-                  <option value="สาขาวิชาการจัดการโลจิสติกส์และซัพพลายเชน">สาขาวิชาการจัดการโลจิสติกส์และซัพพลายเชน</option>
-                  <option value="สาขาวิชาธุรกิจการบิน">สาขาวิชาธุรกิจการบิน</option>
-                  <option value="สาขาวิชาดิจิทัลกราฟิก">สาขาวิชาดิจิทัลกราฟิก</option>
-                  <option value="สาขาวิชาเทคโนโลยีแฟชั่นและเครื่องแต่งกาย">สาขาวิชาเทคโนโลยีแฟชั่นและเครื่องแต่งกาย</option>
-                  <option value="สาขาวิชาอาหารและโภชนาการ">สาขาวิชาอาหารและโภชนาการ</option>
-                  <option value="สาขาวิชาการบริหารงานคหกรรมศาสตร์">สาขาวิชาการบริหารงานคหกรรมศาสตร์</option>
-                  <option value="สาขาวิชาการโรงแรม">สาขาวิชาการโรงแรม</option>
-                  <option value="สาขาวิชาการท่องเที่ยว">สาขาวิชาการท่องเที่ยว</option>
-              
-              </select>
+                onChange={(val) => setForm({ ...form, major: val })}
+                placeholder="-- ค้นหาและเลือกสาขาวิชา --"
+                searchPlaceholder="พิมพ์ค้นหาสาขาวิชา..."
+              />
             </div>
   
             {/* EMAIL */}
@@ -175,9 +182,10 @@ export default function Register() {
             {/* BUTTON */}
             <button
               type="submit"
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold shadow-lg hover:scale-[1.02] hover:shadow-xl transition duration-300 cursor-pointer"
+              className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-base shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-[1.01] active:scale-95 transition-all duration-300 cursor-pointer flex items-center justify-center gap-2"
             >
-              สมัครสมาชิก
+              <UserPlus className="w-5 h-5 text-white" />
+              <span>สมัครสมาชิก</span>
             </button>
           </form>
 
