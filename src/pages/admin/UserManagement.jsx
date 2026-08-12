@@ -38,12 +38,19 @@ export default function UserManagement() {
   const setRole = (id, role) => api.patch(`/api/admin/users/${id}/role`, { role }).then(load);
 
   const resetPassword = async () => {
-    if (!resetId || !newPassword) return;
+    if (!resetId || !newPassword) {
+      alert('กรุณากรอก User ID หรือรหัสนักศึกษา และรหัสผ่านใหม่');
+      return;
+    }
+    if (newPassword.length < 6) {
+      alert('รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร');
+      return;
+    }
     try {
-      await api.post(`/api/admin/users/${resetId}/reset-password`, { newPassword });
+      const res = await api.post(`/api/admin/users/${resetId}/reset-password`, { newPassword });
       setNewPassword('');
       setResetId('');
-      alert('รีเซ็ตรหัสผ่านสำเร็จ');
+      alert(res.data?.message || 'รีเซ็ตรหัสผ่านสำเร็จ');
     } catch (err) {
       alert(err.response?.data?.error || 'เกิดข้อผิดพลาดในการรีเซ็ตรหัสผ่าน');
     }
@@ -111,33 +118,33 @@ export default function UserManagement() {
             setAddError('');
             setShowAddModal(true);
           }}
-          className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-sm rounded-xl shadow-md shadow-blue-500/20 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition duration-200 cursor-pointer"
         >
           + เพิ่มผู้ใช้งานใหม่
         </button>
       </div>
 
       {/* Quick Password Reset Box */}
-      <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl space-y-2">
-        <h3 className="text-sm font-semibold text-gray-700">รีเซ็ตรหัสผ่านแบบด่วน</h3>
+      <div className="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+        <h3 className="text-sm font-bold text-slate-800">รีเซ็ตรหัสผ่านแบบด่วน</h3>
         <div className="flex flex-wrap gap-3 items-center">
           <input
-            placeholder="User ID (Mongo ID)"
+            placeholder="รหัสนักศึกษา หรือ MongoDB ID (24 hex)"
             value={resetId}
-            onChange={(e) => setResetId(e.target.value)}
-            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => setResetId(e.target.value.trim())}
+            className="px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-72 bg-white"
           />
           <input
             placeholder="รหัสผ่านใหม่ (อย่างน้อย 6 ตัว)"
             type="password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
           />
           <button
             type="button"
             onClick={resetPassword}
-            className="px-4 py-1.5 bg-gray-800 hover:bg-gray-900 text-white text-sm font-medium rounded-lg transition"
+            className="px-4 py-2 bg-slate-800 hover:bg-slate-900 active:bg-black text-white text-sm font-bold rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-700 transition cursor-pointer"
           >
             รีเซ็ตรหัสผ่าน
           </button>
@@ -147,15 +154,15 @@ export default function UserManagement() {
       {/* Users Table */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-base font-semibold text-gray-900">รายชื่อผู้ใช้งาน</h2>
-          <p className="text-sm text-gray-500">แสดง {filteredUsers.length} จาก {users.length} รายการ</p>
+          <h2 className="text-base font-bold text-slate-900">รายชื่อผู้ใช้งาน</h2>
+          <p className="text-sm text-slate-500">แสดง {filteredUsers.length} จาก {users.length} รายการ</p>
         </div>
-        <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+        <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
           กรองตาม Role
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border border-slate-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold"
           >
             <option value="all">ทุก Role</option>
             <option value="graduate">จบการศึกษา</option>
@@ -163,31 +170,31 @@ export default function UserManagement() {
           </select>
         </label>
       </div>
-      <div className="overflow-x-auto border border-gray-200 rounded-xl bg-white shadow-sm">
+      <div className="overflow-x-auto border border-slate-200 rounded-2xl bg-white shadow-sm">
         <table className="table w-full text-left">
-          <thead className="bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-600 uppercase">
+          <thead className="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase">
             <tr>
-              <th className="px-4 py-3">รหัส</th>
-              <th className="px-4 py-3">ชื่อ-นามสกุล</th>
-              <th className="px-4 py-3">อีเมล</th>
-              <th className="px-4 py-3">สาขาวิชา</th>
-              <th className="px-4 py-3">บทบาท</th>
-              <th className="px-4 py-3">สถานะ</th>
-              <th className="px-4 py-3 text-right">การจัดการ</th>
+              <th className="px-4 py-3.5">รหัส</th>
+              <th className="px-4 py-3.5">ชื่อ-นามสกุล</th>
+              <th className="px-4 py-3.5">อีเมล</th>
+              <th className="px-4 py-3.5">สาขาวิชา</th>
+              <th className="px-4 py-3.5">บทบาท</th>
+              <th className="px-4 py-3.5">สถานะ</th>
+              <th className="px-4 py-3.5 text-right">การจัดการ</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 text-sm">
+          <tbody className="divide-y divide-slate-100 text-sm">
             {filteredUsers.map((u) => (
-              <tr key={u._id} className="hover:bg-gray-50/50">
-                <td className="px-4 py-3 font-mono text-gray-700">{u.studentId || '-'}</td>
-                <td className="px-4 py-3 font-medium text-gray-900">{u.fullName}</td>
-                <td className="px-4 py-3 text-gray-600">{u.email}</td>
-                <td className="px-4 py-3 text-gray-600">{u.major || '-'}</td>
+              <tr key={u._id} className="hover:bg-slate-50/70">
+                <td className="px-4 py-3 font-mono font-medium text-slate-700">{u.studentId || '-'}</td>
+                <td className="px-4 py-3 font-bold text-slate-900">{u.fullName}</td>
+                <td className="px-4 py-3 text-slate-600">{u.email}</td>
+                <td className="px-4 py-3 text-slate-600">{u.major || '-'}</td>
                 <td className="px-4 py-3">
                   <select
                     value={u.role}
                     onChange={(e) => setRole(u._id, e.target.value)}
-                    className="px-2 py-1 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-blue-500"
+                    className="px-2.5 py-1 border border-slate-300 rounded-lg text-xs font-semibold focus:ring-2 focus:ring-blue-500 bg-white"
                   >
                     <option value="graduate">จบการศึกษา</option>
                     <option value="admin">ผู้ดูแลระบบ</option>
@@ -195,11 +202,11 @@ export default function UserManagement() {
                 </td>
                 <td className="px-4 py-3">
                   {u.isActive === false ? (
-                    <span className="inline-block px-2 py-0.5 text-xs font-semibold text-red-700 bg-red-100 rounded-full">
+                    <span className="inline-block px-2.5 py-0.5 text-xs font-bold text-red-800 bg-red-100 border border-red-200 rounded-full">
                       ระงับ
                     </span>
                   ) : (
-                    <span className="inline-block px-2 py-0.5 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
+                    <span className="inline-block px-2.5 py-0.5 text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 rounded-full">
                       ใช้งาน
                     </span>
                   )}
@@ -210,7 +217,7 @@ export default function UserManagement() {
                       <button
                         type="button"
                         onClick={() => activate(u._id)}
-                        className="px-2.5 py-1 text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 rounded transition"
+                        className="px-3 py-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-600 hover:text-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition cursor-pointer"
                       >
                         เปิดใช้
                       </button>
@@ -218,7 +225,7 @@ export default function UserManagement() {
                       <button
                         type="button"
                         onClick={() => suspend(u._id)}
-                        className="px-2.5 py-1 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded transition"
+                        className="px-3 py-1.5 text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-600 hover:text-white border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 transition cursor-pointer"
                       >
                         ระงับ
                       </button>
@@ -226,7 +233,7 @@ export default function UserManagement() {
                     <button
                       type="button"
                       onClick={() => deleteUser(u._id)}
-                      className="px-2.5 py-1 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded transition"
+                      className="px-3 py-1.5 text-xs font-bold text-red-800 bg-red-50 hover:bg-red-600 hover:text-white border border-red-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition cursor-pointer"
                     >
                       ลบ
                     </button>
@@ -254,7 +261,7 @@ export default function UserManagement() {
               <button
                 type="button"
                 onClick={() => setShowAddModal(false)}
-                className="text-gray-400 hover:text-gray-600 text-lg leading-none"
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 transition cursor-pointer font-bold text-base"
               >
                 ✕
               </button>
@@ -384,14 +391,14 @@ export default function UserManagement() {
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition"
+                  className="px-4 py-2.5 text-sm font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-400 transition cursor-pointer"
                 >
                   ยกเลิก
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg shadow-sm transition disabled:opacity-50"
+                  className="px-5 py-2.5 text-sm text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 font-bold rounded-xl shadow-md shadow-blue-500/20 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {isSubmitting ? 'กำลังบันทึก...' : 'เพิ่มผู้ใช้งาน'}
                 </button>

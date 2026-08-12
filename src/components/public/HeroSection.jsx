@@ -62,12 +62,12 @@ export default function HeroSection({ onScrollToSearch }) {
 
             <motion.button
               onClick={onScrollToSearch}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-700 font-bold text-lg rounded-2xl shadow-xl shadow-blue-900/30 hover:shadow-2xl hover:shadow-blue-900/40 transition-all duration-300 cursor-pointer"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              className="inline-flex items-center gap-3 px-8 py-4 bg-white hover:bg-slate-50 text-blue-800 font-extrabold text-lg rounded-2xl shadow-xl shadow-blue-900/30 hover:shadow-2xl hover:shadow-blue-900/40 focus:outline-none focus:ring-4 focus:ring-white/50 transition-all duration-300 cursor-pointer"
             >
-              <Search className="w-5 h-5" />
-              เริ่มค้นหา
+              <Search className="w-5 h-5 text-blue-800" />
+              <span>เริ่มค้นหา</span>
             </motion.button>
           </motion.div>
 

@@ -52,7 +52,7 @@ export default function ActivityHistory() {
         <div>
           <Link
             to="/graduate"
-            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition-colors font-medium mb-2"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white text-slate-700 hover:bg-slate-100 hover:text-blue-600 border border-slate-200/80 rounded-xl text-sm font-bold shadow-xs focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition mb-2"
           >
             <ArrowLeft className="w-4 h-4" /> กลับสู่แดชบอร์ด
           </Link>
@@ -152,7 +152,7 @@ export default function ActivityHistory() {
                   <button
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="flex items-center justify-center w-9 h-9 rounded-xl border border-[#E2E8F0] bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                    className="flex items-center justify-center w-9 h-9 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-slate-400 transition-all cursor-pointer"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
@@ -161,10 +161,10 @@ export default function ActivityHistory() {
                     <button
                       key={page}
                       onClick={() => setCurrentPage(page)}
-                      className={`flex items-center justify-center w-9 h-9 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+                      className={`flex items-center justify-center w-9 h-9 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-slate-500/40 transition-all cursor-pointer ${
                         currentPage === page
-                          ? 'bg-slate-700 text-white shadow-md shadow-slate-200'
-                          : 'border border-[#E2E8F0] bg-white text-gray-600 hover:bg-gray-50'
+                          ? 'bg-slate-800 text-white shadow-md shadow-slate-300'
+                          : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-100'
                       }`}
                     >
                       {page}
@@ -174,7 +174,7 @@ export default function ActivityHistory() {
                   <button
                     onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
-                    className="flex items-center justify-center w-9 h-9 rounded-xl border border-[#E2E8F0] bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                    className="flex items-center justify-center w-9 h-9 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-slate-400 transition-all cursor-pointer"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>

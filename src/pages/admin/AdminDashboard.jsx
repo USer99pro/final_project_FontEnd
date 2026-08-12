@@ -1,12 +1,35 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../api/client';
-import { Users, BookOpen, Activity, Download, Settings, FileText, Layers, ShieldCheck, GraduationCap } from 'lucide-react';
+import { Users, BookOpen, Activity, Download, Settings, FileText, Layers, ShieldCheck, GraduationCap, Loader2 } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [data, setData] = useState(null);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
+
+  const handleExportCsv = useCallback(async () => {
+    setExporting(true);
+    try {
+      const res = await api.get('/api/admin/reports/export.csv', {
+        responseType: 'blob',
+      });
+      const url = URL.createObjectURL(new Blob([res.data], { type: 'text/csv;charset=utf-8;' }));
+      const link = document.createElement('a');
+      link.href = url;
+      const date = new Date().toISOString().slice(0, 10);
+      link.download = `research-report-${date}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      alert(err.response?.data?.error || 'ไม่สามารถส่งออกข้อมูลได้ กรุณาลองใหม่อีกครั้ง');
+    } finally {
+      setExporting(false);
+    }
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -46,14 +69,19 @@ export default function AdminDashboard() {
             การบริหารจัดการระบบ รายงานสถิติ และการควบคุมสิทธิ์การใช้งาน
           </p>
         </div>
-        <a
-          href={`${import.meta.env.VITE_API_URL || ''}/api/admin/reports/export.csv`}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-2 px-5 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-sm rounded-2xl shadow-lg transition-all transform hover:-translate-y-0.5"
+        <button
+          type="button"
+          onClick={handleExportCsv}
+          disabled={exporting}
+          className="inline-flex items-center gap-2 px-5 py-3 bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 disabled:bg-emerald-400 text-white font-bold text-sm rounded-2xl shadow-lg focus:outline-none focus:ring-4 focus:ring-emerald-400/50 transition-all transform hover:-translate-y-0.5 disabled:cursor-not-allowed cursor-pointer"
         >
-          <Download className="w-4 h-4" /> ส่งออกรายงาน CSV
-        </a>
+          {exporting ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Download className="w-4 h-4" />
+          )}
+          <span>{exporting ? 'กำลังส่งออก...' : 'ส่งออกรายงาน CSV'}</span>
+        </button>
       </div>
 
       {/* STATS CARDS */}

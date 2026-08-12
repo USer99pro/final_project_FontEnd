@@ -115,8 +115,8 @@ export default function CategoryTagManagement() {
               </select>
             </label>
             <div className="flex gap-2">
-              <input value={newName} onChange={(event) => setNewName(event.target.value)} onKeyDown={(event) => event.key === "Enter" && addItem()} placeholder={`เพิ่ม${type.label}`} className="h-11 min-w-0 flex-1 rounded-lg border border-slate-200 px-3 text-lg outline-none focus:ring-2 focus:ring-indigo-200" />
-              <button onClick={addItem} className="h-11 rounded-lg bg-indigo-600 px-5 text-base font-bold text-white shadow-sm transition hover:bg-indigo-700">เพิ่ม</button>
+              <input value={newName} onChange={(event) => setNewName(event.target.value)} onKeyDown={(event) => event.key === "Enter" && addItem()} placeholder={`เพิ่ม${type.label}`} className="h-11 min-w-0 flex-1 rounded-xl border border-slate-300 px-4 text-base outline-none focus:ring-2 focus:ring-indigo-500 bg-white" />
+              <button onClick={addItem} className="h-11 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 px-6 text-sm font-bold text-white shadow-md shadow-indigo-500/20 focus:outline-none focus:ring-4 focus:ring-indigo-500/30 transition cursor-pointer">เพิ่ม</button>
             </div>
           </div>
         </div>
@@ -125,14 +125,14 @@ export default function CategoryTagManagement() {
           <div className="flex flex-col gap-3 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h1 className="text-xl font-bold text-slate-800">สรุป{type.label}</h1>
-              <p className="mt-0.5 text-base text-slate-400">จัดการข้อมูลทั้งหมด {filteredItems.length} รายการ</p>
+              <p className="mt-0.5 text-sm font-medium text-slate-500">จัดการข้อมูลทั้งหมด {filteredItems.length} รายการ</p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-base text-slate-500">แสดง</span>
-              <select value={pageSize} onChange={(event) => setPageSize(Number(event.target.value))} className="h-10 rounded-md border border-slate-200 bg-white px-2 text-base font-semibold text-slate-600">
+              <span className="text-sm font-semibold text-slate-600">แสดง</span>
+              <select value={pageSize} onChange={(event) => setPageSize(Number(event.target.value))} className="h-10 rounded-xl border border-slate-300 bg-white px-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500">
                 <option value={10}>10 รายการ</option><option value={25}>25 รายการ</option><option value={50}>50 รายการ</option>
               </select>
-              <button disabled={!selectedIds.length} onClick={() => deleteItems(selectedIds)} className="h-10 rounded-md bg-indigo-600 px-4 text-[15px] font-bold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-200">ลบที่เลือก ({selectedIds.length})</button>
+              <button disabled={!selectedIds.length} onClick={() => deleteItems(selectedIds)} className="h-10 rounded-xl bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-bold px-4 text-xs shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 transition disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 cursor-pointer">ลบที่เลือก ({selectedIds.length})</button>
             </div>
           </div>
 
@@ -151,10 +151,10 @@ export default function CategoryTagManagement() {
                 {pageItems.length ? pageItems.map((item, index) => (
                   <tr key={item._id} className="border-b border-slate-100 transition hover:bg-indigo-50/30">
                     <td className="px-5 py-3 text-center"><input type="checkbox" checked={selectedIds.includes(item._id)} onChange={() => toggleItem(item._id)} aria-label={`เลือก ${item.name}`} className="h-4 w-4 cursor-pointer accent-indigo-600" /></td>
-                    <td className="px-3 py-3 font-medium text-slate-500">{(currentPage - 1) * pageSize + index + 1}</td>
-                    <td className="px-3 py-3 font-semibold text-slate-700">{item.name}</td>
-                    <td className="px-3 py-3"><span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[14px] font-semibold text-emerald-600">ใช้งานอยู่</span></td>
-                    <td className="px-5 py-3"><div className="flex justify-center gap-2"><button onClick={() => editItem(item)} className="rounded-md border border-slate-200 px-3 py-1.5 text-[15px] font-semibold text-slate-600 hover:bg-slate-50">แก้ไข</button><button onClick={() => deleteItems([item._id])} className="rounded-md px-3 py-1.5 text-[15px] font-semibold text-rose-600 hover:bg-rose-50">ลบ</button></div></td>
+                    <td className="px-3 py-3 font-semibold text-slate-500">{(currentPage - 1) * pageSize + index + 1}</td>
+                    <td className="px-3 py-3 font-bold text-slate-800">{item.name}</td>
+                    <td className="px-3 py-3"><span className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-bold text-emerald-800">ใช้งานอยู่</span></td>
+                    <td className="px-5 py-3"><div className="flex justify-center gap-2"><button onClick={() => editItem(item)} className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-400 transition cursor-pointer">แก้ไข</button><button onClick={() => deleteItems([item._id])} className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 transition cursor-pointer">ลบ</button></div></td>
                   </tr>
                 )) : <tr><td colSpan={5} className="px-5 py-12 text-center text-lg text-slate-400">ไม่พบข้อมูล{type.label}</td></tr>}
               </tbody>
@@ -162,8 +162,8 @@ export default function CategoryTagManagement() {
           </div>
 
           <div className="flex flex-col gap-3 border-t border-slate-100 px-5 py-4 text-base sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-slate-400">แสดง {(currentPage - 1) * pageSize + (pageItems.length ? 1 : 0)}–{(currentPage - 1) * pageSize + pageItems.length} จาก {filteredItems.length} รายการ</span>
-            <div className="flex items-center gap-1.5"><button onClick={() => setPage(currentPage - 1)} disabled={currentPage === 1} className="rounded-md px-2 py-1 text-slate-500 hover:bg-slate-100 disabled:text-slate-300">‹</button>{Array.from({ length: totalPages }, (_, index) => index + 1).slice(Math.max(0, currentPage - 3), currentPage + 2).map((number) => <button key={number} onClick={() => setPage(number)} className={`h-7 min-w-7 rounded-md px-2 font-semibold ${number === currentPage ? "bg-indigo-600 text-white" : "text-slate-500 hover:bg-slate-100"}`}>{number}</button>)}<button onClick={() => setPage(currentPage + 1)} disabled={currentPage === totalPages} className="rounded-md px-2 py-1 text-slate-500 hover:bg-slate-100 disabled:text-slate-300">›</button></div>
+            <span className="text-sm font-medium text-slate-500">แสดง {(currentPage - 1) * pageSize + (pageItems.length ? 1 : 0)}–{(currentPage - 1) * pageSize + pageItems.length} จาก {filteredItems.length} รายการ</span>
+            <div className="flex items-center gap-1.5"><button onClick={() => setPage(currentPage - 1)} disabled={currentPage === 1} className="w-8 h-8 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition flex items-center justify-center font-bold">‹</button>{Array.from({ length: totalPages }, (_, index) => index + 1).slice(Math.max(0, currentPage - 3), currentPage + 2).map((number) => <button key={number} onClick={() => setPage(number)} className={`w-8 h-8 rounded-lg text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition cursor-pointer ${number === currentPage ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/25" : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"}`}>{number}</button>)}<button onClick={() => setPage(currentPage + 1)} disabled={currentPage === totalPages} className="w-8 h-8 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition flex items-center justify-center font-bold">›</button></div>
           </div>
         </section>
       </div>

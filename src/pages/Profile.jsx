@@ -172,9 +172,9 @@ export default function Profile() {
             <div className="pt-6">
               <button
                 type="submit"
-                className="px-8 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+                className="px-8 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-xl font-bold text-sm shadow-md shadow-blue-500/25 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-500/40 transition-all duration-200 cursor-pointer"
               >
-                Save
+                บันทึกข้อมูลโปรไฟล์
               </button>
             </div>
 

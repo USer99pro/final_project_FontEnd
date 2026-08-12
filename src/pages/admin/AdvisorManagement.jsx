@@ -147,7 +147,7 @@ export default function AdvisorManagement() {
         <button
           type="button"
           onClick={load}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm font-medium transition cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 active:bg-white/30 text-white rounded-xl text-sm font-bold border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition cursor-pointer"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           รีเฟรชข้อมูล
@@ -196,7 +196,7 @@ export default function AdvisorManagement() {
                 setEditingId(null);
                 setForm(emptyAdvisor);
               }}
-              className="text-xs text-gray-500 hover:text-gray-700 bg-gray-100 px-3 py-1.5 rounded-lg transition"
+              className="text-xs text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg border border-slate-300 font-bold transition cursor-pointer"
             >
               ยกเลิกการแก้ไข
             </button>
@@ -302,7 +302,7 @@ export default function AdvisorManagement() {
 
         {/* Active status & Actions */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2 border-t border-gray-100">
-          <label className="flex items-center gap-2.5 text-sm font-medium text-gray-700 cursor-pointer">
+          <label className="flex items-center gap-2.5 text-sm font-semibold text-slate-800 cursor-pointer">
             <input
               type="checkbox"
               checked={form.isActive}
@@ -320,7 +320,7 @@ export default function AdvisorManagement() {
                   setEditingId(null);
                   setForm(emptyAdvisor);
                 }}
-                className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50 transition"
+                className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 bg-slate-100 hover:bg-slate-200 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-slate-400 transition cursor-pointer"
               >
                 ยกเลิก
               </button>
@@ -328,7 +328,7 @@ export default function AdvisorManagement() {
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white font-bold text-sm shadow-md shadow-teal-500/20 hover:shadow-lg transition-all duration-200 disabled:opacity-50 flex items-center gap-2 cursor-pointer"
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white font-bold text-sm shadow-md shadow-teal-500/20 focus:outline-none focus:ring-4 focus:ring-teal-500/40 transition-all duration-200 disabled:opacity-50 flex items-center gap-2 cursor-pointer"
             >
               {saving ? (
                 <>
@@ -438,7 +438,7 @@ export default function AdvisorManagement() {
                           <button
                             type="button"
                             onClick={() => edit(advisor)}
-                            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white text-xs font-semibold transition"
+                            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white border border-blue-200/80 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs font-bold transition cursor-pointer"
                             title="แก้ไข"
                           >
                             <Edit className="w-3.5 h-3.5" />
@@ -447,7 +447,7 @@ export default function AdvisorManagement() {
                           <button
                             type="button"
                             onClick={() => remove(advisor)}
-                            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 text-red-700 hover:bg-red-600 hover:text-white text-xs font-semibold transition cursor-pointer"
+                            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 text-red-700 hover:bg-red-600 hover:text-white border border-red-200/80 focus:outline-none focus:ring-2 focus:ring-red-500 text-xs font-bold transition cursor-pointer"
                             title="ลบ"
                           >
                             <Trash2 className="w-3.5 h-3.5" />

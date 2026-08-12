@@ -94,16 +94,16 @@ export default function SearchableSelect({
         }`}
       >
         <div className="flex items-center gap-2.5 min-w-0 overflow-hidden">
-          {Icon && <Icon className="w-4 h-4 text-gray-500 shrink-0" />}
+          {Icon && <Icon className="w-4 h-4 text-slate-500 shrink-0" />}
           {selectedOption ? (
             <div className="truncate">
-              <span className="text-sm font-medium text-gray-900">{selectedOption.label}</span>
+              <span className="text-sm font-semibold text-slate-900">{selectedOption.label}</span>
               {selectedOption.sublabel && (
-                <span className="ml-2 text-xs text-gray-400">({selectedOption.sublabel})</span>
+                <span className="ml-2 text-xs text-slate-500">({selectedOption.sublabel})</span>
               )}
             </div>
           ) : (
-            <span className="text-sm text-gray-400 truncate">{placeholder}</span>
+            <span className="text-sm text-slate-400 truncate">{placeholder}</span>
           )}
         </div>
 
@@ -147,7 +147,7 @@ export default function SearchableSelect({
                 <button
                   type="button"
                   onClick={() => setSearch('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-0.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-md transition cursor-pointer"
                 >
                   ล้าง
                 </button>
@@ -171,14 +171,14 @@ export default function SearchableSelect({
                     onClick={() => handleSelect(opt.value, opt.original)}
                     className={`w-full flex items-center justify-between px-4 py-3 text-left text-sm transition-colors cursor-pointer ${
                       isSelected
-                        ? 'bg-blue-50/80 text-blue-700 font-semibold'
-                        : 'hover:bg-gray-50 text-gray-700'
+                        ? 'bg-blue-50 text-blue-800 font-bold'
+                        : 'hover:bg-slate-50 text-slate-800 hover:text-slate-900'
                     }`}
                   >
                     <div className="min-w-0 pr-2">
-                      <div className="truncate">{opt.label}</div>
+                      <div className="truncate font-medium">{opt.label}</div>
                       {opt.sublabel && (
-                        <div className="text-xs text-gray-400 truncate mt-0.5">
+                        <div className="text-xs text-slate-500 truncate mt-0.5">
                           {opt.sublabel}
                         </div>
                       )}

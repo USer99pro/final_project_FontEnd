@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
@@ -35,17 +35,37 @@ export default function WorkForm() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const fetchAdvisors = useCallback(async () => {
+    try {
+      const [publicRes, adminRes] = await Promise.allSettled([
+        api.get('/api/public/advisors', { params: { limit: 1000 } }),
+        api.get('/api/advisors', { params: { isActive: 'all', limit: 1000 } }),
+      ]);
+
+      const publicList = publicRes.status === 'fulfilled' ? (publicRes.value.data?.advisors || publicRes.value.data || []) : [];
+      const adminList = adminRes.status === 'fulfilled' ? (adminRes.value.data?.advisors || adminRes.value.data || []) : [];
+
+      const map = new Map();
+      [...publicList, ...adminList].forEach((adv) => {
+        if (adv && (adv._id || adv.id)) {
+          const key = String(adv._id || adv.id);
+          map.set(key, { ...map.get(key), ...adv });
+        }
+      });
+
+      setAvailableAdvisors(Array.from(map.values()));
+    } catch {
+      setAvailableAdvisors([]);
+    }
+  }, []);
+
   useEffect(() => {
     api
       .get('/api/public/categories')
       .then((res) => setCategories(res.data.categories || res.data || []))
       .catch(() => {});
 
-    if (user?.major) {
-      api.get('/api/public/advisors', { params: { department: user.major } })
-        .then((res) => setAvailableAdvisors(res.data.advisors || res.data || []))
-        .catch(() => setAvailableAdvisors([]));
-    }
+    fetchAdvisors();
     
     if (isEdit) {
       api.get(`/api/contents/${id}`).then((res) => {
@@ -72,7 +92,7 @@ export default function WorkForm() {
         setHasExistingPdf(Boolean(w.hasPdf || w.pdfFilename || w.pdfUrl));
       });
     }
-  }, [id, isEdit, user?.major]);
+  }, [id, isEdit, user?.major, fetchAdvisors]);
 
   const department = form.major || user?.major || '';
 
@@ -93,10 +113,8 @@ export default function WorkForm() {
       .then((res) => setAvailableUsers(res.data.users || res.data || []))
       .catch(() => setAvailableUsers([]));
 
-    api.get('/api/public/advisors', { params: { department } })
-      .then((res) => setAvailableAdvisors(res.data.advisors || res.data || []))
-      .catch(() => setAvailableAdvisors([]));
-  }, [department, user?.role]);
+    fetchAdvisors();
+  }, [department, user?.role, fetchAdvisors]);
 
   const set = (key) => (e) => {
     setForm({ ...form, [key]: e.target.value });
@@ -233,11 +251,11 @@ export default function WorkForm() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         
         {/* Top Navbar / Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50/50">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50/80">
           <button 
             type="button" 
             onClick={() => navigate(user?.role === 'admin' ? '/admin/works' : '/graduate/works')}
-            className="flex items-center gap-1.5 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition text-xs font-semibold"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-400 transition text-xs font-bold cursor-pointer"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -249,19 +267,19 @@ export default function WorkForm() {
               type="button"
               onClick={(e) => handleAction(e, 'draft')}
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-slate-800 bg-white border border-slate-300 hover:bg-slate-50 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-slate-400 transition cursor-pointer disabled:opacity-50"
             >
-              <Save className="w-4 h-4" />
-              บันทึกร่าง
+              <Save className="w-4 h-4 text-slate-600" />
+              <span>บันทึกร่าง</span>
             </button>
             <button
               type="button"
               onClick={(e) => handleAction(e, 'published')}
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-sm transition"
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl shadow-md shadow-blue-500/20 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition cursor-pointer disabled:opacity-50"
             >
-              <Check className="w-4 h-4" />
-              {isEdit ? 'บันทึกและเผยแพร่' : 'เผยแพร่ผลงาน'}
+              <Check className="w-4 h-4 text-white" />
+              <span>{isEdit ? 'บันทึกและเผยแพร่' : 'เผยแพร่ผลงาน'}</span>
             </button>
           </div>
         </div>
@@ -405,10 +423,10 @@ export default function WorkForm() {
                             <button
                               type="button"
                               onClick={() => removeParticipant(pId)}
-                              className="ml-1 text-gray-400 hover:text-red-600 rounded"
+                              className="ml-1 w-4 h-4 flex items-center justify-center rounded text-blue-400 hover:text-white hover:bg-red-500 transition cursor-pointer"
                               aria-label={`ลบ ${displayName}`}
                             >
-                              <X className="w-3.5 h-3.5" />
+                              <X className="w-3 h-3" />
                             </button>
                           </span>
                         );
@@ -420,28 +438,32 @@ export default function WorkForm() {
                 {/* Advisor Selection */}
                 <div className="p-4 bg-violet-50/50 border border-violet-100 rounded-xl space-y-3">
                   <label className="block text-sm font-semibold text-gray-900 flex items-center gap-2">
-                    <GraduationCap className="w-4 h-4 text-violet-600" /> ครูที่ปรึกษา <span className="text-xs text-violet-700 font-medium">(เลือกได้สูงสุด 3 ท่าน — เชื่อมต่อแบบ N to N)</span>
+                    <GraduationCap className="w-4 h-4 text-violet-600" /> ครูที่ปรึกษา <span className="text-xs text-violet-700 font-medium">(เลือกได้สูงสุด 3 ท่าน — สามารถเลือกครูที่ปรึกษานอกแผนกได้)</span>
                   </label>
-                  <p className="text-xs text-gray-500">พิมพ์ค้นหาชื่อ คำนำหน้า หรืออีเมลครูที่ปรึกษา</p>
+                  <p className="text-xs text-gray-500">พิมพ์ค้นหาชื่อ คำนำหน้า อีเมล หรือแผนกวิชาของครูที่ปรึกษา</p>
                   
                   <div className="flex gap-2">
                     <div className="flex-1">
                       <SearchableSelect
                         options={availableAdvisors
                           .filter((adv) => !form.advisors.includes(adv._id))
-                          .map((adv) => ({
-                            value: adv._id,
-                            label: `${adv.prefix || ''} ${adv.fullName}`,
-                            sublabel: adv.email || adv.departmentName || '',
-                          }))}
+                          .map((adv) => {
+                            const dept = adv.departmentName || adv.department?.name || (typeof adv.department === 'string' ? adv.department : '');
+                            const subParts = [dept, adv.email].filter(Boolean);
+                            return {
+                              value: adv._id,
+                              label: `${adv.prefix || ''} ${adv.fullName}`.trim(),
+                              sublabel: subParts.join(' • ') || 'ครูที่ปรึกษา',
+                            };
+                          })}
                         value={selectedAdvisorId}
                         onChange={(val) => {
                           setSelectedAdvisorId(val);
                           if (val) addAdvisor(val);
                         }}
                         disabled={form.advisors.length >= advisorLimit}
-                        placeholder="— ค้นหาและเลือกครูที่ปรึกษา —"
-                        searchPlaceholder="พิมพ์ค้นหาชื่อหรืออีเมลครูที่ปรึกษา..."
+                        placeholder="— ค้นหาและเลือกครูที่ปรึกษา (ข้ามแผนกได้) —"
+                        searchPlaceholder="พิมพ์ค้นหาชื่อ, อีเมล หรือแผนกวิชาครูที่ปรึกษา..."
                         icon={GraduationCap}
                       />
                     </div>
@@ -449,9 +471,11 @@ export default function WorkForm() {
                   {form.advisors.length > 0 && <div className="flex flex-wrap gap-2 pt-2">
                     {form.advisors.map((advisorId) => {
                       const advisor = availableAdvisors.find((item) => item._id === advisorId);
+                      const advisorDept = advisor?.departmentName || advisor?.department?.name || (typeof advisor?.department === 'string' ? advisor.department : '');
                       return <span key={advisorId} className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-violet-200 px-3 py-1.5 text-xs font-medium text-violet-900 shadow-sm">
-                        <GraduationCap className="w-3.5 h-3.5 text-violet-600" /> {advisor ? `${advisor.prefix || ''} ${advisor.fullName}` : advisorId}
-                        <button type="button" onClick={() => removeAdvisor(advisorId)} className="ml-1 text-gray-400 hover:text-red-600" aria-label="ลบครูที่ปรึกษา"><X className="w-3.5 h-3.5" /></button>
+                        <GraduationCap className="w-3.5 h-3.5 text-violet-600" />
+                        {advisor ? `${advisor.prefix || ''} ${advisor.fullName}${advisorDept ? ` (${advisorDept})` : ''}` : advisorId}
+                        <button type="button" onClick={() => removeAdvisor(advisorId)} className="ml-1 w-4 h-4 flex items-center justify-center rounded text-violet-400 hover:text-white hover:bg-red-500 transition cursor-pointer" aria-label="ลบครูที่ปรึกษา"><X className="w-3 h-3" /></button>
                       </span>;
                     })}
                   </div>}
@@ -497,18 +521,19 @@ export default function WorkForm() {
                     <button
                       type="button"
                       onClick={addKeyword}
-                      className="inline-flex items-center gap-1 px-4 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+                      className="inline-flex items-center gap-1.5 px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-sm shadow-xs focus:outline-none focus:ring-2 focus:ring-blue-500 transition cursor-pointer"
                     >
-                      <Plus className="w-4 h-4" /> เพิ่ม
+                      <Plus className="w-4 h-4 text-white" />
+                      <span>เพิ่ม</span>
                     </button>
                   </div>
                   {form.keywords.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-3">
                       {form.keywords.map((keyword) => (
-                        <span key={keyword} className="inline-flex items-center gap-1 rounded-full bg-blue-50 border border-blue-100 px-3 py-1 text-sm text-blue-700">
+                        <span key={keyword} className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 border border-blue-200 px-3 py-1 text-sm font-semibold text-blue-800">
                           {keyword}
-                          <button type="button" onClick={() => removeKeyword(keyword)} className="rounded-full hover:text-blue-950" aria-label={`ลบคำสำคัญ ${keyword}`}>
-                            <X className="w-3.5 h-3.5" />
+                          <button type="button" onClick={() => removeKeyword(keyword)} className="w-4 h-4 flex items-center justify-center rounded-full text-blue-400 hover:text-white hover:bg-red-500 transition cursor-pointer" aria-label={`ลบคำสำคัญ ${keyword}`}>
+                            <X className="w-3 h-3" />
                           </button>
                         </span>
                       ))}

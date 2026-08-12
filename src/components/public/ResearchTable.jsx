@@ -148,7 +148,7 @@ export default function ResearchTable({ projects = [], loading = false }) {
                         <td className="px-6 py-4 text-center">
                           <Link
                             to={`/projects/${project._id}`}
-                            className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-blue-50 text-[#2563EB] hover:bg-[#2563EB] hover:text-white transition-all duration-200"
+                            className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white border border-blue-200/60 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                             aria-label={`ดูรายละเอียด ${project.title}`}
                           >
                             <Eye className="w-4 h-4" />
@@ -168,12 +168,12 @@ export default function ResearchTable({ projects = [], loading = false }) {
                     {Math.min(currentPage * ITEMS_PER_PAGE, projects.length)} จาก {projects.length} รายการ
                   </p>
 
-                  <div className="flex items-center gap-1 mx-auto sm:mx-0">
+                  <div className="flex items-center gap-1.5 mx-auto sm:mx-0">
                     {/* Previous */}
                     <button
                       onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                       disabled={currentPage === 1}
-                      className="flex items-center justify-center w-9 h-9 rounded-xl text-gray-500 hover:bg-white hover:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
+                      className="flex items-center justify-center w-9 h-9 rounded-xl text-slate-700 bg-white border border-slate-200 hover:bg-slate-100 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/40 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                       aria-label="Previous page"
                     >
                       <ChevronLeft className="w-4 h-4" />
@@ -184,10 +184,10 @@ export default function ResearchTable({ projects = [], loading = false }) {
                       <button
                         key={page}
                         onClick={() => setCurrentPage(page)}
-                        className={`flex items-center justify-center w-9 h-9 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer ${
+                        className={`flex items-center justify-center w-9 h-9 rounded-xl text-sm font-bold transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/50 ${
                           currentPage === page
-                            ? 'bg-[#2563EB] text-white shadow-md shadow-blue-200'
-                            : 'text-gray-600 hover:bg-white hover:shadow-sm'
+                            ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25 border border-blue-600'
+                            : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 hover:text-slate-900'
                         }`}
                       >
                         {page}
@@ -198,7 +198,7 @@ export default function ResearchTable({ projects = [], loading = false }) {
                     <button
                       onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                       disabled={currentPage === totalPages}
-                      className="flex items-center justify-center w-9 h-9 rounded-xl text-gray-500 hover:bg-white hover:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
+                      className="flex items-center justify-center w-9 h-9 rounded-xl text-slate-700 bg-white border border-slate-200 hover:bg-slate-100 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/40 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                       aria-label="Next page"
                     >
                       <ChevronRight className="w-4 h-4" />

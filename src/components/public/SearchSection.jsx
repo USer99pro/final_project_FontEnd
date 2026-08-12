@@ -62,7 +62,7 @@ const SearchSection = forwardRef(function SearchSection({ filters, onChange, onS
               type="submit"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="bg-[#2563EB] hover:bg-blue-700 text-white px-6 md:px-10 py-4 md:py-5 font-semibold text-base md:text-lg transition-colors duration-200 cursor-pointer whitespace-nowrap"
+              className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-6 md:px-10 py-4 md:py-5 font-bold text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 transition-colors duration-200 cursor-pointer whitespace-nowrap"
             >
               ค้นหา
             </motion.button>

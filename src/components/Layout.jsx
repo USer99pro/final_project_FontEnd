@@ -42,12 +42,12 @@ export default function Layout({ children }) {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1.5">
             <Link
               to="/"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all duration-200"
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-all duration-200"
             >
-              <Search className="w-4 h-4" />
+              <Search className="w-4 h-4 text-slate-500" />
               ค้นหา
             </Link>
 
@@ -55,18 +55,15 @@ export default function Layout({ children }) {
               <>
                 <Link
                   to="/login"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 transition-all duration-200"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-400/40 transition-all duration-200"
                 >
-                  <LogIn className="w-4 h-4" />
+                  <LogIn className="w-4 h-4 text-slate-500 group-hover:text-slate-700" />
                   เข้าสู่ระบบ
                 </Link>
 
-                <Link
-                  to="/register"
-                  className="flex items-center gap-2 ml-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white text-sm font-semibold shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/35 hover:scale-[1.03] active:scale-95 transition-all duration-200"
-                >
-                  <UserPlus className="w-4 h-4 text-white shrink-0" />
-                  <span>สมัครสมาชิก</span>
+                <Link to="/register" className="group inline-flex items-center justify-center gap-3 w-auto h-12 px-7 rounded-2xl bg-gradient-to-b from-[#38BDF8] to-[#2563EB] text-white font-semibold cursor-pointer transition-all duration-[450ms] ease-in-out hover:-translate-y-0.5 hover:from-[#60A5FA] hover:to-[#1D4ED8] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.4),inset_0_-4px_0_rgba(0,0,0,0.2),0_0_0_4px_rgba(255,255,255,0.2),0_0_50px_0_rgba(14,165,233,0.6)] focus:outline-none">
+                  <UserPlus className="w-5 h-5 text-white transition-all duration-[800ms] ease group-hover:scale-125" />
+                  <span className="text-sm font-semibold text-white">สมัครสมาชิก</span>
                 </Link>
               </>
             )}
@@ -75,25 +72,25 @@ export default function Layout({ children }) {
               <>
                 <Link
                   to="/graduate"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all duration-200"
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-all duration-200"
                 >
-                  <LayoutDashboard className="w-4 h-4" />
+                  <LayoutDashboard className="w-4 h-4 text-slate-500" />
                   แดชบอร์ด
                 </Link>
 
                 <Link
                   to="/graduate/works"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all duration-200"
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-all duration-200"
                 >
-                  <FileText className="w-4 h-4" />
+                  <FileText className="w-4 h-4 text-slate-500" />
                   ผลงานของฉัน
                 </Link>
 
                 <Link
                   to="/graduate/profile"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all duration-200"
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-all duration-200"
                 >
-                  <User className="w-4 h-4" />
+                  <User className="w-4 h-4 text-slate-500" />
                   โปรไฟล์
                 </Link>
               </>
@@ -103,33 +100,33 @@ export default function Layout({ children }) {
               <>
                 <Link
                   to="/admin"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400/40 transition-all duration-200"
                 >
-                  <Shield className="w-4 h-4" />
+                  <Shield className="w-4 h-4 text-slate-500" />
                   ผู้ดูแล
                 </Link>
 
                 <Link
                   to="/admin/users"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400/40 transition-all duration-200"
                 >
-                  <Users className="w-4 h-4" />
+                  <Users className="w-4 h-4 text-slate-500" />
                   ผู้ใช้
                 </Link>
 
                 <Link
                   to="/admin/works"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400/40 transition-all duration-200"
                 >
-                  <FileText className="w-4 h-4" />
+                  <FileText className="w-4 h-4 text-slate-500" />
                   ผลงานทั้งหมด
                 </Link>
 
                 <Link
                   to="/admin/advisors"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400/40 transition-all duration-200"
                 >
-                  <GraduationCap className="w-4 h-4" />
+                  <GraduationCap className="w-4 h-4 text-slate-500" />
                   ครูที่ปรึกษา
                 </Link>
               </>
@@ -139,9 +136,9 @@ export default function Layout({ children }) {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="flex items-center gap-2 ml-2 px-4 py-2 rounded-xl text-sm font-medium bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-200 cursor-pointer"
+                className="flex items-center gap-2 ml-2 px-4 py-2 rounded-xl text-sm font-semibold bg-red-50 text-red-700 hover:bg-red-100 border border-red-200/60 focus:outline-none focus:ring-2 focus:ring-red-400/50 transition-all duration-200 cursor-pointer"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-4 h-4 text-red-600" />
                 ออกจากระบบ
               </button>
             )}
@@ -151,7 +148,7 @@ export default function Layout({ children }) {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-colors cursor-pointer"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -160,90 +157,86 @@ export default function Layout({ children }) {
 
         {/* ── Mobile Menu ─────────────────────────────────── */}
         {mobileMenuOpen && (
-                  <div className="lg:hidden border-t border-[#E2E8F0] bg-white/95">
-                    <nav className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1">
-                      <Link
-                        to="/"
-                        onClick={closeMobile}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all"
-                      >
-                        <Search className="w-4 h-4" />
-                        ค้นหา
-                      </Link>
+          <div className="lg:hidden border-t border-[#E2E8F0] bg-white/95">
+            <nav className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1">
+              <Link
+                to="/"
+                onClick={closeMobile}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-all"
+              >
+                <Search className="w-4 h-4" />
+                ค้นหา
+              </Link>
 
-                      {!user && (
-                        <>
-                          <Link
-                            to="/login"
-                            onClick={closeMobile}
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 transition-all"
-                          >
-                            <LogIn className="w-4 h-4" />
-                            เข้าสู่ระบบ
-                          </Link>
+              {!user && (
+                <>
+                  <Link
+                    to="/login"
+                    onClick={closeMobile}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-100 transition-all"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    เข้าสู่ระบบ
+                  </Link>
 
-                          <Link
-                            to="/register"
-                            onClick={closeMobile}
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md shadow-blue-500/20 hover:from-blue-700 hover:to-indigo-700 transition-all"
-                          >
-                            <UserPlus className="w-4 h-4 text-white shrink-0" />
-                            สมัครสมาชิก
-                          </Link>
-                        </>
-                      )}
+                  <Link to="/register" className="group inline-flex items-center justify-center gap-3 w-auto h-12 px-7 rounded-2xl bg-gradient-to-b from-[#38BDF8] to-[#2563EB] text-white font-semibold cursor-pointer transition-all duration-[450ms] ease-in-out hover:-translate-y-0.5 hover:from-[#60A5FA] hover:to-[#1D4ED8] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.4),inset_0_-4px_0_rgba(0,0,0,0.2),0_0_0_4px_rgba(255,255,255,0.2),0_0_50px_0_rgba(14,165,233,0.6)] focus:outline-none">
+                    <UserPlus className="w-5 h-5 text-white transition-all duration-[800ms] ease group-hover:scale-125" />
+                    <span className="text-sm font-semibold text-white">สมัครสมาชิก</span>
+                  </Link>
+                </>
+              )}
 
-                      {isGraduate && (
-                        <>
-                          <Link to="/graduate" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all">
-                            <LayoutDashboard className="w-4 h-4" />
-                            แดชบอร์ด
-                          </Link>
-                          <Link to="/graduate/works" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all">
-                            <FileText className="w-4 h-4" />
-                            ผลงานของฉัน
-                          </Link>
-                          <Link to="/graduate/profile" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-[#2563EB] transition-all">
-                            <User className="w-4 h-4" />
-                            โปรไฟล์
-                          </Link>
-                        </>
-                      )}
+              {isGraduate && (
+                <>
+                  <Link to="/graduate" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-all">
+                    <LayoutDashboard className="w-4 h-4" />
+                    แดชบอร์ด
+                  </Link>
+                  <Link to="/graduate/works" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-all">
+                    <FileText className="w-4 h-4" />
+                    ผลงานของฉัน
+                  </Link>
+                  <Link to="/graduate/profile" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-all">
+                    <User className="w-4 h-4" />
+                    โปรไฟล์
+                  </Link>
+                </>
+              )}
 
-                      {isAdmin && (
-                        <>
-                          <Link to="/admin" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all">
-                            <Shield className="w-4 h-4" />
-                            ผู้ดูแล
-                          </Link>
-                          <Link to="/admin/users" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all">
-                            <Users className="w-4 h-4" />
-                            ผู้ใช้
-                          </Link>
-                          <Link to="/admin/works" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all">
-                            <FileText className="w-4 h-4" />
-                            ผลงานทั้งหมด
-                          </Link>
-                          <Link to="/admin/advisors" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all">
-                            <GraduationCap className="w-4 h-4" />
-                            ครูที่ปรึกษา
-                          </Link>
-                        </>
-                      )}
+              {isAdmin && (
+                <>
+                  <Link to="/admin" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 transition-all">
+                    <Shield className="w-4 h-4" />
+                    ผู้ดูแล
+                  </Link>
+                  <Link to="/admin/users" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 transition-all">
+                    <Users className="w-4 h-4" />
+                    ผู้ใช้
+                  </Link>
+                  <Link to="/admin/works" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 transition-all">
+                    <FileText className="w-4 h-4" />
+                    ผลงานทั้งหมด
+                  </Link>
+                  <Link to="/admin/advisors" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 transition-all">
+                    <GraduationCap className="w-4 h-4" />
+                    ครูที่ปรึกษา
+                  </Link>
+                </>
+              )}
 
-                      {user && (
-                        <button
-                          type="button"
-                          onClick={handleLogout}
-                          className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 transition-all mt-1 cursor-pointer"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          ออกจากระบบ ({user.fullName})
-                        </button>
-                      )}
-                    </nav>
-                  </div>
-                )}
+              {user && (
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-red-700 bg-red-50 border border-red-200/60 hover:bg-red-100 transition-all mt-1 cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4 text-red-600" />
+                  ออกจากระบบ ({user.fullName})
+                </button>
+              )}
+            </nav>
+          </div>
+        )}
       </header>
 
       {/* ── MAIN CONTENT ───────────────────────────────────── */}
