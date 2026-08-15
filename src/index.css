@@ -17,6 +17,7 @@
 
 body {
   margin: 0;
+  background: #f1f5f9;
 }
 
 a {
@@ -171,7 +172,9 @@ h1 {
   margin-left: 0.5rem;
 }
 
-.grid {
+/* Legacy grid helper.  Keeping this off Tailwind's `.grid` utility prevents
+   it from overriding responsive `grid-cols-*` layouts across the app. */
+.legacy-grid {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));

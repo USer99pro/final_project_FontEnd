@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
 import { Search, LogIn, UserPlus, LayoutDashboard, FileText, User, Shield, Users, LogOut, Menu, X, GraduationCap } from 'lucide-react';
@@ -6,7 +6,9 @@ import { Search, LogIn, UserPlus, LayoutDashboard, FileText, User, Shield, Users
 export default function Layout({ children }) {
   const { user, logout, isAdmin, isGraduate } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isAdminArea = location.pathname.startsWith('/admin');
 
   const handleLogout = () => {
     logout();
@@ -241,7 +243,10 @@ export default function Layout({ children }) {
 
       {/* ── MAIN CONTENT ───────────────────────────────────── */}
       <main className="flex-1 w-full pt-16 md:pt-20">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
+        <div
+          className={`${isAdminArea ? 'max-w-none' : 'max-w-7xl mx-auto'} px-4 md:px-6 py-8`}
+          style={isAdminArea ? { width: '100%', maxWidth: 'none' } : undefined}
+        >
           {children}
         </div>
       </main>

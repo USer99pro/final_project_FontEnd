@@ -1,213 +1,80 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../../api/client';
-import { Users, BookOpen, Activity, Download, Settings, FileText, Layers, ShieldCheck, GraduationCap, Loader2 } from 'lucide-react';
+import { BarChart3, BookOpen, Building2, ChevronDown, Eye, Lightbulb, RefreshCw, Search, TrendingDown, TrendingUp, Users } from 'lucide-react';
+import { CartesianGrid, Legend, Line, LineChart as RechartsLineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { analyticsService } from '../../api/analyticsService';
 
-export default function AdminDashboard() {
-  const [data, setData] = useState(null);
-  const [summary, setSummary] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [exporting, setExporting] = useState(false);
+const asList = (value) => {
+  const data = value?.data || value?.items || value || [];
+  return Array.isArray(data) ? data : [];
+};
+const formatNumber = (value) => new Intl.NumberFormat('th-TH').format(Number(value || 0));
 
-  const handleExportCsv = useCallback(async () => {
-    setExporting(true);
-    try {
-      const res = await api.get('/api/admin/reports/export.csv', {
-        responseType: 'blob',
-      });
-      const url = URL.createObjectURL(new Blob([res.data], { type: 'text/csv;charset=utf-8;' }));
-      const link = document.createElement('a');
-      link.href = url;
-      const date = new Date().toISOString().slice(0, 10);
-      link.download = `research-report-${date}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      alert(err.response?.data?.error || 'ไม่สามารถส่งออกข้อมูลได้ กรุณาลองใหม่อีกครั้ง');
-    } finally {
-      setExporting(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    setLoading(true);
-    Promise.all([
-      api.get('/api/admin/dashboard').catch(() => ({ data: null })),
-      api.get('/api/admin/reports/summary').catch(() => ({ data: null })),
-    ])
-      .then(([dashRes, sumRes]) => {
-        setData(dashRes.data);
-        setSummary(sumRes.data);
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20 text-gray-500 font-medium">
-        กำลังโหลดข้อมูลผู้ดูแลระบบ...
-      </div>
-    );
-  }
-
-  const userStats = data?.users || summary?.users || { total: 0, active: 0, graduates: 0 };
-  const workStats = data?.works || summary?.works || { total: 0, published: 0, draft: 0 };
-  const logins7 = data?.loginsLast7Days ?? summary?.loginsLast7Days ?? 0;
-
-  return (
-    <div className="space-y-8 animate-fade-in pt-6">
-      {/* HEADER CARD */}
-      <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-3xl p-8 text-white shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-xs font-semibold text-blue-200 mb-3 border border-white/10">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" /> System Admin Panel
-          </div>
-          <h1 className="text-3xl font-bold">แดชบอร์ดผู้ดูแลระบบ</h1>
-          <p className="text-blue-200 text-sm mt-1">
-            การบริหารจัดการระบบ รายงานสถิติ และการควบคุมสิทธิ์การใช้งาน
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={handleExportCsv}
-          disabled={exporting}
-          className="inline-flex items-center gap-2 px-5 py-3 bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 disabled:bg-emerald-400 text-white font-bold text-sm rounded-2xl shadow-lg focus:outline-none focus:ring-4 focus:ring-emerald-400/50 transition-all transform hover:-translate-y-0.5 disabled:cursor-not-allowed cursor-pointer"
-        >
-          {exporting ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Download className="w-4 h-4" />
-          )}
-          <span>{exporting ? 'กำลังส่งออก...' : 'ส่งออกรายงาน CSV'}</span>
-        </button>
-      </div>
-
-      {/* STATS CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Users Stat */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-500">ผู้ใช้งานทั้งหมด</span>
-            <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-              <Users className="w-6 h-6" />
-            </div>
-          </div>
-          <p className="text-3xl font-bold text-gray-900 mt-4">{userStats.total || 0}</p>
-          <div className="flex items-center gap-2 text-xs text-gray-500 mt-2">
-            <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 font-medium rounded">
-              ใช้งาน {userStats.active || 0}
-            </span>
-            <span className="px-2 py-0.5 bg-blue-50 text-blue-700 font-medium rounded">
-              จบการศึกษา {userStats.graduates || 0}
-            </span>
-          </div>
-        </div>
-
-        {/* Works Stat */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-500">ผลงานวิจัยทั้งหมด</span>
-            <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-              <BookOpen className="w-6 h-6" />
-            </div>
-          </div>
-          <p className="text-3xl font-bold text-gray-900 mt-4">{workStats.total || 0}</p>
-          <div className="flex items-center gap-2 text-xs text-gray-500 mt-2">
-            <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 font-medium rounded">
-              เผยแพร่ {workStats.published || 0}
-            </span>
-            <span className="px-2 py-0.5 bg-amber-50 text-amber-700 font-medium rounded">
-              แบบร่าง {workStats.draft || 0}
-            </span>
-          </div>
-        </div>
-
-        {/* Logins 7 Days */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-500">การเข้าสู่ระบบ 7 วันล่าสุด</span>
-            <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-              <Activity className="w-6 h-6" />
-            </div>
-          </div>
-          <p className="text-3xl font-bold text-gray-900 mt-4">{logins7}</p>
-          <p className="text-xs text-gray-400 mt-2">สถิติการใช้งานจาก Login Logs</p>
-        </div>
-      </div>
-
-      {/* QUICK ACTIONS GRID */}
-      <div>
-        <h2 className="text-lg font-bold text-gray-900 mb-4">เมนูการจัดการระบบ (Admin Controls)</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-          <Link
-            to="/admin/users"
-            className="p-5 bg-white border border-gray-200 rounded-2xl hover:border-blue-500 hover:shadow-md transition flex items-center gap-4 group"
-          >
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition">
-              <Users className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition">จัดการผู้ใช้</h3>
-              <p className="text-xs text-gray-400">สิทธิ์ บทบาท การระงับผู้ใช้</p>
-            </div>
-          </Link>
-
-          <Link
-            to="/admin/works"
-            className="p-5 bg-white border border-gray-200 rounded-2xl hover:border-indigo-500 hover:shadow-md transition flex items-center gap-4 group"
-          >
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition">
-              <FileText className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition">จัดการผลงาน</h3>
-              <p className="text-xs text-gray-400">อนุมัติ ลบ และแก้ไขโครงการ</p>
-            </div>
-          </Link>
-
-          <Link
-            to="/admin/advisors"
-            className="p-5 bg-white border border-gray-200 rounded-2xl hover:border-teal-500 hover:shadow-md transition flex items-center gap-4 group"
-          >
-            <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center group-hover:bg-teal-600 group-hover:text-white transition">
-              <GraduationCap className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 group-hover:text-teal-600 transition">ครูที่ปรึกษา</h3>
-              <p className="text-xs text-gray-400">เพิ่ม แก้ไข ลบ รายชื่อครู</p>
-            </div>
-          </Link>
-
-          <Link
-            to="/admin/categories"
-            className="p-5 bg-white border border-gray-200 rounded-2xl hover:border-purple-500 hover:shadow-md transition flex items-center gap-4 group"
-          >
-            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition">
-              <Layers className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 group-hover:text-purple-600 transition">หมวดหมู่/แท็ก</h3>
-              <p className="text-xs text-gray-400">จัดการข้อมูลหลักในระบบ</p>
-            </div>
-          </Link>
-
-          <Link
-            to="/admin/audit"
-            className="p-5 bg-white border border-gray-200 rounded-2xl hover:border-slate-500 hover:shadow-md transition flex items-center gap-4 group"
-          >
-            <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center group-hover:bg-slate-800 group-hover:text-white transition">
-              <Settings className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 group-hover:text-slate-800 transition">ประวัติระบบ Logs</h3>
-              <p className="text-xs text-gray-400">Audit Logs & History</p>
-            </div>
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+function Panel({ title, subtitle, children, loading, error, onRetry, className = '' }) {
+  return <section className={`w-full min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm ${className}`}>
+    <div className="mb-5"><h2 className="text-[18px] font-bold leading-6 text-slate-950">{title}</h2>{subtitle && <p className="mt-1 text-xs leading-4 text-slate-500">{subtitle}</p>}</div>
+    {loading ? <div className="space-y-3 animate-pulse"><div className="h-5 w-1/3 rounded bg-slate-100" /><div className="h-40 rounded-xl bg-slate-100" /></div>
+      : error ? <div className="flex min-h-40 flex-col items-center justify-center gap-3 text-center text-sm text-slate-500"><span>ไม่สามารถโหลดข้อมูลได้</span><button onClick={onRetry} className="inline-flex items-center gap-1 rounded-lg border border-slate-300 px-3 py-1.5 font-semibold text-slate-700 hover:bg-slate-50"><RefreshCw className="h-3.5 w-3.5" />ลองอีกครั้ง</button></div>
+        : !children ? <div className="flex min-h-40 items-center justify-center text-center text-sm text-slate-400">ไม่พบข้อมูล<br />ลองเปลี่ยนตัวกรองหรือช่วงเวลาที่เลือก</div> : children}
+  </section>;
 }
 
+function LineChart({ data, lines }) {
+  if (!data?.length) return null;
+  const xKey = data[0]?.year !== undefined ? 'year' : data[0]?.date !== undefined ? 'date' : 'label';
+  return <div className="h-72 w-full" role="img" aria-label="กราฟแนวโน้มข้อมูล">
+    <ResponsiveContainer width="100%" height="100%">
+      <RechartsLineChart data={data} margin={{ top: 12, right: 20, bottom: 28, left: 4 }}>
+        <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" vertical={false} />
+        <XAxis dataKey={xKey} interval="preserveStartEnd" minTickGap={32} height={52} tick={{ fill: '#64748b', fontSize: 12 }} tickLine={false} axisLine={false} />
+        <YAxis allowDecimals={false} width={42} tick={{ fill: '#64748b', fontSize: 12 }} tickLine={false} axisLine={false} />
+        <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #e2e8f0', boxShadow: '0 8px 24px rgba(15,23,42,.10)' }} labelStyle={{ color: '#334155', fontWeight: 700 }} formatter={(value, name) => [formatNumber(value), name]} />
+        <Legend verticalAlign="top" height={28} iconType="circle" wrapperStyle={{ fontSize: 12 }} />
+        {lines.map((line) => <Line key={line.key} type="monotone" dataKey={line.key} name={line.label} stroke={line.color} strokeWidth={3} dot={{ r: 3, strokeWidth: 2, fill: '#fff' }} activeDot={{ r: 5 }} />)}
+      </RechartsLineChart>
+    </ResponsiveContainer>
+  </div>;
+}
+
+function BarList({ data, color = 'bg-blue-500' }) {
+  if (!data?.length) return null;
+  const max = Math.max(...data.map((item) => Number(item.count || 0)), 1);
+  return <div className="space-y-4">{data.slice(0, 8).map((item, index) => <div key={item._id || item.name || item.keyword || index}><div className="mb-1 flex justify-between gap-4 text-sm"><span className="truncate font-medium text-slate-700">{item.name || item.label || item.keyword}</span><span className="shrink-0 font-bold text-slate-900">{formatNumber(item.count)}</span></div><div className="h-2 rounded-full bg-slate-100"><div className={`h-2 rounded-full ${color}`} style={{ width: `${(Number(item.count || 0) / max) * 100}%` }} /></div></div>)}</div>;
+}
+
+function StatCard({ label, value, growth, Icon, tone }) {
+  const known = growth !== null && growth !== undefined && Number.isFinite(Number(growth)); const up = Number(growth) >= 0;
+  return <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-start justify-between gap-3"><span className="text-sm font-semibold text-slate-600">{label}</span><span className={`rounded-xl p-2.5 ${tone}`}><Icon className="h-5 w-5" /></span></div><p className="mt-4 text-3xl font-bold tracking-tight text-slate-900">{formatNumber(value)}</p>{known ? <p className={`mt-2 flex items-center gap-1 text-xs font-semibold ${up ? 'text-emerald-700' : 'text-rose-700'}`}>{up ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}{Math.abs(Number(growth)).toFixed(1)}% <span className="font-normal text-slate-500">จากช่วงก่อนหน้า</span></p> : <p className="mt-2 text-xs text-slate-400">ไม่มีข้อมูลเปรียบเทียบ</p>}</div>;
+}
+
+export default function AdminDashboard() {
+  const [filters, setFilters] = useState({ academicYear: '', department: '', category: '', type: '', period: '30d' });
+  const [state, setState] = useState({ loading: true, error: false, results: {} });
+  const [departments, setDepartments] = useState([]); const [categories, setCategories] = useState([]); const [keyword, setKeyword] = useState('');
+  const params = useMemo(() => ({ ...filters }), [filters]);
+  const load = useCallback(async () => {
+    setState((previous) => ({ ...previous, loading: true, error: false }));
+    const calls = { overview: analyticsService.getOverview(params), worksTrend: analyticsService.getWorksTrend(params), department: analyticsService.getWorksByDepartment(params), category: analyticsService.getWorksByCategory(params), type: analyticsService.getWorksByType(params), keywords: analyticsService.getPopularKeywords(params), searches: analyticsService.getPopularSearches(params), works: analyticsService.getPopularWorks(params), usage: analyticsService.getUsageTrend(params), insights: analyticsService.getInsights(params) };
+    const entries = Object.entries(calls); const settled = await Promise.allSettled(entries.map(([, request]) => request)); const results = {};
+    settled.forEach((item, index) => { results[entries[index][0]] = item.status === 'fulfilled' ? { data: item.value } : { error: true }; });
+    setState({ loading: false, error: settled.every((item) => item.status === 'rejected'), results });
+  }, [params]);
+  useEffect(() => { load(); }, [load]);
+  useEffect(() => { Promise.allSettled([analyticsService.getDepartments(), analyticsService.getCategories()]).then(([d, c]) => { if (d.status === 'fulfilled') setDepartments(asList(d.value)); if (c.status === 'fulfilled') setCategories(asList(c.value)); }); }, []);
+  const keywordData = asList(state.results.keywords?.data); const selectedKeyword = keyword || keywordData[0]?.keyword || '';
+  const [keywordTrend, setKeywordTrend] = useState({ loading: false, data: null, error: false });
+  useEffect(() => { if (!selectedKeyword) return; setKeywordTrend({ loading: true, data: null, error: false }); analyticsService.getKeywordTrend({ ...params, keyword: selectedKeyword }).then((data) => setKeywordTrend({ loading: false, data, error: false })).catch(() => setKeywordTrend({ loading: false, data: null, error: true })); }, [selectedKeyword, params]);
+  const overview = state.results.overview?.data || {}; const r = state.results;
+  const trend = asList(r.worksTrend?.data), usage = asList(r.usage?.data), popularWorks = asList(r.works?.data), insights = asList(r.insights?.data);
+  const selectItems = [['academicYear', 'ปีการศึกษา', []], ['department', 'สาขาวิชา', departments], ['category', 'หมวดหมู่', categories]];
+  return <div className="w-full max-w-none space-y-6 pb-8 text-slate-950">
+    <header className="rounded-3xl border border-white/15 bg-gradient-to-br from-slate-950 via-[#0b2460] to-indigo-950 p-6 text-white shadow-[0_12px_30px_rgba(15,23,42,.18)] md:p-8"><div className="max-w-3xl"><div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold tracking-[.05em] text-blue-100"><BarChart3 className="h-3.5 w-3.5" />ADMIN ANALYTICS</div><h1 className="text-3xl font-bold tracking-[-.02em]">Research Analytics</h1><p className="mt-2 text-sm leading-5 text-blue-100">ภาพรวมและการวิเคราะห์ผลงานวิจัย แนวโน้ม และพฤติกรรมการใช้งานระบบ</p></div></header>
+    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="mb-4 flex items-center gap-2 text-sm font-bold text-slate-900"><span className="rounded-lg bg-blue-50 p-1.5 text-blue-700"><Search className="h-4 w-4" /></span>ตัวกรองข้อมูล</div><div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">{selectItems.map(([key, label, items]) => <label key={key} className="relative"><span className="sr-only">{label}</span><select value={filters[key]} onChange={(e) => setFilters((old) => ({ ...old, [key]: e.target.value }))} className="w-full appearance-none rounded-xl border border-slate-300 bg-white px-3 py-2.5 pr-9 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"><option value="">ทุก{label}</option>{items.map((item) => <option key={item._id || item.name} value={item.name || item}>{item.name || item}</option>)}</select><ChevronDown className="pointer-events-none absolute right-3 top-3 h-4 w-4 text-slate-400" /></label>)}<input value={filters.type} onChange={(e) => setFilters((old) => ({ ...old, type: e.target.value }))} placeholder="ประเภทผลงาน" aria-label="ประเภทผลงาน" className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100" /><label className="relative"><select value={filters.period} onChange={(e) => setFilters((old) => ({ ...old, period: e.target.value }))} aria-label="ช่วงการใช้งาน" className="w-full appearance-none rounded-xl border border-slate-300 bg-white px-3 py-2.5 pr-9 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"><option value="7d">7 วันล่าสุด</option><option value="30d">30 วันล่าสุด</option><option value="3m">3 เดือน</option><option value="6m">6 เดือน</option><option value="1y">1 ปี</option></select><ChevronDown className="pointer-events-none absolute right-3 top-3 h-4 w-4 text-slate-400" /></label></div></section>
+    {state.error ? <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6 text-center text-rose-800"><p className="font-bold">ไม่สามารถโหลดข้อมูล Analytics ได้</p><button onClick={load} className="mt-3 inline-flex items-center gap-2 rounded-xl bg-rose-700 px-4 py-2 text-sm font-bold text-white hover:bg-rose-800"><RefreshCw className="h-4 w-4" />ลองอีกครั้ง</button></div> : <><div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5"><StatCard label="ผลงานทั้งหมด" value={overview.totalWorks} growth={overview.growth?.works} Icon={BookOpen} tone="bg-blue-50 text-blue-600" /><StatCard label="นักศึกษาทั้งหมด" value={overview.totalStudents} Icon={Users} tone="bg-violet-50 text-violet-600" /><StatCard label="สาขาวิชา" value={overview.totalDepartments} Icon={Building2} tone="bg-cyan-50 text-cyan-600" /><StatCard label="การเข้าชม" value={overview.totalViews} growth={overview.growth?.views} Icon={Eye} tone="bg-amber-50 text-amber-600" /><StatCard label="การค้นหา" value={overview.totalSearches} growth={overview.growth?.searches} Icon={Search} tone="bg-emerald-50 text-emerald-600" /></div>
+    <Panel title="แนวโน้มผลงานวิจัย" subtitle="จำนวนผลงานตามปีการศึกษา" loading={state.loading} error={r.worksTrend?.error} onRetry={load}><LineChart data={trend} lines={[{ key: 'count', label: 'ผลงานวิจัย', color: '#2563eb' }]} /></Panel>
+    <div className="grid min-w-0 gap-6 lg:grid-cols-2"><Panel title="ผลงานตามสาขาวิชา" subtitle="เรียงจากจำนวนผลงานมากไปน้อย" loading={state.loading} error={r.department?.error} onRetry={load}><BarList data={asList(r.department?.data)} /></Panel><Panel title="หมวดหมู่และประเภทผลงาน" loading={state.loading} error={r.category?.error || r.type?.error} onRetry={load}>{(asList(r.category?.data).length || asList(r.type?.data).length) ? <div className="grid min-w-0 gap-7 md:grid-cols-2"><div className="min-w-0"><p className="mb-3 text-xs font-bold uppercase tracking-wide text-slate-500">หมวดหมู่</p><BarList data={asList(r.category?.data)} color="bg-violet-500" /></div><div className="min-w-0"><p className="mb-3 text-xs font-bold uppercase tracking-wide text-slate-500">ประเภท</p><BarList data={asList(r.type?.data)} color="bg-cyan-500" /></div></div> : null}</Panel></div>
+    <div className="grid gap-6 lg:grid-cols-2"><Panel title="Keyword ยอดนิยม" subtitle="Top 10 จากข้อมูลผลงานและการค้นหา" loading={state.loading} error={r.keywords?.error} onRetry={load}><BarList data={keywordData} color="bg-fuchsia-500" /></Panel><Panel title="แนวโน้ม Keyword" subtitle="เลือกคำสำคัญเพื่อดูการเปลี่ยนแปลง" loading={keywordTrend.loading} error={keywordTrend.error} onRetry={() => setKeyword(selectedKeyword)}>{keywordData.length ? <><select aria-label="เลือก Keyword" value={selectedKeyword} onChange={(e) => setKeyword(e.target.value)} className="mb-4 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500">{keywordData.map((item) => <option key={item.keyword} value={item.keyword}>{item.keyword}</option>)}</select><LineChart data={asList(keywordTrend.data)} lines={[{ key: 'count', label: selectedKeyword, color: '#d946ef' }]} /></> : null}</Panel></div>
+    <div className="grid gap-6 lg:grid-cols-2"><Panel title="การใช้งานระบบ" subtitle="ค้นหา การเข้าชม และดาวน์โหลดตามช่วงเวลา" loading={state.loading} error={r.usage?.error} onRetry={load}><LineChart data={usage} lines={[{ key: 'searches', label: 'การค้นหา', color: '#2563eb' }, { key: 'views', label: 'การเข้าชม', color: '#f59e0b' }, { key: 'downloads', label: 'ดาวน์โหลด', color: '#10b981' }]} /></Panel><Panel title="คำค้นหายอดนิยม" loading={state.loading} error={r.searches?.error} onRetry={load}>{asList(r.searches?.data).length ? <div className="overflow-x-auto"><table className="w-full min-w-[360px] text-left text-sm"><thead className="border-b text-xs text-slate-500"><tr><th className="pb-3">อันดับ</th><th className="pb-3">Keyword</th><th className="pb-3 text-right">จำนวนครั้ง</th></tr></thead><tbody>{asList(r.searches?.data).slice(0, 10).map((item, index) => <tr key={item.keyword || index} className="border-b border-slate-100 last:border-0"><td className="py-3 font-bold text-slate-400">{index + 1}</td><td className="py-3 font-semibold text-slate-800">{item.keyword}</td><td className="py-3 text-right font-bold text-slate-900">{formatNumber(item.count)}</td></tr>)}</tbody></table></div> : null}</Panel></div>
+    <Panel title="ผลงานที่ได้รับความสนใจสูงสุด" subtitle="จัดเรียงตามการเข้าชม การดาวน์โหลด หรือกิจกรรมล่าสุด" loading={state.loading} error={r.works?.error} onRetry={load}>{popularWorks.length ? <div className="overflow-x-auto"><table className="w-full min-w-[700px] text-left text-sm"><thead className="border-b bg-slate-50 text-xs text-slate-500"><tr><th className="p-3">ผลงาน</th><th className="p-3">ผู้จัดทำ / สาขา</th><th className="p-3">ปี</th><th className="p-3 text-right">Views</th><th className="p-3 text-right">Downloads</th></tr></thead><tbody>{popularWorks.map((work) => <tr key={work._id} className="border-b border-slate-100 last:border-0"><td className="p-3 font-bold text-blue-700"><Link to={`/projects/${work._id}`} className="hover:underline">{work.title || 'ไม่ระบุชื่อผลงาน'}</Link></td><td className="p-3 text-slate-600">{work.studentName || work.author?.fullName || '-'}<span className="block text-xs text-slate-400">{work.department || work.major || '-'}</span></td><td className="p-3 text-slate-600">{work.academicYear || '-'}</td><td className="p-3 text-right font-semibold">{formatNumber(work.views)}</td><td className="p-3 text-right font-semibold">{formatNumber(work.downloads)}</td></tr>)}</tbody></table></div> : null}</Panel>
+    <Panel title="Research Insights" subtitle="ข้อสรุปที่คำนวณจากข้อมูลจริง" loading={state.loading} error={r.insights?.error} onRetry={load}>{insights.length ? <div className="grid gap-4 md:grid-cols-3">{insights.map((insight, index) => <article key={insight.id || index} className="rounded-xl border border-blue-100 bg-blue-50/50 p-4"><Lightbulb className="h-5 w-5 text-blue-600" /><h3 className="mt-3 font-bold text-slate-900">{insight.title}</h3><p className="mt-1 text-sm leading-6 text-slate-600">{insight.description || insight.message}</p></article>)}</div> : null}</Panel></>}</div>;
+}
