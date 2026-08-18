@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
-import { Search, LogIn, UserPlus, LayoutDashboard, FileText, User, Shield, Users, LogOut, Menu, X, GraduationCap } from 'lucide-react';
+import { Search, LogIn, UserPlus, LayoutDashboard, FileText, User, Shield, Users, LogOut, Menu, X, GraduationCap, Activity, Tag } from 'lucide-react';
 
 export default function Layout({ children }) {
   const { user, logout, isAdmin, isGraduate } = useAuth();
@@ -131,6 +131,22 @@ export default function Layout({ children }) {
                   <GraduationCap className="w-4 h-4 text-slate-500" />
                   ครูที่ปรึกษา
                 </Link>
+
+                <Link
+                  to="/admin/categories"
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400/40 transition-all duration-200"
+                >
+                  <Tag className="w-4 h-4 text-slate-500" />
+                  หมวดหมู่/แท็ก
+                </Link>
+
+                <Link
+                  to="/admin/audit"
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400/40 transition-all duration-200"
+                >
+                  <Activity className="w-4 h-4 text-slate-500" />
+                  Audit Logs
+                </Link>
               </>
             )}
 
@@ -222,6 +238,14 @@ export default function Layout({ children }) {
                   <Link to="/admin/advisors" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 transition-all">
                     <GraduationCap className="w-4 h-4" />
                     ครูที่ปรึกษา
+                  </Link>
+                  <Link to="/admin/categories" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 transition-all">
+                    <Tag className="w-4 h-4" />
+                    หมวดหมู่/แท็ก
+                  </Link>
+                  <Link to="/admin/audit" onClick={closeMobile} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 transition-all">
+                    <Activity className="w-4 h-4" />
+                    Audit Logs
                   </Link>
                 </>
               )}

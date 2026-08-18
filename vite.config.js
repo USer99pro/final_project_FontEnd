@@ -9,7 +9,8 @@ export default defineConfig({
   ],
 
   // ถ้าเว็บอยู่ที่ http://domain.com/
-  base: '/',
+base: '/udvc-research/',
+
 
   build: {
     outDir: 'dist',
