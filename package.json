@@ -4,11 +4,6 @@
   "version": "1.0.0",
   "type": "module",
 
-  "homepage": "http://localhost/udvc-research/",
-  
-    
-   
-
   "scripts": {
     "dev": "vite",
     "build": "vite build",

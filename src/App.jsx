@@ -29,7 +29,6 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-      {/* <BrowserRouter basename="/udvc-research/"> */}
         <Layout>
           <Routes>
             {/* HOME */}
@@ -41,7 +40,10 @@ export default function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/oauth/callback" element={<OAuthCallback />} />
             <Route path="/auth/callback" element={<OAuthCallback />} />
-            <Route path="/api/auth/google/callback" element={<OAuthCallback />} />
+            <Route
+              path="/api/auth/google/callback"
+              element={<OAuthCallback />}
+            />
 
             {/* GRADUATE */}
             <Route
@@ -145,7 +147,11 @@ export default function App() {
             />
             <Route
               path="/admin/advisors"
-              element={<ProtectedRoute role="admin"><AdvisorManagement /></ProtectedRoute>}
+              element={
+                <ProtectedRoute role="admin">
+                  <AdvisorManagement />
+                </ProtectedRoute>
+              }
             />
           </Routes>
         </Layout>
