@@ -30,11 +30,15 @@ export default function AdvisorManagement() {
     setLoading(true);
     try {
       const [advisorRes, departmentRes] = await Promise.all([
-        api.get('/api/advisors', { params: { isActive: 'all', limit: 200 } }),
-        api.get('/api/departments'),
+        api.get('/api/advisors', { params: { isActive: 'all', limit: 200 } }).catch(() =>
+          api.get('/api/public/advisors', { params: { limit: 200 } })
+        ),
+        api.get('/api/departments').catch(() =>
+          api.get('/api/public/departments').catch(() => ({ data: [] }))
+        ),
       ]);
-      setAdvisors(advisorRes.data.advisors || []);
-      setDepartments(departmentRes.data.departments || departmentRes.data || []);
+      setAdvisors(advisorRes.data?.advisors || advisorRes.data || []);
+      setDepartments(departmentRes.data?.departments || departmentRes.data || []);
     } catch (err) {
       setError(err.response?.data?.error || 'ไม่สามารถโหลดรายชื่อครูที่ปรึกษาได้');
     } finally {
@@ -60,6 +64,37 @@ export default function AdvisorManagement() {
     if (!form.fullName.trim() || !form.department) {
       setError('กรุณาระบุชื่อ-นามสกุล และเลือกแผนกของครูที่ปรึกษา');
       return;
+    }
+
+    // Duplicate check for new advisor
+    if (!editingId) {
+      const normalize = (str) => (str || '').replace(/\s+/g, ' ').trim().toLowerCase();
+      const inputName = normalize(form.fullName);
+      const inputCombined = normalize(`${form.prefix || ''} ${form.fullName || ''}`);
+      const inputPos = normalize(form.academicPosition);
+
+      const duplicate = advisors.find((adv) => {
+        const advName = normalize(adv.fullName);
+        const advCombined = normalize(`${adv.prefix || ''} ${adv.fullName || ''}`);
+        const advPos = normalize(adv.academicPosition);
+
+        const nameMatches =
+          advName === inputName ||
+          advCombined === inputCombined ||
+          (advName && inputCombined.includes(advName)) ||
+          (inputName && advCombined.includes(inputName));
+
+        const posMatches = advPos === inputPos;
+        return nameMatches && posMatches;
+      });
+
+      if (duplicate) {
+        const dupName = `${duplicate.prefix || ''} ${duplicate.fullName}`.trim();
+        setError(
+          `มีข้อมูลครูที่ปรึกษาชื่อ "${dupName}" ในตำแหน่ง "${duplicate.academicPosition || '-'}" อยู่ในระบบแล้ว`
+        );
+        return;
+      }
     }
 
     setSaving(true);
@@ -272,7 +307,7 @@ export default function AdvisorManagement() {
             <input
               value={form.academicPosition}
               onChange={set('academicPosition')}
-              placeholder="เช่น อาจารย์ประจำ, หัวหน้าแผนก"
+              placeholder="เช่น อาจารย์, หัวหน้าแผนก"
               className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm outline-none transition"
             />
           </div>

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import SearchableSelect from '../components/SearchableSelect';
+import AddAdvisorModal from '../components/AddAdvisorModal';
 import { X, Save, FileText, Check, AlertCircle, Plus, Users, GraduationCap } from 'lucide-react';
 
 export default function WorkForm() {
@@ -16,6 +17,7 @@ export default function WorkForm() {
   const [availableAdvisors, setAvailableAdvisors] = useState([]);
   const [selectedParticipantId, setSelectedParticipantId] = useState('');
   const [selectedAdvisorId, setSelectedAdvisorId] = useState('');
+  const [isAddAdvisorModalOpen, setIsAddAdvisorModalOpen] = useState(false);
   const [keywordInput, setKeywordInput] = useState('');
   const [form, setForm] = useState({
     title: '',
@@ -177,6 +179,33 @@ export default function WorkForm() {
 
   const removeAdvisor = (advisorId) => {
     setForm((current) => ({ ...current, advisors: current.advisors.filter((id) => id !== advisorId) }));
+  };
+
+  const handleAdvisorAdded = async (newAdvisor) => {
+    await fetchAdvisors();
+    const newId = newAdvisor?._id || newAdvisor?.id;
+    if (newId && !form.advisors.includes(newId)) {
+      if (form.advisors.length < advisorLimit) {
+        setForm((current) => ({
+          ...current,
+          advisors: [...current.advisors, newId],
+        }));
+      }
+    }
+  };
+
+  const handleSelectExistingAdvisor = (advisor) => {
+    const targetId = advisor?._id || advisor?.id;
+    if (targetId && !form.advisors.includes(targetId)) {
+      if (form.advisors.length < advisorLimit) {
+        setForm((current) => ({
+          ...current,
+          advisors: [...current.advisors, targetId],
+        }));
+      } else {
+        alert(`เพิ่มครูที่ปรึกษาได้สูงสุด ${advisorLimit} รายชื่อ`);
+      }
+    }
   };
 
   const handlePdfChange = (e) => {
@@ -437,10 +466,21 @@ export default function WorkForm() {
 
                 {/* Advisor Selection */}
                 <div className="p-4 bg-violet-50/50 border border-violet-100 rounded-xl space-y-3">
-                  <label className="block text-sm font-semibold text-gray-900 flex items-center gap-2">
-                    <GraduationCap className="w-4 h-4 text-violet-600" /> ครูที่ปรึกษา <span className="text-xs text-violet-700 font-medium">(เลือกได้สูงสุด 3 ท่าน — สามารถเลือกครูที่ปรึกษานอกแผนกได้)</span>
-                  </label>
-                  <p className="text-xs text-gray-500">พิมพ์ค้นหาชื่อ คำนำหน้า อีเมล หรือแผนกวิชาของครูที่ปรึกษา</p>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <label className="block text-sm font-semibold text-gray-900 flex items-center gap-2">
+                      <GraduationCap className="w-4 h-4 text-violet-600" /> ครูที่ปรึกษา <span className="text-xs text-violet-700 font-medium">(เลือกได้สูงสุด 3 ท่าน — สามารถเลือกครูที่ปรึกษานอกแผนกได้)</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setIsAddAdvisorModalOpen(true)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-700 active:bg-violet-800 text-white font-bold text-xs shadow-xs transition cursor-pointer self-start sm:self-auto"
+                      title="เพิ่มข้อมูลครูที่ปรึกษาท่านใหม่เข้าระบบ"
+                    >
+                      <Plus className="w-3.5 h-3.5 text-white" />
+                      <span> เพิ่มครูที่ปรึกษาท่านใหม่</span>
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500">พิมพ์ค้นหาชื่อ คำนำหน้า อีเมล หรือแผนกวิชาของครูที่ปรึกษา หากไม่มีในระบบสามารถกดปุ่มเพิ่มครูที่ปรึกษาใหม่ได้</p>
                   
                   <div className="flex gap-2">
                     <div className="flex-1">
@@ -449,10 +489,11 @@ export default function WorkForm() {
                           .filter((adv) => !form.advisors.includes(adv._id))
                           .map((adv) => {
                             const dept = adv.departmentName || adv.department?.name || (typeof adv.department === 'string' ? adv.department : '');
+                            const position = adv.academicPosition ? ` (${adv.academicPosition})` : '';
                             const subParts = [dept, adv.email].filter(Boolean);
                             return {
                               value: adv._id,
-                              label: `${adv.prefix || ''} ${adv.fullName}`.trim(),
+                              label: `${adv.prefix || ''} ${adv.fullName}${position}`.trim(),
                               sublabel: subParts.join(' • ') || 'ครูที่ปรึกษา',
                             };
                           })}
@@ -462,7 +503,7 @@ export default function WorkForm() {
                           if (val) addAdvisor(val);
                         }}
                         disabled={form.advisors.length >= advisorLimit}
-                        placeholder="— ค้นหาและเลือกครูที่ปรึกษา (ข้ามแผนกได้) —"
+                        placeholder="— ค้นหาและเลือกครูที่ปรึกษา"
                         searchPlaceholder="พิมพ์ค้นหาชื่อ, อีเมล หรือแผนกวิชาครูที่ปรึกษา..."
                         icon={GraduationCap}
                       />
@@ -472,9 +513,10 @@ export default function WorkForm() {
                     {form.advisors.map((advisorId) => {
                       const advisor = availableAdvisors.find((item) => item._id === advisorId);
                       const advisorDept = advisor?.departmentName || advisor?.department?.name || (typeof advisor?.department === 'string' ? advisor.department : '');
+                      const position = advisor?.academicPosition ? ` • ${advisor.academicPosition}` : '';
                       return <span key={advisorId} className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-violet-200 px-3 py-1.5 text-xs font-medium text-violet-900 shadow-sm">
                         <GraduationCap className="w-3.5 h-3.5 text-violet-600" />
-                        {advisor ? `${advisor.prefix || ''} ${advisor.fullName}${advisorDept ? ` (${advisorDept})` : ''}` : advisorId}
+                        {advisor ? `${advisor.prefix || ''} ${advisor.fullName}${position}${advisorDept ? ` (${advisorDept})` : ''}` : advisorId}
                         <button type="button" onClick={() => removeAdvisor(advisorId)} className="ml-1 w-4 h-4 flex items-center justify-center rounded text-violet-400 hover:text-white hover:bg-red-500 transition cursor-pointer" aria-label="ลบครูที่ปรึกษา"><X className="w-3 h-3" /></button>
                       </span>;
                     })}
@@ -601,6 +643,16 @@ export default function WorkForm() {
           </form>
         </div>
       </div>
+
+      {/* Add Advisor Modal */}
+      <AddAdvisorModal
+        isOpen={isAddAdvisorModalOpen}
+        onClose={() => setIsAddAdvisorModalOpen(false)}
+        onSuccess={handleAdvisorAdded}
+        onSelectExisting={handleSelectExistingAdvisor}
+        existingAdvisors={availableAdvisors}
+        defaultDepartment={form.major || user?.major || ''}
+      />
     </div>
   );
 }

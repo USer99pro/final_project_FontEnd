@@ -8,8 +8,7 @@ export default defineConfig({
     tailwindcss()
   ],
 
-  // ถ้าเว็บอยู่ที่ http://domain.com/
-base: '/udvc-research/',
+  base: '/',
 
 
   build: {

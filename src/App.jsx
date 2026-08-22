@@ -28,7 +28,7 @@ import "./index.css";
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter basename="/udvc-research/">
+      <BrowserRouter>
         <Layout>
           <Routes>
             {/* HOME */}
@@ -96,6 +96,15 @@ export default function App() {
               element={
                 <ProtectedRoute role="graduate">
                   <ActivityHistory />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/graduate/advisors"
+              element={
+                <ProtectedRoute role="graduate">
+                  <AdvisorManagement />
                 </ProtectedRoute>
               }
             />
