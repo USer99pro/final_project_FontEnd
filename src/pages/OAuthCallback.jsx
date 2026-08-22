@@ -40,28 +40,28 @@ export default function OAuthCallback() {
   }, [searchParams, loginWithToken, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-center">
+    <div className="min-h-screen flex items-center justify-center bg-surface-muted px-4">
+      <div className="max-w-md w-full bg-surface-main rounded-2xl shadow-lg border border-border-subtle p-8 text-center">
         {error ? (
           <div className="space-y-4">
-            <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+            <div className="w-16 h-16 bg-error-container text-error rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
               ✕
             </div>
-            <h2 className="text-xl font-bold text-gray-900">เกิดข้อผิดพลาดในการเข้าสู่ระบบ</h2>
-            <p className="text-sm text-red-600 bg-red-50 p-3 rounded-lg border border-red-100">{error}</p>
+            <h2 className="text-xl font-bold text-on-background">เกิดข้อผิดพลาดในการเข้าสู่ระบบ</h2>
+            <p className="text-sm text-error bg-error-container p-3 rounded-lg border border-error/30">{error}</p>
             <button
               type="button"
               onClick={() => navigate('/login')}
-              className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition"
+              className="w-full py-2.5 bg-primary-container hover:bg-primary text-white font-medium rounded-xl transition"
             >
               กลับไปหน้าเข้าสู่ระบบ
             </button>
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <h2 className="text-xl font-bold text-gray-900">กำลังยืนยันตัวตนด้วย Google OAuth...</h2>
-            <p className="text-sm text-gray-500">กรุณารอสักครู่ ระบบกำลังนำคุณเข้าสู่ระบบ</p>
+            <div className="w-16 h-16 border-4 border-primary-container border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <h2 className="text-xl font-bold text-on-background">กำลังยืนยันตัวตนด้วย Google OAuth...</h2>
+            <p className="text-sm text-text-secondary">กรุณารอสักครู่ ระบบกำลังนำคุณเข้าสู่ระบบ</p>
           </div>
         )}
       </div>

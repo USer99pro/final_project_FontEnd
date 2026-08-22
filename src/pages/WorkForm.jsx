@@ -277,14 +277,14 @@ export default function WorkForm() {
     <div className="max-w-5xl mx-auto py-6 md:py-10">
       
       {/* Main Card */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-surface-main rounded-xl shadow-sm border border-border-subtle overflow-hidden">
         
         {/* Top Navbar / Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50/80">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle bg-surface-muted/80">
           <button 
             type="button" 
             onClick={() => navigate(user?.role === 'admin' ? '/admin/works' : '/graduate/works')}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-400 transition text-xs font-bold cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-on-surface-variant hover:text-on-background bg-surface-accent hover:bg-surface-container-low border border-border-strong rounded-xl focus:outline-none focus:ring-2 focus:ring-outline transition text-xs font-bold cursor-pointer"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -296,16 +296,16 @@ export default function WorkForm() {
               type="button"
               onClick={(e) => handleAction(e, 'draft')}
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-slate-800 bg-white border border-slate-300 hover:bg-slate-50 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-slate-400 transition cursor-pointer disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-on-background bg-surface-main border border-border-strong hover:bg-surface-muted rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-outline transition cursor-pointer disabled:opacity-50"
             >
-              <Save className="w-4 h-4 text-slate-600" />
+              <Save className="w-4 h-4 text-text-secondary" />
               <span>บันทึกร่าง</span>
             </button>
             <button
               type="button"
               onClick={(e) => handleAction(e, 'published')}
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl shadow-md shadow-blue-500/20 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition cursor-pointer disabled:opacity-50"
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-primary-container hover:bg-primary active:opacity-80 rounded-xl shadow-md shadow-primary-container/20 focus:outline-none focus:ring-4 focus:ring-primary-fixed/30 transition cursor-pointer disabled:opacity-50"
             >
               <Check className="w-4 h-4 text-white" />
               <span>{isEdit ? 'บันทึกและเผยแพร่' : 'เผยแพร่ผลงาน'}</span>
@@ -317,16 +317,16 @@ export default function WorkForm() {
         <div className="p-8 md:p-12">
           
           <div className="mb-10">
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-on-background">
               {isEdit ? 'แก้ไขผลงาน' : 'เพิ่มผลงานวิจัย'}
             </h1>
-            <p className="text-gray-500 mt-2 text-sm">
+            <p className="text-text-secondary mt-2 text-sm">
               กรอกข้อมูลรายละเอียดของผลงานวิจัย เพิ่มผู้ร่วมจัดทำ และอัปโหลดไฟล์เอกสาร
             </p>
           </div>
 
           {error && (
-            <div className="mb-8 p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3 text-red-600 text-sm">
+            <div className="mb-8 p-4 bg-error-container border border-error/30 rounded-xl flex items-start gap-3 text-error text-sm">
               <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
               <p>{error}</p>
             </div>
@@ -335,55 +335,55 @@ export default function WorkForm() {
           <form className="space-y-12">
             
             {/* Section 1: Work Details */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-12 border-b border-gray-100">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-12 border-b border-border-subtle">
               <div className="md:col-span-4">
-                <h2 className="text-lg font-semibold text-gray-900">1. ข้อมูลผลงานวิจัย</h2>
-                <p className="text-sm text-gray-500 mt-1">
+                <h2 className="text-lg font-semibold text-on-background">1. ข้อมูลผลงานวิจัย</h2>
+                <p className="text-sm text-text-secondary mt-1">
                   ชื่อผลงาน บทคัดย่อ และรายละเอียดที่สำคัญของงานวิจัย
                 </p>
               </div>
               
               <div className="md:col-span-8 space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">ชื่อผลงาน <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium text-on-surface-variant mb-2">ชื่อผลงาน <span className="text-error">*</span></label>
                   <input 
                     value={form.title} 
                     onChange={set('title')} 
                     required 
                     placeholder="ระบุชื่องานวิจัย"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                    className="w-full px-4 py-3 rounded-lg border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">บทคัดย่อ</label>
+                  <label className="block text-sm font-medium text-on-surface-variant mb-2">บทคัดย่อ</label>
                   <textarea 
                     value={form.abstract} 
                     onChange={set('abstract')} 
                     rows={4} 
                     placeholder="สรุปย่อของงานวิจัย..."
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-none"
+                    className="w-full px-4 py-3 rounded-lg border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">รายละเอียดเพิ่มเติม</label>
+                  <label className="block text-sm font-medium text-on-surface-variant mb-2">รายละเอียดเพิ่มเติม</label>
                   <textarea 
                     value={form.description} 
                     onChange={set('description')} 
                     rows={3} 
                     placeholder="ข้อมูลเพิ่มเติมที่ต้องการระบุ..."
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-none"
+                    className="w-full px-4 py-3 rounded-lg border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition resize-none"
                   />
                 </div>
               </div>
             </div>
 
             {/* Section 2: Student, Participants & Academic Info */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-12 border-b border-gray-100">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-12 border-b border-border-subtle">
               <div className="md:col-span-4">
-                <h2 className="text-lg font-semibold text-gray-900">2. ผู้จัดทำและหมวดหมู่</h2>
-                <p className="text-sm text-gray-500 mt-1">
+                <h2 className="text-lg font-semibold text-on-background">2. ผู้จัดทำและหมวดหมู่</h2>
+                <p className="text-sm text-text-secondary mt-1">
                   ข้อมูลผู้จัดทำหลัก ผู้ร่วมจัดทำ หมวดหมู่ และแท็ก
                 </p>
               </div>
@@ -391,30 +391,30 @@ export default function WorkForm() {
               <div className="md:col-span-8 space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">ชื่อผู้จัดทำหลัก</label>
+                    <label className="block text-sm font-medium text-on-surface-variant mb-2">ชื่อผู้จัดทำหลัก</label>
                     <input 
                       value={form.studentName} 
                       onChange={set('studentName')} 
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                      className="w-full px-4 py-3 rounded-lg border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">สาขาวิชา</label>
+                    <label className="block text-sm font-medium text-on-surface-variant mb-2">สาขาวิชา</label>
                     <input 
                       value={form.major} 
                       readOnly
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-gray-50 text-gray-700"
+                      className="w-full px-4 py-3 rounded-lg border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition bg-surface-muted text-on-surface-variant"
                     />
                   </div>
                 </div>
 
                 {/* Project Participants (ผู้ร่วมจัดทำโครงการ) */}
-                <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-xl space-y-3">
-                  <label className="block text-sm font-semibold text-gray-900 flex items-center gap-2">
-                    <Users className="w-4 h-4 text-blue-600" />
+                <div className="p-4 bg-insight-tint/50 border border-primary-fixed rounded-xl space-y-3">
+                  <label className="block text-sm font-semibold text-on-background flex items-center gap-2">
+                    <Users className="w-4 h-4 text-primary-container" />
                     เพิ่มผู้ร่วมจัดทำโครงการ (Project Participants)
                   </label>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-text-secondary">
                     แสดงเฉพาะผู้ใช้ในแผนก {department} เพื่อเพิ่มเป็นผู้ร่วมจัดทำผลงานวิจัยนี้
                   </p>
                   
@@ -445,14 +445,14 @@ export default function WorkForm() {
                         return (
                           <span
                             key={pId}
-                            className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-blue-200 px-3 py-1.5 text-xs font-medium text-blue-900 shadow-sm"
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-surface-main border border-primary-fixed px-3 py-1.5 text-xs font-medium text-primary shadow-sm"
                           >
-                            <Users className="w-3.5 h-3.5 text-blue-500" />
+                            <Users className="w-3.5 h-3.5 text-primary-container" />
                             {displayName}
                             <button
                               type="button"
                               onClick={() => removeParticipant(pId)}
-                              className="ml-1 w-4 h-4 flex items-center justify-center rounded text-blue-400 hover:text-white hover:bg-red-500 transition cursor-pointer"
+                              className="ml-1 w-4 h-4 flex items-center justify-center rounded text-primary-fixed-dim hover:text-white hover:bg-error transition cursor-pointer"
                               aria-label={`ลบ ${displayName}`}
                             >
                               <X className="w-3 h-3" />
@@ -465,22 +465,22 @@ export default function WorkForm() {
                 </div>
 
                 {/* Advisor Selection */}
-                <div className="p-4 bg-violet-50/50 border border-violet-100 rounded-xl space-y-3">
+                <div className="p-4 bg-insight-tint/50 border border-primary-fixed rounded-xl space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <label className="block text-sm font-semibold text-gray-900 flex items-center gap-2">
-                      <GraduationCap className="w-4 h-4 text-violet-600" /> ครูที่ปรึกษา <span className="text-xs text-violet-700 font-medium">(เลือกได้สูงสุด 3 ท่าน — สามารถเลือกครูที่ปรึกษานอกแผนกได้)</span>
+                    <label className="block text-sm font-semibold text-on-background flex items-center gap-2">
+                      <GraduationCap className="w-4 h-4 text-primary-container" /> ครูที่ปรึกษา <span className="text-xs text-primary font-medium">(เลือกได้สูงสุด 3 ท่าน — สามารถเลือกครูที่ปรึกษานอกแผนกได้)</span>
                     </label>
                     <button
                       type="button"
                       onClick={() => setIsAddAdvisorModalOpen(true)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-700 active:bg-violet-800 text-white font-bold text-xs shadow-xs transition cursor-pointer self-start sm:self-auto"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary-container hover:bg-primary text-white font-bold text-xs shadow-xs transition cursor-pointer self-start sm:self-auto"
                       title="เพิ่มข้อมูลครูที่ปรึกษาท่านใหม่เข้าระบบ"
                     >
                       <Plus className="w-3.5 h-3.5 text-white" />
                       <span> เพิ่มครูที่ปรึกษาท่านใหม่</span>
                     </button>
                   </div>
-                  <p className="text-xs text-gray-500">พิมพ์ค้นหาชื่อ คำนำหน้า อีเมล หรือแผนกวิชาของครูที่ปรึกษา หากไม่มีในระบบสามารถกดปุ่มเพิ่มครูที่ปรึกษาใหม่ได้</p>
+                  <p className="text-xs text-text-secondary">พิมพ์ค้นหาชื่อ คำนำหน้า อีเมล หรือแผนกวิชาของครูที่ปรึกษา หากไม่มีในระบบสามารถกดปุ่มเพิ่มครูที่ปรึกษาใหม่ได้</p>
                   
                   <div className="flex gap-2">
                     <div className="flex-1">
@@ -514,10 +514,10 @@ export default function WorkForm() {
                       const advisor = availableAdvisors.find((item) => item._id === advisorId);
                       const advisorDept = advisor?.departmentName || advisor?.department?.name || (typeof advisor?.department === 'string' ? advisor.department : '');
                       const position = advisor?.academicPosition ? ` • ${advisor.academicPosition}` : '';
-                      return <span key={advisorId} className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-violet-200 px-3 py-1.5 text-xs font-medium text-violet-900 shadow-sm">
-                        <GraduationCap className="w-3.5 h-3.5 text-violet-600" />
+                      return <span key={advisorId} className="inline-flex items-center gap-1.5 rounded-lg bg-surface-main border border-primary-fixed px-3 py-1.5 text-xs font-medium text-primary shadow-sm">
+                        <GraduationCap className="w-3.5 h-3.5 text-primary-container" />
                         {advisor ? `${advisor.prefix || ''} ${advisor.fullName}${position}${advisorDept ? ` (${advisorDept})` : ''}` : advisorId}
-                        <button type="button" onClick={() => removeAdvisor(advisorId)} className="ml-1 w-4 h-4 flex items-center justify-center rounded text-violet-400 hover:text-white hover:bg-red-500 transition cursor-pointer" aria-label="ลบครูที่ปรึกษา"><X className="w-3 h-3" /></button>
+                        <button type="button" onClick={() => removeAdvisor(advisorId)} className="ml-1 w-4 h-4 flex items-center justify-center rounded text-primary-fixed-dim hover:text-white hover:bg-error transition cursor-pointer" aria-label="ลบครูที่ปรึกษา"><X className="w-3 h-3" /></button>
                       </span>;
                     })}
                   </div>}
@@ -525,7 +525,7 @@ export default function WorkForm() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">หมวดหมู่</label>
+                    <label className="block text-sm font-medium text-on-surface-variant mb-2">หมวดหมู่</label>
                     <SearchableSelect
                       options={categories.map((c) => ({ value: c._id, label: c.name }))}
                       value={form.category}
@@ -535,18 +535,18 @@ export default function WorkForm() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">ปีการศึกษา</label>
+                    <label className="block text-sm font-medium text-on-surface-variant mb-2">ปีการศึกษา</label>
                     <input 
                       value={form.academicYear} 
                       onChange={set('academicYear')} 
                       placeholder="เช่น 2567"
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                      className="w-full px-4 py-3 rounded-lg border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition"
                     />
                   </div>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">คำสำคัญ (Keyword)</label>
+                  <label className="block text-sm font-medium text-on-surface-variant mb-2">คำสำคัญ (Keyword)</label>
                   <div className="flex gap-2">
                     <input
                       value={keywordInput}
@@ -558,12 +558,12 @@ export default function WorkForm() {
                         }
                       }}
                       placeholder="เช่น AI, ระบบแนะนำ, การศึกษา"
-                      className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                      className="flex-1 px-4 py-3 rounded-lg border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition"
                     />
                     <button
                       type="button"
                       onClick={addKeyword}
-                      className="inline-flex items-center gap-1.5 px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-sm shadow-xs focus:outline-none focus:ring-2 focus:ring-blue-500 transition cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-4 py-3 rounded-xl bg-primary-container hover:bg-primary active:opacity-80 text-white font-bold text-sm shadow-xs focus:outline-none focus:ring-2 focus:ring-primary-fixed transition cursor-pointer"
                     >
                       <Plus className="w-4 h-4 text-white" />
                       <span>เพิ่ม</span>
@@ -572,16 +572,16 @@ export default function WorkForm() {
                   {form.keywords.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-3">
                       {form.keywords.map((keyword) => (
-                        <span key={keyword} className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 border border-blue-200 px-3 py-1 text-sm font-semibold text-blue-800">
+                        <span key={keyword} className="inline-flex items-center gap-1.5 rounded-full bg-insight-tint border border-primary-fixed px-3 py-1 text-sm font-semibold text-primary">
                           {keyword}
-                          <button type="button" onClick={() => removeKeyword(keyword)} className="w-4 h-4 flex items-center justify-center rounded-full text-blue-400 hover:text-white hover:bg-red-500 transition cursor-pointer" aria-label={`ลบคำสำคัญ ${keyword}`}>
+                          <button type="button" onClick={() => removeKeyword(keyword)} className="w-4 h-4 flex items-center justify-center rounded-full text-primary-fixed-dim hover:text-white hover:bg-error transition cursor-pointer" aria-label={`ลบคำสำคัญ ${keyword}`}>
                             <X className="w-3 h-3" />
                           </button>
                         </span>
                       ))}
                     </div>
                   )}
-                  <p className="text-xs text-gray-400 mt-2">พิมพ์คำสำคัญแล้วกด Enter หรือปุ่มเพิ่ม สามารถใส่หลายคำโดยคั่นด้วยลูกน้ำ</p>
+                  <p className="text-xs text-outline mt-2">พิมพ์คำสำคัญแล้วกด Enter หรือปุ่มเพิ่ม สามารถใส่หลายคำโดยคั่นด้วยลูกน้ำ</p>
                 </div>
               </div>
             </div>
@@ -589,20 +589,20 @@ export default function WorkForm() {
             {/* Section 3: File Upload */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
               <div className="md:col-span-4">
-                <h2 className="text-lg font-semibold text-gray-900">3. เอกสารและสถานะ</h2>
-                <p className="text-sm text-gray-500 mt-1">
+                <h2 className="text-lg font-semibold text-on-background">3. เอกสารและสถานะ</h2>
+                <p className="text-sm text-text-secondary mt-1">
                   อัปโหลดไฟล์ PDF ของงานวิจัยเพื่อเผยแพร่
                 </p>
               </div>
               
               <div className="md:col-span-8 space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">อัปโหลดไฟล์ (PDF)</label>
-                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:bg-gray-50 transition cursor-pointer relative">
+                  <label className="block text-sm font-medium text-on-surface-variant mb-2">อัปโหลดไฟล์ (PDF)</label>
+                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-border-strong border-dashed rounded-xl hover:bg-surface-muted transition cursor-pointer relative">
                     <div className="space-y-2 text-center">
-                      <FileText className="mx-auto h-12 w-12 text-gray-400" />
-                      <div className="flex text-sm text-gray-600 justify-center">
-                        <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                      <FileText className="mx-auto h-12 w-12 text-outline" />
+                      <div className="flex text-sm text-text-secondary justify-center">
+                        <label htmlFor="file-upload" className="relative cursor-pointer bg-surface-main rounded-md font-medium text-primary-container hover:text-primary-container focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-fixed">
                           <span>เลือกไฟล์ PDF</span>
                           <input 
                             id="file-upload" 
@@ -614,24 +614,24 @@ export default function WorkForm() {
                           />
                         </label>
                       </div>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-text-secondary">
                         {pdf
                           ? `เลือกไฟล์แล้ว: ${pdf.name}`
                           : hasExistingPdf
                             ? 'มีไฟล์ PDF อยู่แล้ว — เลือกไฟล์ใหม่เพื่อแทนที่'
                             : 'หรือลากไฟล์มาวางที่นี่'}
                       </p>
-                      <p className="text-xs text-gray-400">รองรับเฉพาะไฟล์ PDF สูงสุด 15MB</p>
+                      <p className="text-xs text-outline">รองรับเฉพาะไฟล์ PDF สูงสุด 15MB</p>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">สถานะการแสดงผล</label>
+                  <label className="block text-sm font-medium text-on-surface-variant mb-2">สถานะการแสดงผล</label>
                   <select 
                     value={form.status} 
                     onChange={set('status')}
-                    className="w-full md:w-1/2 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white"
+                    className="w-full md:w-1/2 px-4 py-3 rounded-lg border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition bg-surface-main"
                   >
                     <option value="draft">บันทึกเป็นแบบร่าง (Draft)</option>
                     <option value="published">เผยแพร่สาธารณะ (Published)</option>

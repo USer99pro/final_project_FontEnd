@@ -1,9 +1,6 @@
 /**
- * CategoryGrid Component
- * - Grid layout: 6 cols desktop, 3 cols tablet, 2 cols mobile
- * - Each card has: icon, category name, project count
- * - Hover scale + shadow animation
- * - Uses Lucide React Icons
+ * CategoryGrid — Academic Horizon design
+ * Category cards with secondary-fixed icons on surface-container-low
  */
 import { motion } from 'framer-motion';
 import {
@@ -21,7 +18,6 @@ import {
   BookOpen,
 } from 'lucide-react';
 
-// Icon map for categories - fallback to BookOpen
 const ICON_MAP = {
   'เทคโนโลยีสารสนเทศ': Monitor,
   'คอมพิวเตอร์ธุรกิจ': Briefcase,
@@ -34,7 +30,10 @@ const ICON_MAP = {
   'ความปลอดภัย': ShieldCheck,
   'ซ่อมบำรุง': Wrench,
   'วิเคราะห์ข้อมูล': BarChart3,
-  'default': BookOpen,
+  'วิทยาการคอมพิวเตอร์': Monitor,
+  'วิศวกรรมศาสตร์': Wrench,
+  'บริหารธุรกิจ': Briefcase,
+  default: BookOpen,
 };
 
 const containerVariants = {
@@ -46,81 +45,54 @@ const containerVariants = {
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.95 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: 'easeOut' } },
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
 };
 
-// Color palette for category cards
-const CARD_COLORS = [
-  { bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-100' },
-  { bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-100' },
-  { bg: 'bg-violet-50', text: 'text-violet-600', border: 'border-violet-100' },
-  { bg: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-100' },
-  { bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-rose-100' },
-  { bg: 'bg-cyan-50', text: 'text-cyan-600', border: 'border-cyan-100' },
-  { bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-indigo-100' },
-  { bg: 'bg-teal-50', text: 'text-teal-600', border: 'border-teal-100' },
-  { bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-orange-100' },
-  { bg: 'bg-pink-50', text: 'text-pink-600', border: 'border-pink-100' },
-  { bg: 'bg-lime-50', text: 'text-lime-600', border: 'border-lime-100' },
-  { bg: 'bg-sky-50', text: 'text-sky-600', border: 'border-sky-100' },
-];
-
-export default function CategoryGrid({ categories = [] }) {
-  // Use default categories if none provided
+export default function CategoryGrid({ categories = [], onSelectCategory }) {
   const displayCategories = categories.length > 0
     ? categories
     : [
-        { _id: '1', name: 'เทคโนโลยีสารสนเทศ', count: 0 },
-        { _id: '2', name: 'คอมพิวเตอร์ธุรกิจ', count: 0 },
-        { _id: '3', name: 'มัลติมีเดีย', count: 0 },
-        { _id: '4', name: 'เครือข่าย', count: 0 },
-        { _id: '5', name: 'AI', count: 0 },
-        { _id: '6', name: 'ฐานข้อมูล', count: 0 },
+        { _id: '1', name: 'วิทยาการคอมพิวเตอร์', desc: 'AI, Software Engineering, Data Science', count: 0 },
+        { _id: '2', name: 'วิศวกรรมศาสตร์', desc: 'Civil, Mechanical, Electrical', count: 0 },
+        { _id: '3', name: 'บริหารธุรกิจ', desc: 'Marketing, Finance, Management', count: 0 },
+        { _id: '4', name: 'เทคโนโลยีสารสนเทศ', desc: 'Web, Mobile, Cloud Systems', count: 0 },
+        { _id: '5', name: 'มัลติมีเดีย', desc: 'Graphic Design, Animation, Media', count: 0 },
+        { _id: '6', name: 'เครือข่ายและความปลอดภัย', desc: 'Cybersecurity, IoT, Network', count: 0 },
       ];
 
   return (
-    <section className="py-12 md:py-16 bg-[#F8FAFC]">
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <motion.div
-          className="text-center mb-10"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="text-2xl md:text-3xl font-bold text-[#0F172A] mb-2">
-            หมวดหมู่ผลงาน
-          </h2>
-          <p className="text-gray-500">เลือกดูผลงานวิจัยตามหมวดหมู่ที่สนใจ</p>
-        </motion.div>
+    <section className="py-section-gap px-gutter-mobile md:px-gutter-desktop bg-surface-container-low">
+      <div className="max-w-container-max mx-auto">
+        <h2 className="font-headline-md text-headline-md text-text-primary mb-8">
+          สำรวจตามหมวดหมู่
+        </h2>
 
         <motion.div
-          className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-5"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
         >
-          {displayCategories.map((cat, index) => {
-            const Icon = ICON_MAP[cat.name] || ICON_MAP['default'];
-            const color = CARD_COLORS[index % CARD_COLORS.length];
+          {displayCategories.map((cat) => {
+            const Icon = ICON_MAP[cat.name] || ICON_MAP.default;
 
             return (
               <motion.div
-                key={cat._id}
+                key={cat._id || cat.name}
                 variants={cardVariants}
-                whileHover={{ scale: 1.06, boxShadow: '0 16px 32px -8px rgba(0, 0, 0, 0.12)' }}
-                className={`bg-white rounded-2xl border ${color.border} p-5 md:p-6 text-center cursor-pointer shadow-sm hover:shadow-md transition-all duration-300`}
+                onClick={() => onSelectCategory?.(cat.name)}
+                className="bg-surface-container-lowest p-6 rounded-xl border border-surface-border hover:shadow-md transition-shadow cursor-pointer group"
               >
-                <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl ${color.bg} mb-3`}>
-                  <Icon className={`w-7 h-7 ${color.text}`} />
+                <div className="w-12 h-12 bg-secondary-fixed rounded-full flex items-center justify-center mb-4 group-hover:bg-primary transition-colors">
+                  <Icon className="w-6 h-6 text-primary group-hover:text-on-primary transition-colors" />
                 </div>
-                <h3 className="font-semibold text-[#0F172A] text-sm md:text-base mb-1 leading-tight">
+                <h3 className="font-body-lg text-body-lg font-semibold text-text-primary mb-2">
                   {cat.name}
                 </h3>
-                <p className="text-xs text-gray-400">
-                  {(cat.count || 0).toLocaleString()} ผลงาน
+                <p className="font-body-md text-body-md text-text-secondary">
+                  {cat.desc || `${(cat.count || 0).toLocaleString()} ผลงานในระบบ`}
                 </p>
               </motion.div>
             );

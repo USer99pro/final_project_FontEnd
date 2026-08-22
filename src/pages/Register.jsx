@@ -52,15 +52,15 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-10 bg-gradient-to-br from-indigo-100 via-white to-blue-100">
+    <div className="min-h-screen flex items-center justify-center px-4 py-10 bg-gradient-to-br from-surface-container-low via-surface-main to-surface-container">
   
       {/* CARD */}
-      <div className="w-full max-w-2xl bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border border-white/40">
+      <div className="w-full max-w-2xl bg-surface-main/90 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border border-white/40">
   
         {/* HEADER */}
-        <div className="bg-gradient-to-r from-indigo-600 to-blue-600 px-8 py-10 text-center text-white">
+        <div className="bg-gradient-to-r from-primary to-primary-container px-8 py-10 text-center text-white">
   
-          <div className="w-20 h-20 mx-auto rounded-full bg-white/20 flex items-center justify-center text-3xl font-bold shadow-lg">
+          <div className="w-20 h-20 mx-auto rounded-full bg-surface-main/20 flex items-center justify-center text-3xl font-bold shadow-lg">
             R
           </div>
   
@@ -68,7 +68,7 @@ export default function Register() {
             สมัครสมาชิก
           </h1>
   
-          <p className="text-indigo-100 mt-2 text-sm">
+          <p className="text-inverse-primary mt-2 text-sm">
             สำหรับนักศึกษาที่จบการศึกษา
           </p>
         </div>
@@ -80,7 +80,7 @@ export default function Register() {
   
             {/* STUDENT ID */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-on-surface-variant mb-2">
                 รหัสนักศึกษา
               </label>
   
@@ -89,13 +89,13 @@ export default function Register() {
                 onChange={set('studentId')}
                 required
                 placeholder="6500000000"
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                className="w-full px-4 py-3 rounded-xl border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition"
               />
             </div>
   
             {/* FULL NAME */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-on-surface-variant mb-2">
                 ชื่อ–นามสกุล
               </label>
   
@@ -104,14 +104,14 @@ export default function Register() {
                 onChange={set('fullName')}
                 required
                 placeholder="ชื่อ นามสกุล"
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                className="w-full px-4 py-3 rounded-xl border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition"
               />
             </div>
   
             {/* MAJOR */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                สาขาวิชา <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-on-surface-variant mb-2">
+                สาขาวิชา <span className="text-error">*</span>
               </label>
   
               <SearchableSelect
@@ -125,7 +125,7 @@ export default function Register() {
   
             {/* EMAIL */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-on-surface-variant mb-2">
                 อีเมล
               </label>
   
@@ -135,13 +135,13 @@ export default function Register() {
                 onChange={set('email')}
                 required
                 placeholder="example@email.com"
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                className="w-full px-4 py-3 rounded-xl border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition"
               />
             </div>
   
             {/* PASSWORD */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-on-surface-variant mb-2">
                 รหัสผ่าน
               </label>
   
@@ -152,13 +152,13 @@ export default function Register() {
                 required
                 minLength={6}
                 placeholder="อย่างน้อย 6 ตัวอักษร"
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                className="w-full px-4 py-3 rounded-xl border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition"
               />
             </div>
   
             {/* CONFIRM PASSWORD */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-on-surface-variant mb-2">
                 ยืนยันรหัสผ่าน
               </label>
   
@@ -168,13 +168,13 @@ export default function Register() {
                 onChange={set('confirmPassword')}
                 required
                 placeholder="ยืนยันรหัสผ่านอีกครั้ง"
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                className="w-full px-4 py-3 rounded-xl border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition"
               />
             </div>
   
             {/* ERROR */}
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-xl">
+              <div className="bg-error-container border border-error/30 text-error text-sm px-4 py-3 rounded-xl">
                 {error}
               </div>
             )}
@@ -182,7 +182,7 @@ export default function Register() {
             {/* BUTTON */}
             <button
               type="submit"
-              className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-base shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 active:scale-[0.99] focus:outline-none focus:ring-4 focus:ring-blue-500/40 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-primary-container via-primary to-primary-container hover:opacity-90 text-white font-bold text-base shadow-lg shadow-primary-container/30 hover:shadow-xl hover:shadow-primary-container/40 active:scale-[0.99] focus:outline-none focus:ring-4 focus:ring-primary-fixed/40 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
             >
               <UserPlus className="w-5 h-5 text-white shrink-0" />
               <span>สมัครสมาชิก</span>
@@ -192,17 +192,17 @@ export default function Register() {
           {/* DIVIDER */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
+              <div className="w-full border-t border-border-subtle"></div>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-3 text-gray-500 font-semibold">หรือ</span>
+              <span className="bg-surface-main px-3 text-text-secondary font-semibold">หรือ</span>
             </div>
           </div>
 
           {/* GOOGLE OAUTH BUTTON */}
           <a
             href={`${import.meta.env.VITE_API_URL || ''}/api/auth/google`}
-            className="w-full py-3.5 px-4 flex items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 transition duration-200"
+            className="w-full py-3.5 px-4 flex items-center justify-center gap-3 rounded-xl border border-border-strong bg-surface-main hover:bg-surface-muted text-on-background font-bold shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-outline transition duration-200"
           >
             <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
               <path
@@ -226,11 +226,11 @@ export default function Register() {
           </a>
   
           {/* FOOTER */}
-          <div className="mt-6 text-center text-sm text-gray-600">
+          <div className="mt-6 text-center text-sm text-text-secondary">
             มีบัญชีแล้ว?
             <Link
               to="/login"
-              className="ml-2 font-semibold text-indigo-600 hover:text-blue-600 transition"
+              className="ml-2 font-semibold text-primary-container hover:text-primary-container transition"
             >
               เข้าสู่ระบบ
             </Link>

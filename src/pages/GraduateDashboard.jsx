@@ -66,26 +66,26 @@ export default function GraduateDashboard() {
   return (
     <div className="space-y-8 animate-fade-in pt-16">
       {/* ── PROFILE HEADER CARD ──────────────────────────────────── */}
-      <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-sm p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-surface-main rounded-3xl border border-border-subtle shadow-sm p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-5">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-blue-200/50">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-container to-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary-fixed/50">
             <User className="w-8 h-8" />
           </div>
           <div>
-            <h1 className="text-xl md:text-2xl font-bold text-[#0F172A] leading-tight">
+            <h1 className="text-xl md:text-2xl font-bold text-on-background leading-tight">
               แดชบอร์ดนักศึกษา
             </h1>
-            <p className="text-gray-500 mt-1.5 text-sm md:text-base">
+            <p className="text-text-secondary mt-1.5 text-sm md:text-base">
               ยินดีต้อนรับ,{" "}
-              <span className="font-semibold text-gray-800">
+              <span className="font-semibold text-on-background">
                 {user?.fullName}
               </span>
             </p>
-            <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-gray-400">
-              <span className="px-2.5 py-1 bg-gray-100 rounded-lg font-medium text-gray-600">
+            <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-outline">
+              <span className="px-2.5 py-1 bg-surface-accent rounded-lg font-medium text-text-secondary">
                 รหัสนักศึกษา: {user?.studentId}
               </span>
-              <span className="px-2.5 py-1 bg-gray-100 rounded-lg font-medium text-gray-600">
+              <span className="px-2.5 py-1 bg-surface-accent rounded-lg font-medium text-text-secondary">
                 สาขาวิชา: {user?.major}
               </span>
             </div>
@@ -94,16 +94,16 @@ export default function GraduateDashboard() {
         <div className="flex flex-wrap items-center gap-3">
           <Link
             to="/graduate/works/new"
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#1D4ED8] hover:bg-[#1E40AF] active:bg-[#1E3A8A] !text-white font-black text-sm rounded-xl border-2 border-blue-300 shadow-[0_4px_14px_rgba(30,64,175,0.45)] focus:outline-none focus:ring-4 focus:ring-blue-400/40 transition-all duration-200 cursor-pointer opacity-100"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-container hover:opacity-90 active:opacity-80 !text-white font-black text-sm rounded-xl border-2 border-primary-fixed shadow-[0_4px_14px_rgba(30,64,175,0.45)] focus:outline-none focus:ring-4 focus:ring-primary-fixed/40 transition-all duration-200 cursor-pointer opacity-100"
           >
             <Plus className="w-4 h-4 text-white shrink-0" />
             <span>เพิ่มผลงานวิจัย</span>
           </Link>
           <Link
             to="/graduate/activity"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border border-slate-300 bg-white text-slate-800 text-sm font-bold hover:bg-slate-50 hover:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 transition-all duration-200 cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border border-border-strong bg-surface-main text-on-background text-sm font-bold hover:bg-surface-muted hover:border-outline focus:outline-none focus:ring-2 focus:ring-outline transition-all duration-200 cursor-pointer"
           >
-            <HistoryIcon className="w-4 h-4 text-slate-500" />
+            <HistoryIcon className="w-4 h-4 text-text-secondary" />
             <span>ประวัติการดำเนินงาน</span>
           </Link>
         </div>
@@ -112,22 +112,22 @@ export default function GraduateDashboard() {
       {/* ── STATS COUNTER GRID ───────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {/* Stat 1: Total Works */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm p-6 flex items-center justify-between hover:shadow-md transition-shadow duration-200">
+        <div className="bg-surface-main rounded-2xl border border-border-subtle shadow-sm p-6 flex items-center justify-between hover:shadow-md transition-shadow duration-200">
           <div className="space-y-1">
-            <span className="text-sm font-medium text-gray-400">
+            <span className="text-sm font-medium text-outline">
               ผลงานทั้งหมด
             </span>
-            <p className="text-3xl font-bold text-[#0F172A]">{totalWorks}</p>
+            <p className="text-3xl font-bold text-on-background">{totalWorks}</p>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-insight-tint text-primary-container flex items-center justify-center">
             <BookOpen className="w-6 h-6" />
           </div>
         </div>
 
         {/* Stat 2: Published Works */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm p-6 flex items-center justify-between hover:shadow-md transition-shadow duration-200">
+        <div className="bg-surface-main rounded-2xl border border-border-subtle shadow-sm p-6 flex items-center justify-between hover:shadow-md transition-shadow duration-200">
           <div className="space-y-1">
-            <span className="text-sm font-medium text-gray-400">
+            <span className="text-sm font-medium text-outline">
               เผยแพร่แล้ว
             </span>
             <p className="text-3xl font-bold text-emerald-600">
@@ -140,9 +140,9 @@ export default function GraduateDashboard() {
         </div>
 
         {/* Stat 3: Draft Works */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm p-6 flex items-center justify-between hover:shadow-md transition-shadow duration-200">
+        <div className="bg-surface-main rounded-2xl border border-border-subtle shadow-sm p-6 flex items-center justify-between hover:shadow-md transition-shadow duration-200">
           <div className="space-y-1">
-            <span className="text-sm font-medium text-gray-400">
+            <span className="text-sm font-medium text-outline">
               แบบร่าง (Draft)
             </span>
             <p className="text-3xl font-bold text-amber-600">{draftCount}</p>
@@ -156,16 +156,16 @@ export default function GraduateDashboard() {
       {/* ── TWO COLUMN TABLES LAYOUT ─────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Works Card - 2 Columns wide on LG */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden lg:col-span-2 flex flex-col justify-between">
+        <div className="bg-surface-main rounded-2xl border border-border-subtle shadow-sm overflow-hidden lg:col-span-2 flex flex-col justify-between">
           <div>
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex items-center justify-between">
+            <div className="bg-gradient-to-r from-primary-container to-primary px-6 py-4 flex items-center justify-between">
               <div className="flex items-center gap-2 text-white">
                 <FileText className="w-5 h-5 text-white/80" />
                 <h3 className="font-bold text-lg">ผลงานวิจัยล่าสุด</h3>
               </div>
               <Link
                 to="/graduate/works"
-                className="text-xs text-blue-100 hover:text-white flex items-center gap-1 transition-colors font-semibold"
+                className="text-xs text-inverse-primary hover:text-white flex items-center gap-1 transition-colors font-semibold"
               >
                 ดูทั้งหมด ({works.length}){" "}
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -173,16 +173,16 @@ export default function GraduateDashboard() {
             </div>
 
             {loading ? (
-              <div className="p-8 text-center text-gray-400">
+              <div className="p-8 text-center text-outline">
                 กำลังโหลดข้อมูล...
               </div>
             ) : works.length === 0 ? (
-              <div className="p-12 text-center text-gray-400 flex flex-col items-center justify-center gap-3">
-                <BookOpen className="w-12 h-12 text-gray-300" />
+              <div className="p-12 text-center text-outline flex flex-col items-center justify-center gap-3">
+                <BookOpen className="w-12 h-12 text-outline-variant" />
                 <span>ยังไม่มีผลงานวิจัยในระบบ</span>
                 <Link
                   to="/graduate/works/new"
-                  className="text-sm text-blue-600 font-bold hover:underline"
+                  className="text-sm text-primary-container font-bold hover:underline"
                 >
                   + เพิ่มผลงานแรกของคุณ
                 </Link>
@@ -191,40 +191,40 @@ export default function GraduateDashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-200">
-                      <th className="px-6 py-3.5 text-xs font-bold text-slate-600 uppercase tracking-wider w-16 text-center">
+                    <tr className="bg-surface-muted border-b border-border-subtle">
+                      <th className="px-6 py-3.5 text-xs font-bold text-text-secondary uppercase tracking-wider w-16 text-center">
                         ลำดับ
                       </th>
-                      <th className="px-6 py-3.5 text-xs font-bold text-slate-600 uppercase tracking-wider">
+                      <th className="px-6 py-3.5 text-xs font-bold text-text-secondary uppercase tracking-wider">
                         ชื่อผลงาน
                       </th>
-                      <th className="px-6 py-3.5 text-xs font-bold text-slate-600 uppercase tracking-wider text-center w-32">
+                      <th className="px-6 py-3.5 text-xs font-bold text-text-secondary uppercase tracking-wider text-center w-32">
                         ปีการศึกษา
                       </th>
-                      <th className="px-6 py-3.5 text-xs font-bold text-slate-600 uppercase tracking-wider text-center w-32">
+                      <th className="px-6 py-3.5 text-xs font-bold text-text-secondary uppercase tracking-wider text-center w-32">
                         สถานะ
                       </th>
-                      <th className="px-6 py-3.5 text-xs font-bold text-slate-600 uppercase tracking-wider text-center w-24">
+                      <th className="px-6 py-3.5 text-xs font-bold text-text-secondary uppercase tracking-wider text-center w-24">
                         แก้ไข
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-border-subtle">
                     {works.slice(0, 5).map((w, index) => (
                       <tr
                         key={w._id}
-                        className="hover:bg-blue-50/30 transition-colors duration-150"
+                        className="hover:bg-insight-tint/30 transition-colors duration-150"
                       >
-                        <td className="px-6 py-4 text-sm text-slate-400 text-center font-semibold">
+                        <td className="px-6 py-4 text-sm text-outline text-center font-semibold">
                           {index + 1}
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-sm font-bold text-slate-900 line-clamp-2 leading-relaxed">
+                          <p className="text-sm font-bold text-on-background line-clamp-2 leading-relaxed">
                             {w.title}
                           </p>
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <span className="inline-flex items-center px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700">
+                          <span className="inline-flex items-center px-2.5 py-1 bg-surface-muted border border-border-subtle rounded-lg text-xs font-semibold text-on-surface-variant">
                             {w.academicYear || "-"}
                           </span>
                         </td>
@@ -234,7 +234,7 @@ export default function GraduateDashboard() {
                         <td className="px-6 py-4 text-center">
                           <Link
                             to={`/graduate/works/${w._id}/edit`}
-                            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white border border-blue-200/80 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-xs text-xs font-bold"
+                            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-insight-tint text-primary-container hover:bg-primary-container hover:text-white border border-primary-fixed/80 focus:outline-none focus:ring-2 focus:ring-primary-fixed transition-all duration-200 shadow-xs text-xs font-bold"
                             title="แก้ไขผลงาน"
                           >
                             <Edit className="w-3.5 h-3.5" />
@@ -249,10 +249,10 @@ export default function GraduateDashboard() {
             )}
           </div>
           {works.length > 5 && (
-            <div className="bg-gray-50/50 px-6 py-3 border-t border-[#E2E8F0] text-center">
+            <div className="bg-surface-muted/50 px-6 py-3 border-t border-border-subtle text-center">
               <Link
                 to="/graduate/works"
-                className="text-sm text-blue-600 font-semibold hover:underline flex items-center justify-center gap-1.5"
+                className="text-sm text-primary-container font-semibold hover:underline flex items-center justify-center gap-1.5"
               >
                 ดูผลงานทั้งหมดเพิ่มเติม <ChevronRight className="w-4 h-4" />
               </Link>
@@ -261,48 +261,48 @@ export default function GraduateDashboard() {
         </div>
 
         {/* Recent Activities Card - 1 Column wide on LG */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden flex flex-col justify-between">
+        <div className="bg-surface-main rounded-2xl border border-border-subtle shadow-sm overflow-hidden flex flex-col justify-between">
           <div>
-            <div className="bg-gradient-to-r from-gray-700 to-slate-800 px-6 py-4 flex items-center justify-between">
+            <div className="bg-gradient-to-r from-header-gradient-start to-header-gradient-end px-6 py-4 flex items-center justify-between">
               <div className="flex items-center gap-2 text-white">
                 <Activity className="w-5 h-5 text-white/80" />
                 <h3 className="font-bold text-lg">กิจกรรมล่าสุด</h3>
               </div>
               <Link
                 to="/graduate/activity"
-                className="text-xs text-slate-300 hover:text-white flex items-center gap-1 transition-colors"
+                className="text-xs text-inverse-primary hover:text-white flex items-center gap-1 transition-colors"
               >
                 ดูประวัติทั้งหมด <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
             {loading ? (
-              <div className="p-8 text-center text-gray-400">
+              <div className="p-8 text-center text-outline">
                 กำลังโหลดข้อมูล...
               </div>
             ) : activity.length === 0 ? (
-              <div className="p-12 text-center text-gray-400 flex flex-col items-center justify-center gap-3">
-                <Clock className="w-12 h-12 text-gray-300" />
+              <div className="p-12 text-center text-outline flex flex-col items-center justify-center gap-3">
+                <Clock className="w-12 h-12 text-outline-variant" />
                 <span>ยังไม่มีกิจกรรมล่าสุด</span>
               </div>
             ) : (
-              <div className="divide-y divide-[#E2E8F0] overflow-y-auto max-h-[360px] scrollbar-thin">
+              <div className="divide-y divide-border-subtle overflow-y-auto max-h-[360px] scrollbar-thin">
                 {activity.slice(0, 5).map((a) => (
                   <div
                     key={a._id}
-                    className="p-4 hover:bg-slate-50/50 transition-colors duration-150 space-y-2"
+                    className="p-4 hover:bg-surface-muted/50 transition-colors duration-150 space-y-2"
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <p className="text-xs font-semibold text-gray-700 line-clamp-2 leading-relaxed">
+                      <p className="text-xs font-semibold text-on-surface-variant line-clamp-2 leading-relaxed">
                         {a.contentId?.title || "ผลงานวิจัย"}
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="px-1.5 py-0.5 bg-gray-100 rounded text-[10px] font-medium text-gray-500">
+                      <span className="px-1.5 py-0.5 bg-surface-accent rounded text-[10px] font-medium text-text-secondary">
                         {a.fromStatus || "ร่าง"}
                       </span>
-                      <ArrowRight className="w-3 h-3 text-gray-400" />
+                      <ArrowRight className="w-3 h-3 text-outline" />
                       <span
                         className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
                           a.toStatus === "published"
@@ -314,7 +314,7 @@ export default function GraduateDashboard() {
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px] text-gray-400">
+                    <div className="flex items-center justify-between text-[11px] text-outline">
                       <span>โดย {user?.fullName}</span>
                       <span>
                         {new Date(a.createdAt).toLocaleString("th-TH", {
@@ -329,10 +329,10 @@ export default function GraduateDashboard() {
             )}
           </div>
           {activity.length > 5 && (
-            <div className="bg-gray-50/50 px-6 py-3 border-t border-[#E2E8F0] text-center">
+            <div className="bg-surface-muted/50 px-6 py-3 border-t border-border-subtle text-center">
               <Link
                 to="/graduate/activity"
-                className="text-sm text-gray-600 font-semibold hover:underline flex items-center justify-center gap-1.5"
+                className="text-sm text-text-secondary font-semibold hover:underline flex items-center justify-center gap-1.5"
               >
                 ดูประวัติทั้งหมดเพิ่มเติม <ChevronRight className="w-4 h-4" />
               </Link>

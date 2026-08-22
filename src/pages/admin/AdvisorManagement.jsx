@@ -171,7 +171,7 @@ export default function AdvisorManagement() {
       {/* PAGE HEADER */}
       <div className="bg-gradient-to-r from-teal-800 via-indigo-900 to-slate-900 rounded-3xl p-8 text-white shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-xs font-semibold text-teal-200 mb-3 border border-white/10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface-main/10 backdrop-blur-md rounded-full text-xs font-semibold text-teal-200 mb-3 border border-white/10">
             <GraduationCap className="w-4 h-4 text-teal-300" /> Advisor Management
           </div>
           <h1 className="text-3xl font-bold">จัดการข้อมูลครูที่ปรึกษา</h1>
@@ -182,7 +182,7 @@ export default function AdvisorManagement() {
         <button
           type="button"
           onClick={load}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 active:bg-white/30 text-white rounded-xl text-sm font-bold border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-surface-main/10 hover:bg-surface-main/20 active:bg-surface-main/30 text-white rounded-xl text-sm font-bold border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition cursor-pointer"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           รีเฟรชข้อมูล
@@ -191,10 +191,10 @@ export default function AdvisorManagement() {
 
       {/* MESSAGES */}
       {error && (
-        <div className="flex items-center gap-3 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm font-medium">
+        <div className="flex items-center gap-3 p-4 rounded-2xl bg-error-container border border-red-200 text-error text-sm font-medium">
           <AlertCircle className="w-5 h-5 shrink-0 text-red-500" />
           <span className="flex-1">{error}</span>
-          <button type="button" onClick={() => setError('')} className="text-red-400 hover:text-red-600">
+          <button type="button" onClick={() => setError('')} className="text-red-400 hover:text-error">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -211,17 +211,17 @@ export default function AdvisorManagement() {
       )}
 
       {/* FORM CARD */}
-      <form onSubmit={submit} className="bg-white rounded-2xl border border-gray-200 p-6 md:p-8 shadow-sm space-y-6">
-        <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+      <form onSubmit={submit} className="bg-surface-main rounded-2xl border border-border-subtle p-6 md:p-8 shadow-sm space-y-6">
+        <div className="flex items-center justify-between border-b border-border-subtle pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-xl bg-insight-tint text-primary flex items-center justify-center font-bold">
               {editingId ? <Edit className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
             </div>
             <div>
-              <h2 className="text-lg font-bold text-gray-900">
+              <h2 className="text-lg font-bold text-on-background">
                 {editingId ? 'แก้ไขข้อมูลครูที่ปรึกษา' : 'เพิ่มรายชื่อครูที่ปรึกษาใหม่'}
               </h2>
-              <p className="text-xs text-gray-400">กรอกข้อมูลรายละเอียดเพื่อบันทึกลงในระบบ</p>
+              <p className="text-xs text-outline">กรอกข้อมูลรายละเอียดเพื่อบันทึกลงในระบบ</p>
             </div>
           </div>
           {editingId && (
@@ -231,7 +231,7 @@ export default function AdvisorManagement() {
                 setEditingId(null);
                 setForm(emptyAdvisor);
               }}
-              className="text-xs text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg border border-slate-300 font-bold transition cursor-pointer"
+              className="text-xs text-on-surface-variant hover:text-on-background bg-surface-accent hover:bg-slate-200 px-3 py-1.5 rounded-lg border border-border-strong font-bold transition cursor-pointer"
             >
               ยกเลิกการแก้ไข
             </button>
@@ -241,33 +241,33 @@ export default function AdvisorManagement() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {/* Prefix */}
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">คำนำหน้า</label>
+            <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">คำนำหน้า</label>
             <input
               value={form.prefix}
               onChange={set('prefix')}
               placeholder="เช่น ดร., ผศ.ดร., อ."
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm outline-none transition"
+              className="w-full px-4 py-2.5 rounded-xl border border-border-subtle focus:ring-2 focus:ring-primary-fixed focus:border-primary-container text-sm outline-none transition bg-surface-main"
             />
           </div>
 
           {/* Full Name */}
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-              ชื่อ-นามสกุล <span className="text-red-500">*</span>
+            <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">
+              ชื่อ-นามสกุล <span className="text-error">*</span>
             </label>
             <input
               value={form.fullName}
               onChange={set('fullName')}
               placeholder="เช่น สมชาย ใจดี"
               required
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm outline-none transition"
+              className="w-full px-4 py-2.5 rounded-xl border border-border-subtle focus:ring-2 focus:ring-primary-fixed focus:border-primary-container text-sm outline-none transition bg-surface-main"
             />
           </div>
 
           {/* Department (Searchable Select) */}
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-              แผนก / สาขาวิชา <span className="text-red-500">*</span>
+            <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">
+              แผนก / สาขาวิชา <span className="text-error">*</span>
             </label>
             <SearchableSelect
               options={departments.map((d) => ({ value: d._id, label: d.name }))}
@@ -280,69 +280,69 @@ export default function AdvisorManagement() {
 
           {/* Email */}
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">อีเมล</label>
+            <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">อีเมล</label>
             <input
               type="email"
               value={form.email}
               onChange={set('email')}
               placeholder="advisor@school.ac.th"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm outline-none transition"
+              className="w-full px-4 py-2.5 rounded-xl border border-border-subtle focus:ring-2 focus:ring-primary-fixed focus:border-primary-container text-sm outline-none transition bg-surface-main"
             />
           </div>
 
           {/* Phone */}
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">เบอร์โทรศัพท์</label>
+            <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">เบอร์โทรศัพท์</label>
             <input
               value={form.phone}
               onChange={set('phone')}
               placeholder="08X-XXX-XXXX"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm outline-none transition"
+              className="w-full px-4 py-2.5 rounded-xl border border-border-subtle focus:ring-2 focus:ring-primary-fixed focus:border-primary-container text-sm outline-none transition bg-surface-main"
             />
           </div>
 
           {/* Academic Position */}
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">ตำแหน่งทางวิชาการ</label>
+            <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">ตำแหน่งทางวิชาการ</label>
             <input
               value={form.academicPosition}
               onChange={set('academicPosition')}
               placeholder="เช่น อาจารย์, หัวหน้าแผนก"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm outline-none transition"
+              className="w-full px-4 py-2.5 rounded-xl border border-border-subtle focus:ring-2 focus:ring-primary-fixed focus:border-primary-container text-sm outline-none transition bg-surface-main"
             />
           </div>
 
           {/* Expertise */}
           <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">ความเชี่ยวชาญ (คั่นด้วย ,)</label>
+            <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">ความเชี่ยวชาญ (คั่นด้วย ,)</label>
             <input
               value={form.expertise}
               onChange={set('expertise')}
               placeholder="เช่น AI, Web Development, Database"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm outline-none transition"
+              className="w-full px-4 py-2.5 rounded-xl border border-border-subtle focus:ring-2 focus:ring-primary-fixed focus:border-primary-container text-sm outline-none transition bg-surface-main"
             />
           </div>
 
           {/* Office */}
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">ห้องพัก / อาคาร</label>
+            <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">ห้องพัก / อาคาร</label>
             <input
               value={form.office}
               onChange={set('office')}
               placeholder="เช่น อาคาร 3 ห้อง 302"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm outline-none transition"
+              className="w-full px-4 py-2.5 rounded-xl border border-border-subtle focus:ring-2 focus:ring-primary-fixed focus:border-primary-container text-sm outline-none transition bg-surface-main"
             />
           </div>
         </div>
 
         {/* Active status & Actions */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2 border-t border-gray-100">
-          <label className="flex items-center gap-2.5 text-sm font-semibold text-slate-800 cursor-pointer">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2 border-t border-border-subtle">
+          <label className="flex items-center gap-2.5 text-sm font-semibold text-on-background cursor-pointer">
             <input
               type="checkbox"
               checked={form.isActive}
               onChange={set('isActive')}
-              className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 cursor-pointer"
+              className="w-4 h-4 rounded text-primary-container focus:ring-primary-fixed cursor-pointer accent-primary-container"
             />
             <span>เปิดใช้งานรายชื่อนี้ในระบบ (Active)</span>
           </label>
@@ -355,7 +355,7 @@ export default function AdvisorManagement() {
                   setEditingId(null);
                   setForm(emptyAdvisor);
                 }}
-                className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 bg-slate-100 hover:bg-slate-200 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-slate-400 transition cursor-pointer"
+                className="px-5 py-2.5 rounded-xl border border-border-strong text-on-surface-variant bg-surface-accent hover:bg-surface-container-low text-sm font-bold focus:outline-none focus:ring-2 focus:ring-outline transition cursor-pointer"
               >
                 ยกเลิก
               </button>
@@ -363,7 +363,7 @@ export default function AdvisorManagement() {
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white font-bold text-sm shadow-md shadow-teal-500/20 focus:outline-none focus:ring-4 focus:ring-teal-500/40 transition-all duration-200 disabled:opacity-50 flex items-center gap-2 cursor-pointer"
+              className="px-6 py-2.5 rounded-xl bg-primary-container hover:bg-primary text-white font-bold text-sm shadow-md shadow-primary-container/20 focus:outline-none focus:ring-4 focus:ring-primary-fixed/40 transition-all duration-200 disabled:opacity-50 flex items-center gap-2 cursor-pointer"
             >
               {saving ? (
                 <>
@@ -382,19 +382,19 @@ export default function AdvisorManagement() {
       </form>
 
       {/* LIST TABLE CARD */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-surface-main rounded-2xl border border-border-subtle shadow-sm overflow-hidden">
         {/* Table Search Header */}
-        <div className="p-4 md:p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-50/50">
+        <div className="p-4 md:p-6 border-b border-border-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 bg-surface-muted/50">
           <div className="relative w-full max-w-md">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-outline" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="ค้นหารายชื่อ คำนำหน้า อีเมล หรือแผนกวิชา..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle bg-surface-main text-sm focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-fixed transition"
             />
           </div>
-          <div className="text-xs text-gray-500 font-medium">
+          <div className="text-xs text-text-secondary font-medium">
             แสดง {visibleAdvisors.length} จากทั้งหมด {advisors.length} รายชื่อ
           </div>
         </div>
@@ -403,7 +403,7 @@ export default function AdvisorManagement() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-sm">
             <thead>
-              <tr className="bg-gray-50/75 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <tr className="bg-surface-muted/75 border-b border-border-subtle text-xs font-semibold text-text-secondary uppercase tracking-wider">
                 <th className="px-6 py-4">ชื่อ-นามสกุล / ตำแหน่ง</th>
                 <th className="px-6 py-4">แผนก / สาขาวิชา</th>
                 <th className="px-6 py-4">ช่องทางติดต่อ</th>
@@ -411,16 +411,16 @@ export default function AdvisorManagement() {
                 <th className="px-6 py-4 text-right">การจัดการ</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-border-subtle">
               {loading ? (
                 <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center text-gray-400">
+                  <td colSpan="5" className="px-6 py-12 text-center text-outline">
                     กำลังโหลดรายชื่อครูที่ปรึกษา...
                   </td>
                 </tr>
               ) : visibleAdvisors.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center text-gray-400">
+                  <td colSpan="5" className="px-6 py-12 text-center text-outline">
                     ไม่พบข้อมูลครูที่ปรึกษา
                   </td>
                 </tr>
@@ -428,31 +428,31 @@ export default function AdvisorManagement() {
                 visibleAdvisors.map((advisor) => {
                   const deptName = advisor.departmentName || advisor.department?.name || '-';
                   return (
-                    <tr key={advisor._id} className="hover:bg-teal-50/20 transition-colors">
+                    <tr key={advisor._id} className="hover:bg-insight-tint/50 transition-colors">
                       <td className="px-6 py-4">
-                        <div className="font-semibold text-gray-900">
+                        <div className="font-semibold text-on-background">
                           {advisor.prefix} {advisor.fullName}
                         </div>
                         {advisor.academicPosition && (
-                          <div className="text-xs text-gray-400 mt-0.5">{advisor.academicPosition}</div>
+                          <div className="text-xs text-outline mt-0.5">{advisor.academicPosition}</div>
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-50 text-teal-700 border border-teal-100 text-xs font-medium">
-                          <Building className="w-3.5 h-3.5" />
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-insight-tint text-primary border border-primary-fixed/60 text-xs font-medium">
+                          <Building className="w-3.5 h-3.5 text-primary-container" />
                           {deptName}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-xs text-gray-600 space-y-1">
+                      <td className="px-6 py-4 text-xs text-on-surface-variant space-y-1">
                         {advisor.email && (
                           <div className="flex items-center gap-1.5">
-                            <Mail className="w-3.5 h-3.5 text-gray-400" />
+                            <Mail className="w-3.5 h-3.5 text-outline" />
                             <span>{advisor.email}</span>
                           </div>
                         )}
                         {advisor.phone && (
                           <div className="flex items-center gap-1.5">
-                            <Phone className="w-3.5 h-3.5 text-gray-400" />
+                            <Phone className="w-3.5 h-3.5 text-outline" />
                             <span>{advisor.phone}</span>
                           </div>
                         )}
@@ -463,7 +463,7 @@ export default function AdvisorManagement() {
                             เปิดใช้งาน
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-500 border border-gray-200">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-accent text-text-secondary border border-border-subtle">
                             ปิดใช้งาน
                           </span>
                         )}
@@ -473,7 +473,7 @@ export default function AdvisorManagement() {
                           <button
                             type="button"
                             onClick={() => edit(advisor)}
-                            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white border border-blue-200/80 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs font-bold transition cursor-pointer"
+                            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-insight-tint text-primary hover:bg-primary-container hover:text-white border border-primary-fixed/80 focus:outline-none focus:ring-2 focus:ring-primary-fixed text-xs font-bold transition cursor-pointer"
                             title="แก้ไข"
                           >
                             <Edit className="w-3.5 h-3.5" />
@@ -482,7 +482,7 @@ export default function AdvisorManagement() {
                           <button
                             type="button"
                             onClick={() => remove(advisor)}
-                            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 text-red-700 hover:bg-red-600 hover:text-white border border-red-200/80 focus:outline-none focus:ring-2 focus:ring-red-500 text-xs font-bold transition cursor-pointer"
+                            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-error-container text-error hover:bg-error hover:text-white border border-error/80 focus:outline-none focus:ring-2 focus:ring-red-500 text-xs font-bold transition cursor-pointer"
                             title="ลบ"
                           >
                             <Trash2 className="w-3.5 h-3.5" />

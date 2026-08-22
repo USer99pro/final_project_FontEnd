@@ -1,21 +1,18 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import api from '../api/client';
 
-// Section Components
 import HeroSection from '../components/public/HeroSection';
 import SearchSection from '../components/public/SearchSection';
+import ResearchTable from '../components/public/ResearchTable';
 import StatisticsSection from '../components/public/StatisticsSection';
 import CategoryGrid from '../components/public/CategoryGrid';
-import ResearchTable from '../components/public/ResearchTable';
 import PublicFooter from '../components/public/PublicFooter';
 
 export default function PublicSearch() {
-  // ─── State (preserved from original) ───────────────────────
   const [filters, setFilters] = useState({ q: '', studentName: '', major: '', academicYear: '' });
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Additional state for enhanced UI
   const [stats, setStats] = useState({
     totalProjects: 0,
     totalStudents: 0,
@@ -24,10 +21,8 @@ export default function PublicSearch() {
   });
   const [categories, setCategories] = useState([]);
 
-  // Ref for scroll-to-search
   const searchRef = useRef(null);
 
-  // ─── Load Projects (preserved logic) ───────────────────────
   const load = async (params = filters) => {
     setLoading(true);
     try {
@@ -37,7 +32,6 @@ export default function PublicSearch() {
       const projectList = data.projects || [];
       setProjects(projectList);
 
-      // Compute stats from projects data
       if (projectList.length > 0) {
         const studentNames = new Set(projectList.map((p) => p.studentName).filter(Boolean));
         const majors = new Set(projectList.map((p) => p.major).filter(Boolean));
@@ -51,7 +45,6 @@ export default function PublicSearch() {
           latestYear,
         });
 
-        // Build categories from project majors
         const categoryMap = {};
         projectList.forEach((p) => {
           if (p.category?.name) {
@@ -77,12 +70,20 @@ export default function PublicSearch() {
     }
   };
 
-  // ─── Initial Load ──────────────────────────────────────────
   useEffect(() => {
     load();
   }, []);
 
-  // ─── Handlers ──────────────────────────────────────────────
+  const availableMajors = useMemo(() => {
+    const set = new Set(projects.map((p) => p.major).filter(Boolean));
+    return Array.from(set);
+  }, [projects]);
+
+  const availableYears = useMemo(() => {
+    const set = new Set(projects.map((p) => p.academicYear).filter(Boolean));
+    return Array.from(set).sort((a, b) => b - a);
+  }, [projects]);
+
   const handleScrollToSearch = () => {
     searchRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
@@ -91,30 +92,32 @@ export default function PublicSearch() {
     load(filters);
   };
 
-  // ─── Render ────────────────────────────────────────────────
+  const handleSelectCategory = (catName) => {
+    const newFilters = { ...filters, q: catName };
+    setFilters(newFilters);
+    load(newFilters);
+    handleScrollToSearch();
+  };
+
   return (
-    <div className="-mx-4 md:-mx-6 -mt-8">
-      {/* Hero Banner Section */}
+    <div className="bg-background text-on-background font-body-md min-h-screen flex flex-col">
       <HeroSection onScrollToSearch={handleScrollToSearch} />
 
-      {/* Search Section */}
       <SearchSection
         ref={searchRef}
         filters={filters}
         onChange={setFilters}
         onSearch={handleSearch}
+        majors={availableMajors}
+        years={availableYears}
       />
 
-      {/* Statistics Section */}
-      <StatisticsSection stats={stats} />
-
-      {/* Category Grid Section */}
-      <CategoryGrid categories={categories} />
-
-      {/* Latest Research Table Section */}
       <ResearchTable projects={projects} loading={loading} />
 
-      {/* Footer */}
+      <StatisticsSection stats={stats} />
+
+      <CategoryGrid categories={categories} onSelectCategory={handleSelectCategory} />
+
       <PublicFooter />
     </div>
   );

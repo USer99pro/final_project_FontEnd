@@ -26,7 +26,7 @@ export default function ActivityHistory() {
   }, [activity, currentPage]);
 
   const renderStatus = (status) => {
-    if (!status) return <span className="text-gray-400">—</span>;
+    if (!status) return <span className="text-outline">—</span>;
     switch (status) {
       case 'published':
         return (
@@ -52,29 +52,29 @@ export default function ActivityHistory() {
         <div>
           <Link
             to="/graduate"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white text-slate-700 hover:bg-slate-100 hover:text-blue-600 border border-slate-200/80 rounded-xl text-sm font-bold shadow-xs focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition mb-2"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-surface-main text-on-surface-variant hover:bg-surface-accent hover:text-primary-container border border-border-subtle rounded-xl text-sm font-bold shadow-xs focus:outline-none focus:ring-2 focus:ring-primary-fixed/40 transition mb-2"
           >
             <ArrowLeft className="w-4 h-4" /> กลับสู่แดชบอร์ด
           </Link>
-          <h1 className="text-2xl md:text-3xl font-bold text-[#0F172A] leading-tight">
+          <h1 className="text-2xl md:text-3xl font-bold text-on-background leading-tight">
             ประวัติการดำเนินงาน
           </h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <p className="text-text-secondary text-sm mt-1">
             ดูบันทึกและประวัติการเปลี่ยนแปลงทั้งหมดของผลงานวิจัยของคุณ
           </p>
         </div>
       </div>
 
       {/* ── TABLE CARD WRAPPER ────────────────────────────────────── */}
-      <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden">
+      <div className="bg-surface-main rounded-2xl border border-border-subtle shadow-sm overflow-hidden">
         
         {/* Table Header Bar */}
-        <div className="bg-gradient-to-r from-gray-700 to-slate-800 px-6 py-4 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-header-gradient-start to-header-gradient-end px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3 text-white">
             <HistoryIcon className="w-5 h-5 text-white/80" />
             <h3 className="font-semibold text-lg">ประวัติกิจกรรมการส่งผลงาน</h3>
           </div>
-          <span className="text-slate-300 text-sm font-medium bg-white/10 px-3 py-1 rounded-full">
+          <span className="text-inverse-primary text-sm font-medium bg-surface-main/10 px-3 py-1 rounded-full">
             ทั้งหมด {activity.length} รายการ
           </span>
         </div>
@@ -82,14 +82,14 @@ export default function ActivityHistory() {
         {/* Content States */}
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <span className="text-gray-500 text-lg">กำลังโหลดข้อมูล...</span>
+            <span className="text-text-secondary text-lg">กำลังโหลดข้อมูล...</span>
           </div>
         ) : activity.length === 0 ? (
           <div className="text-center py-20 flex flex-col items-center justify-center gap-4">
-            <Clock className="w-16 h-16 text-gray-300" />
+            <Clock className="w-16 h-16 text-outline-variant" />
             <div>
-              <p className="text-gray-500 text-lg font-medium">ไม่พบประวัติการดำเนินงานใดๆ</p>
-              <p className="text-gray-400 text-sm mt-1">ประวัติจะถูกสร้างโดยอัตโนมัติเมื่อมีการบันทึกหรือเปลี่ยนสถานะผลงาน</p>
+              <p className="text-text-secondary text-lg font-medium">ไม่พบประวัติการดำเนินงานใดๆ</p>
+              <p className="text-outline text-sm mt-1">ประวัติจะถูกสร้างโดยอัตโนมัติเมื่อมีการบันทึกหรือเปลี่ยนสถานะผลงาน</p>
             </div>
           </div>
         ) : (
@@ -97,38 +97,38 @@ export default function ActivityHistory() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-gray-50/75 border-b border-[#E2E8F0]">
-                    <th className="px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider w-16 text-center">ลำดับ</th>
-                    <th className="px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">หัวข้อผลงานวิจัย</th>
-                    <th className="px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center w-60">การดำเนินการ</th>
-                    <th className="px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">หมายเหตุ</th>
-                    <th className="px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center w-48">วัน-เวลาที่บันทึก</th>
+                  <tr className="bg-surface-muted/75 border-b border-border-subtle">
+                    <th className="px-6 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider w-16 text-center">ลำดับ</th>
+                    <th className="px-6 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">หัวข้อผลงานวิจัย</th>
+                    <th className="px-6 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider text-center w-60">การดำเนินการ</th>
+                    <th className="px-6 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider text-center">หมายเหตุ</th>
+                    <th className="px-6 py-3.5 text-xs font-semibold text-text-secondary uppercase tracking-wider text-center w-48">วัน-เวลาที่บันทึก</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E2E8F0]">
+                <tbody className="divide-y divide-border-subtle">
                   {paginatedActivity.map((a, index) => {
                     const rowNumber = (currentPage - 1) * ITEMS_PER_PAGE + index + 1;
                     return (
-                      <tr key={a._id} className="hover:bg-slate-50/50 transition-colors duration-150">
-                        <td className="px-6 py-4 text-sm text-gray-400 text-center font-medium">{rowNumber}</td>
+                      <tr key={a._id} className="hover:bg-surface-muted/50 transition-colors duration-150">
+                        <td className="px-6 py-4 text-sm text-outline text-center font-medium">{rowNumber}</td>
                         <td className="px-6 py-4">
-                          <span className="text-sm font-semibold text-gray-800 line-clamp-2 leading-relaxed">
+                          <span className="text-sm font-semibold text-on-background line-clamp-2 leading-relaxed">
                             {a.contentId?.title || 'ผลงานวิจัย'}
                           </span>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center justify-center gap-2">
                             {renderStatus(a.fromStatus)}
-                            <ArrowRight className="w-3.5 h-3.5 text-gray-400" />
+                            <ArrowRight className="w-3.5 h-3.5 text-outline" />
                             {renderStatus(a.toStatus)}
                           </div>
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <span className="text-sm text-gray-600 font-medium">
-                            {a.note || <span className="text-gray-400">—</span>}
+                          <span className="text-sm text-text-secondary font-medium">
+                            {a.note || <span className="text-outline">—</span>}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-center text-sm text-gray-500">
+                        <td className="px-6 py-4 text-center text-sm text-text-secondary">
                           {new Date(a.createdAt).toLocaleString('th-TH', {
                             dateStyle: 'medium',
                             timeStyle: 'short',
@@ -143,8 +143,8 @@ export default function ActivityHistory() {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between px-6 py-4 border-t border-[#E2E8F0] bg-gray-50/50">
-                <p className="text-sm text-gray-500 hidden sm:block">
+              <div className="flex items-center justify-between px-6 py-4 border-t border-border-subtle bg-surface-muted/50">
+                <p className="text-sm text-text-secondary hidden sm:block">
                   แสดง {((currentPage - 1) * ITEMS_PER_PAGE) + 1} - {Math.min(currentPage * ITEMS_PER_PAGE, activity.length)} จาก {activity.length} รายการ
                 </p>
 
@@ -152,7 +152,7 @@ export default function ActivityHistory() {
                   <button
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="flex items-center justify-center w-9 h-9 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-slate-400 transition-all cursor-pointer"
+                    className="flex items-center justify-center w-9 h-9 rounded-xl border border-border-subtle bg-surface-main text-on-surface-variant hover:bg-surface-accent disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-outline transition-all cursor-pointer"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
@@ -161,10 +161,10 @@ export default function ActivityHistory() {
                     <button
                       key={page}
                       onClick={() => setCurrentPage(page)}
-                      className={`flex items-center justify-center w-9 h-9 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-slate-500/40 transition-all cursor-pointer ${
+                      className={`flex items-center justify-center w-9 h-9 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-outline/40 transition-all cursor-pointer ${
                         currentPage === page
-                          ? 'bg-slate-800 text-white shadow-md shadow-slate-300'
-                          : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-100'
+                          ? 'bg-inverse-surface text-on-primary shadow-md shadow-outline-variant'
+                          : 'border border-border-subtle bg-surface-main text-on-surface-variant hover:bg-surface-accent'
                       }`}
                     >
                       {page}
@@ -174,7 +174,7 @@ export default function ActivityHistory() {
                   <button
                     onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
-                    className="flex items-center justify-center w-9 h-9 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-slate-400 transition-all cursor-pointer"
+                    className="flex items-center justify-center w-9 h-9 rounded-xl border border-border-subtle bg-surface-main text-on-surface-variant hover:bg-surface-accent disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-outline transition-all cursor-pointer"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>

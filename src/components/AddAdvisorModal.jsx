@@ -216,20 +216,20 @@ export default function AddAdvisorModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-inverse-surface/60 backdrop-blur-xs animate-fade-in">
       <div
-        className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transform transition-all my-8"
+        className="relative w-full max-w-2xl bg-surface-main rounded-3xl shadow-2xl border border-border-subtle overflow-hidden transform transition-all my-8"
         onClick={(e) => e.stopPropagation()}
       >
         {/* MODAL HEADER */}
-        <div className="bg-gradient-to-r from-violet-700 via-indigo-700 to-purple-800 px-6 py-5 text-white flex items-center justify-between shadow-md">
+        <div className="bg-gradient-to-r from-header-gradient-start to-header-gradient-end px-6 py-5 text-white flex items-center justify-between shadow-md">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner">
-              <GraduationCap className="w-5 h-5 text-violet-200" />
+            <div className="w-10 h-10 rounded-2xl bg-surface-main/15 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner">
+              <GraduationCap className="w-5 h-5 text-primary-fixed-dim" />
             </div>
             <div>
               <h3 className="text-lg font-bold leading-tight">เพิ่มข้อมูลครูที่ปรึกษาท่านใหม่</h3>
-              <p className="text-violet-200 text-xs mt-0.5">
+              <p className="text-primary-fixed-dim text-xs mt-0.5">
                 ระบบจะตรวจสอบชื่อและตำแหน่งทางวิชาการก่อนบันทึกเข้าระบบ
               </p>
             </div>
@@ -237,7 +237,7 @@ export default function AddAdvisorModal({
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/30 text-violet-100 flex items-center justify-center transition cursor-pointer"
+            className="w-8 h-8 rounded-full bg-surface-main/10 hover:bg-surface-main/20 active:bg-surface-main/30 text-white flex items-center justify-center transition cursor-pointer"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -248,8 +248,8 @@ export default function AddAdvisorModal({
         <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
           {/* ALERT MESSAGES */}
           {error && (
-            <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm font-medium flex items-start gap-3 shadow-xs animate-shake">
-              <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+            <div className="p-4 rounded-2xl bg-error-container border border-error/30 text-error text-xs sm:text-sm font-medium flex items-start gap-3 shadow-xs animate-shake">
+              <AlertCircle className="w-5 h-5 text-error shrink-0 mt-0.5" />
               <div className="flex-1 leading-relaxed">{error}</div>
             </div>
           )}
@@ -298,15 +298,15 @@ export default function AddAdvisorModal({
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 sm:gap-5">
             {/* Prefix */}
             <div className="sm:col-span-4 space-y-2">
-              <label className="block text-xs font-bold text-slate-700">
-                คำนำหน้า <span className="text-slate-400 font-normal">(ถ้ามี)</span>
+              <label className="block text-xs font-bold text-on-surface-variant">
+                คำนำหน้า <span className="text-outline font-normal">(ถ้ามี)</span>
               </label>
               <input
                 type="text"
                 value={form.prefix}
                 onChange={set('prefix')}
                 placeholder="เช่น ดร., ผศ.ดร., อ."
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 text-sm outline-none transition"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-border-strong focus:border-primary-container focus:ring-2 focus:ring-primary-fixed text-sm outline-none transition bg-surface-main"
               />
               <div className="flex flex-wrap gap-1 pt-1">
                 {COMMON_PREFIXES.map((p) => (
@@ -319,8 +319,8 @@ export default function AddAdvisorModal({
                     }}
                     className={`text-[11px] px-2 py-0.5 rounded-lg border font-medium transition cursor-pointer ${
                       form.prefix === p
-                        ? 'bg-violet-600 text-white border-violet-600 shadow-xs'
-                        : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-violet-50 hover:text-violet-700'
+                        ? 'bg-primary-container text-white border-primary-container shadow-xs'
+                        : 'bg-surface-muted text-text-secondary border-border-subtle hover:bg-insight-tint hover:text-primary-container'
                     }`}
                   >
                     {p}
@@ -331,8 +331,8 @@ export default function AddAdvisorModal({
 
             {/* Full Name */}
             <div className="sm:col-span-8 space-y-2">
-              <label className="block text-xs font-bold text-slate-700">
-                ชื่อ-นามสกุล <span className="text-rose-500">*</span>
+              <label className="block text-xs font-bold text-on-surface-variant">
+                ชื่อ-นามสกุล <span className="text-error">*</span>
               </label>
               <input
                 type="text"
@@ -340,16 +340,16 @@ export default function AddAdvisorModal({
                 onChange={set('fullName')}
                 placeholder="เช่น สมชาย ใจดี (ไม่ต้องใส่คำนำหน้า)"
                 required
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 text-sm outline-none transition"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-border-strong focus:border-primary-container focus:ring-2 focus:ring-primary-fixed text-sm outline-none transition bg-surface-main"
               />
-              <p className="text-[11px] text-slate-400">ระบุชื่อและนามสกุลจริงของครูที่ปรึกษา</p>
+              <p className="text-[11px] text-outline">ระบุชื่อและนามสกุลจริงของครูที่ปรึกษา</p>
             </div>
 
             {/* Academic Position */}
             <div className="sm:col-span-6 space-y-2">
-              <label className="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                <Briefcase className="w-3.5 h-3.5 text-violet-600" />
-                ตำแหน่งทางวิชาการ / ตำแหน่ง <span className="text-rose-500">*</span>
+              <label className="block text-xs font-bold text-on-surface-variant flex items-center gap-1.5">
+                <Briefcase className="w-3.5 h-3.5 text-primary-container" />
+                ตำแหน่งทางวิชาการ / ตำแหน่ง <span className="text-error">*</span>
               </label>
               <input
                 type="text"
@@ -357,7 +357,7 @@ export default function AddAdvisorModal({
                 onChange={set('academicPosition')}
                 placeholder="เช่น อาจารย์ประจำ, ผู้ช่วยศาสตราจารย์"
                 required
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 text-sm outline-none transition"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-border-strong focus:border-primary-container focus:ring-2 focus:ring-primary-fixed text-sm outline-none transition bg-surface-main"
               />
               <div className="flex flex-wrap gap-1 pt-1">
                 {COMMON_POSITIONS.map((pos) => (
@@ -370,8 +370,8 @@ export default function AddAdvisorModal({
                     }}
                     className={`text-[11px] px-2 py-0.5 rounded-lg border font-medium transition cursor-pointer ${
                       form.academicPosition === pos
-                        ? 'bg-violet-600 text-white border-violet-600 shadow-xs'
-                        : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-violet-50 hover:text-violet-700'
+                        ? 'bg-primary-container text-white border-primary-container shadow-xs'
+                        : 'bg-surface-muted text-text-secondary border-border-subtle hover:bg-insight-tint hover:text-primary-container'
                     }`}
                   >
                     {pos}
@@ -382,9 +382,9 @@ export default function AddAdvisorModal({
 
             {/* Department */}
             <div className="sm:col-span-6 space-y-2">
-              <label className="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                <Building className="w-3.5 h-3.5 text-violet-600" />
-                แผนก / สาขาวิชา <span className="text-rose-500">*</span>
+              <label className="block text-xs font-bold text-on-surface-variant flex items-center gap-1.5">
+                <Building className="w-3.5 h-3.5 text-primary-container" />
+                แผนก / สาขาวิชา <span className="text-error">*</span>
               </label>
               <SearchableSelect
                 options={departments.map((d) => ({
@@ -400,75 +400,75 @@ export default function AddAdvisorModal({
                 searchPlaceholder="พิมพ์ค้นหาแผนก..."
                 disabled={loadingDepts}
               />
-              <p className="text-[11px] text-slate-400">เลือกแผนกวิชาที่ครูที่ปรึกษาสังกัด</p>
+              <p className="text-[11px] text-outline">เลือกแผนกวิชาที่ครูที่ปรึกษาสังกัด</p>
             </div>
 
             {/* Email */}
             <div className="sm:col-span-6 space-y-1.5">
-              <label className="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                <Mail className="w-3.5 h-3.5 text-slate-400" />
-                อีเมล <span className="text-slate-400 font-normal">(ถ้ามี)</span>
+              <label className="block text-xs font-bold text-on-surface-variant flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5 text-outline" />
+                อีเมล <span className="text-outline font-normal">(ถ้ามี)</span>
               </label>
               <input
                 type="email"
                 value={form.email}
                 onChange={set('email')}
                 placeholder="advisor@school.ac.th"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 text-sm outline-none transition"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-border-strong focus:border-primary-container focus:ring-2 focus:ring-primary-fixed text-sm outline-none transition bg-surface-main"
               />
             </div>
 
             {/* Phone */}
             <div className="sm:col-span-6 space-y-1.5">
-              <label className="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                <Phone className="w-3.5 h-3.5 text-slate-400" />
-                เบอร์โทรศัพท์ <span className="text-slate-400 font-normal">(ถ้ามี)</span>
+              <label className="block text-xs font-bold text-on-surface-variant flex items-center gap-1.5">
+                <Phone className="w-3.5 h-3.5 text-outline" />
+                เบอร์โทรศัพท์ <span className="text-outline font-normal">(ถ้ามี)</span>
               </label>
               <input
                 type="tel"
                 value={form.phone}
                 onChange={set('phone')}
                 placeholder="08X-XXX-XXXX"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 text-sm outline-none transition"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-border-strong focus:border-primary-container focus:ring-2 focus:ring-primary-fixed text-sm outline-none transition bg-surface-main"
               />
             </div>
 
             {/* Expertise */}
             <div className="sm:col-span-6 space-y-1.5">
-              <label className="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-slate-400" />
-                ความเชี่ยวชาญ <span className="text-slate-400 font-normal">(คั่นด้วยจุลภาค ,)</span>
+              <label className="block text-xs font-bold text-on-surface-variant flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-outline" />
+                ความเชี่ยวชาญ <span className="text-outline font-normal">(คั่นด้วยจุลภาค ,)</span>
               </label>
               <input
                 type="text"
                 value={form.expertise}
                 onChange={set('expertise')}
                 placeholder="เช่น Web, AI, IoT"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 text-sm outline-none transition"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-border-strong focus:border-primary-container focus:ring-2 focus:ring-primary-fixed text-sm outline-none transition bg-surface-main"
               />
             </div>
 
             {/* Office */}
             <div className="sm:col-span-6 space-y-1.5">
-              <label className="block text-xs font-bold text-slate-700">
-                ห้องพักครู / อาคาร <span className="text-slate-400 font-normal">(ถ้ามี)</span>
+              <label className="block text-xs font-bold text-on-surface-variant">
+                ห้องพักครู / อาคาร <span className="text-outline font-normal">(ถ้ามี)</span>
               </label>
               <input
                 type="text"
                 value={form.office}
                 onChange={set('office')}
                 placeholder="เช่น อาคาร 4 ชั้น 2"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 text-sm outline-none transition"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-border-strong focus:border-primary-container focus:ring-2 focus:ring-primary-fixed text-sm outline-none transition bg-surface-main"
               />
             </div>
           </div>
 
           {/* MODAL FOOTER / ACTIONS */}
-          <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-4 border-t border-slate-200">
+          <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-4 border-t border-border-subtle">
             <button
               type="button"
               onClick={onClose}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 font-bold text-sm transition cursor-pointer"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-border-strong text-on-surface-variant bg-surface-main hover:bg-surface-muted font-bold text-sm transition cursor-pointer"
             >
               ยกเลิก
             </button>
@@ -476,7 +476,7 @@ export default function AddAdvisorModal({
             <button
               type="submit"
               disabled={saving || Boolean(duplicateAdvisor)}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-sm shadow-md shadow-violet-500/20 focus:outline-none focus:ring-4 focus:ring-violet-500/30 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-primary-container hover:bg-primary text-white font-bold text-sm shadow-md shadow-primary-container/20 focus:outline-none focus:ring-4 focus:ring-primary-fixed/30 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {saving ? (
                 <>

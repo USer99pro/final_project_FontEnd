@@ -22,130 +22,82 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-10 bg-gradient-to-br from-blue-100 via-white to-indigo-100">
-  
-      {/* CARD */}
-      <div className="w-full max-w-md bg-white/90 backdrop-blur-md shadow-2xl rounded-3xl overflow-hidden border border-white/40">
-  
-        {/* TOP SECTION */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-10 text-center text-white">
-  
-          <div className="w-20 h-20 mx-auto rounded-full bg-white/20 flex items-center justify-center text-3xl font-bold shadow-lg">
+    <div className="ds-page flex items-center justify-center px-4 py-10 bg-gradient-to-br from-surface-container-low via-surface-main to-surface-container">
+
+      <div className="w-full max-w-md ds-panel shadow-elevation-hover overflow-hidden">
+        <div className="ds-panel-header text-center">
+          <div className="w-20 h-20 mx-auto rounded-full bg-white/20 flex items-center justify-center text-3xl font-bold shadow-elevation-1">
             R
           </div>
-  
-          <h1 className="text-3xl font-bold mt-5">
-            เข้าสู่ระบบ
-          </h1>
-  
-          <p className="text-blue-100 mt-2 text-sm">
+          <h1 className="font-display text-display-mobile mt-5">เข้าสู่ระบบ</h1>
+          <p className="text-inverse-primary mt-2 text-body-md">
             สำหรับนักศึกษาที่จบการศึกษาและผู้ดูแลระบบ
           </p>
         </div>
-  
-        {/* FORM */}
+
         <div className="p-8">
-  
           <form onSubmit={handleSubmit} className="space-y-5">
-  
-            {/* EMAIL */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                อีเมล
-              </label>
-  
+              <label className="ds-label">อีเมล</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="example@email.com"
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                className="ds-input"
               />
             </div>
-  
-            {/* PASSWORD */}
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                รหัสผ่าน
-              </label>
-  
+              <label className="ds-label">รหัสผ่าน</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="••••••••"
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                className="ds-input"
               />
             </div>
-  
-            {/* ERROR */}
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-xl">
-                {error}
-              </div>
-            )}
-  
-            {/* BUTTON */}
-            <button
-              type="submit"
-              className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-base shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/35 active:scale-[0.99] focus:outline-none focus:ring-4 focus:ring-blue-500/40 transition duration-200 cursor-pointer"
-            >
+
+            {error && <div className="ds-alert-error">{error}</div>}
+
+            <button type="submit" className="ds-btn-primary w-full py-3.5 text-body-emphasized">
               เข้าสู่ระบบ
             </button>
           </form>
 
-          {/* DIVIDER */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
+              <div className="w-full border-t border-border-subtle" />
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-3 text-gray-500 font-semibold">หรือ</span>
+            <div className="relative flex justify-center text-label-caps uppercase">
+              <span className="bg-surface-main px-3 text-text-secondary">หรือ</span>
             </div>
           </div>
 
-          {/* GOOGLE OAUTH BUTTON */}
           <a
             href={`${import.meta.env.VITE_API_URL || ''}/api/auth/google`}
-            className="w-full py-3.5 px-4 flex items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 transition duration-200"
+            className="ds-btn-secondary w-full py-3.5 text-body-emphasized shadow-elevation-1"
           >
             <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
-              <path
-                fill="#4285F4"
-                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-              />
-              <path
-                fill="#34A853"
-                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-              />
-              <path
-                fill="#FBBC05"
-                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-              />
-              <path
-                fill="#EA4335"
-                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-              />
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
             </svg>
             <span>เข้าสู่ระบบด้วย Google</span>
           </a>
-  
-          {/* FOOTER */}
-          <div className="mt-6 text-center text-sm text-gray-600">
+
+          <div className="mt-6 text-center text-body-md text-on-surface-variant">
             ยังไม่มีบัญชี?
-            <Link
-              to="/register"
-              className="ml-2 font-semibold text-blue-600 hover:text-indigo-600 transition"
-            >
+            <Link to="/register" className="ds-link ml-2">
               สมัครสมาชิก
             </Link>
           </div>
-  
         </div>
       </div>
     </div>
   );
-
 }

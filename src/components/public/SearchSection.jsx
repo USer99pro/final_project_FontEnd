@@ -1,74 +1,130 @@
 /**
- * SearchSection Component
- * - Large search bar with rounded-xl and shadow-lg
- * - Supports searching by: research title, researcher, category, and keyword
- * - Blue search button
+ * SearchSection — Academic Horizon design
+ * Multi-field search with elevation-level-1, 56px input height
  */
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { forwardRef } from 'react';
 
-const SearchSection = forwardRef(function SearchSection({ filters, onChange, onSearch }, ref) {
+const SearchSection = forwardRef(function SearchSection({ filters, onChange, onSearch, majors = [], years = [] }, ref) {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSearch();
   };
 
-  const handleInputChange = (value) => {
-    onChange({ ...filters, q: value });
+  const updateFilter = (key, value) => {
+    onChange({ ...filters, [key]: value });
   };
 
   return (
-    <section ref={ref} className="py-12 md:py-16 bg-[#F8FAFC]">
-      <div className="max-w-4xl mx-auto px-4 md:px-6">
-        {/* Section Title */}
-        <motion.div
-          className="text-center mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="text-2xl md:text-3xl font-bold text-[#0F172A] mb-2">
-            ค้นหาผลงานวิจัย
-          </h2>
-          <p className="text-gray-500">
-            ค้นหาได้ทั้งประเภท ชื่อผู้วิจัย ชื่องานวิจัย และคำสำคัญ (Keyword)
-          </p>
-        </motion.div>
-
-        {/* Search Bar */}
+    <section ref={ref} className="px-gutter-mobile md:px-gutter-desktop bg-surface -mt-8 relative z-10 py-12">
+      <div className="max-w-4xl mx-auto bg-surface-container-lowest p-6 md:p-8 rounded-xl border border-surface-border shadow-sm">
         <motion.form
           onSubmit={handleSubmit}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="relative"
+          transition={{ duration: 0.5 }}
         >
-          <div className="flex items-center bg-white rounded-2xl shadow-lg border border-[#E2E8F0] overflow-hidden transition-shadow duration-300 focus-within:shadow-xl focus-within:border-blue-300">
-            <div className="pl-5 text-gray-400">
-              <Search className="w-5 h-5" />
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* Main search */}
+            <div className="md:col-span-4">
+              <label className="block text-label-sm font-label-sm text-text-secondary mb-2">
+                ค้นหาหัวข้อ
+              </label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-outline pointer-events-none" />
+                <input
+                  type="text"
+                  value={filters.q || ''}
+                  onChange={(e) => updateFilter('q', e.target.value)}
+                  placeholder="พิมพ์ชื่อเรื่อง หรือคำสำคัญ..."
+                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-surface-border bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all h-[56px] text-body-md font-body-md text-text-primary placeholder:text-text-secondary"
+                  aria-label="ค้นหาหัวข้อ"
+                />
+              </div>
             </div>
-            <input
-              type="text"
-              value={filters.q || ''}
-              onChange={(e) => handleInputChange(e.target.value)}
-              placeholder="ค้นหาประเภท ชื่อผู้วิจัย ชื่องานวิจัย หรือ keyword..."
-              className="flex-1 px-4 py-4 md:py-5 text-base md:text-lg outline-none bg-transparent text-[#0F172A] placeholder:text-gray-400"
-              aria-label="Search research projects"
-            />
-            <motion.button
-              type="submit"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-6 md:px-10 py-4 md:py-5 font-bold text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 transition-colors duration-200 cursor-pointer whitespace-nowrap"
-            >
-              ค้นหา
-            </motion.button>
+
+            {/* Student name */}
+            <div className="md:col-span-1">
+              <label className="block text-label-sm font-label-sm text-text-secondary mb-2">
+                ชื่อนักศึกษา
+              </label>
+              <input
+                type="text"
+                value={filters.studentName || ''}
+                onChange={(e) => updateFilter('studentName', e.target.value)}
+                placeholder="ชื่อ-สกุล"
+                className="w-full px-4 py-2 rounded-lg border border-surface-border bg-surface focus:ring-2 focus:ring-primary outline-none text-body-md font-body-md text-text-primary placeholder:text-text-secondary"
+              />
+            </div>
+
+            {/* Major */}
+            <div className="md:col-span-1">
+              <label className="block text-label-sm font-label-sm text-text-secondary mb-2">
+                สาขาวิชา
+              </label>
+              {majors.length > 0 ? (
+                <select
+                  value={filters.major || ''}
+                  onChange={(e) => updateFilter('major', e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg border border-surface-border bg-surface focus:ring-2 focus:ring-primary outline-none text-body-md font-body-md text-text-primary"
+                >
+                  <option value="">ทั้งหมด</option>
+                  {majors.map((m) => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  value={filters.major || ''}
+                  onChange={(e) => updateFilter('major', e.target.value)}
+                  placeholder="ทั้งหมด"
+                  className="w-full px-4 py-2 rounded-lg border border-surface-border bg-surface focus:ring-2 focus:ring-primary outline-none text-body-md font-body-md text-text-primary placeholder:text-text-secondary"
+                />
+              )}
+            </div>
+
+            {/* Academic year */}
+            <div className="md:col-span-1">
+              <label className="block text-label-sm font-label-sm text-text-secondary mb-2">
+                ปีการศึกษา
+              </label>
+              {years.length > 0 ? (
+                <select
+                  value={filters.academicYear || ''}
+                  onChange={(e) => updateFilter('academicYear', e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg border border-surface-border bg-surface focus:ring-2 focus:ring-primary outline-none text-body-md font-body-md text-text-primary"
+                >
+                  <option value="">ทั้งหมด</option>
+                  {years.map((y) => (
+                    <option key={y} value={y}>{y}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  value={filters.academicYear || ''}
+                  onChange={(e) => updateFilter('academicYear', e.target.value)}
+                  placeholder="ทั้งหมด"
+                  className="w-full px-4 py-2 rounded-lg border border-surface-border bg-surface focus:ring-2 focus:ring-primary outline-none text-body-md font-body-md text-text-primary placeholder:text-text-secondary"
+                />
+              )}
+            </div>
+
+            {/* Search button */}
+            <div className="md:col-span-1 flex items-end">
+              <button
+                type="submit"
+                className="w-full bg-primary text-on-primary rounded-lg py-2 h-[42px] font-label-sm text-label-sm hover:bg-primary-container transition-colors flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Search className="w-4 h-4" />
+                ค้นหา
+              </button>
+            </div>
           </div>
         </motion.form>
-
       </div>
     </section>
   );
