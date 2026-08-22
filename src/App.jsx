@@ -28,7 +28,7 @@ import "./index.css";
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="/udvc-research/">
         <Layout>
           <Routes>
             {/* HOME */}
