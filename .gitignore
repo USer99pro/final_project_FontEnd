@@ -143,3 +143,8 @@ vite.config.ts.timestamp-*
 
 
 # "homepage": "http://localhost/udvc-research/",
+
+.env
+
+# Markdown files
+*.md
