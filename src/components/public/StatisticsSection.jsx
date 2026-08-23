@@ -1,6 +1,3 @@
-/**
- * StatisticsSection — Academic Horizon (DESIGN_Index.md)
- */
 import { motion } from 'framer-motion';
 
 const containerVariants = {

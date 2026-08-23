@@ -1,7 +1,3 @@
-/**
- * CategoryGrid — Academic Horizon design
- * Category cards with secondary-fixed icons on surface-container-low
- */
 import { motion } from 'framer-motion';
 import {
   Monitor,

@@ -21,7 +21,25 @@ export default function PublicSearch() {
   });
   const [categories, setCategories] = useState([]);
 
+  const statsLoadedRef = useRef(false);
   const searchRef = useRef(null);
+
+  const fetchStats = async () => {
+    try {
+      const { data } = await api.get('/api/public/stats');
+      if (data) {
+        setStats({
+          totalProjects: data.totalProjects ?? 0,
+          totalStudents: data.totalStudents ?? 0,
+          totalMajors: data.totalMajors ?? 0,
+          latestYear: data.latestYear ?? new Date().getFullYear() + 543,
+        });
+        statsLoadedRef.current = true;
+      }
+    } catch (err) {
+      console.warn('Failed to load /api/public/stats, fallback to computed stats', err);
+    }
+  };
 
   const load = async (params = filters) => {
     setLoading(true);
@@ -33,17 +51,19 @@ export default function PublicSearch() {
       setProjects(projectList);
 
       if (projectList.length > 0) {
-        const studentNames = new Set(projectList.map((p) => p.studentName).filter(Boolean));
-        const majors = new Set(projectList.map((p) => p.major).filter(Boolean));
-        const years = projectList.map((p) => p.academicYear).filter(Boolean);
-        const latestYear = years.length > 0 ? Math.max(...years) : new Date().getFullYear() + 543;
-
-        setStats({
-          totalProjects: projectList.length,
-          totalStudents: studentNames.size,
-          totalMajors: majors.size,
-          latestYear,
-        });
+        // Only use fallback stats if the /api/public/stats call failed
+        if (!statsLoadedRef.current) {
+          const studentNames = new Set(projectList.map((p) => p.studentName).filter(Boolean));
+          const majors = new Set(projectList.map((p) => p.major).filter(Boolean));
+          const years = projectList.map((p) => p.academicYear).filter(Boolean);
+          const latestYear = years.length > 0 ? Math.max(...years) : new Date().getFullYear() + 543;
+          setStats({
+            totalProjects: projectList.length,
+            totalStudents: studentNames.size,
+            totalMajors: majors.size,
+            latestYear,
+          });
+        }
 
         const categoryMap = {};
         projectList.forEach((p) => {
@@ -71,7 +91,11 @@ export default function PublicSearch() {
   };
 
   useEffect(() => {
-    load();
+    const init = async () => {
+      await fetchStats();
+      load();
+    };
+    init();
   }, []);
 
   const availableMajors = useMemo(() => {
