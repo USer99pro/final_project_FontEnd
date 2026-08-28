@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
 import { Search, LogIn, UserPlus, LayoutDashboard, FileText, User, Shield, Users, LogOut, Menu, X, GraduationCap, Activity, Tag } from 'lucide-react';
+import PublicFooter from './public/PublicFooter';
 
 export default function Layout({ children }) {
   const { user, logout, isAdmin, isGraduate } = useAuth();
@@ -21,12 +22,16 @@ export default function Layout({ children }) {
 
   return (
     <div className={`min-h-screen flex flex-col ${isHomePage ? 'bg-surface-accent' : 'bg-surface-accent'}`}>
+      {/* Skip navigation for Accessibility */}
+      <a href="#main-content" className="skip-link">
+        ข้ามไปที่เนื้อหาหลัก
+      </a>
 
       {/* ── NAVBAR ─────────────────────────────────────────── */}
       <header className="fixed top-0 left-0 w-full z-50 bg-surface-main border-b border-border-subtle shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <div className={`${isHomePage ? 'max-w-container-max' : 'max-w-7xl'} mx-auto px-gutter-mobile md:px-gutter-desktop h-16 flex items-center justify-between`}>
 
-          {/* Logo + Name */}
+          {/* Logo + Name (Fixed H1 duplicate bug by using span/div) */}
           <Link
             to="/"
             className="flex items-center gap-3 group"
@@ -35,9 +40,9 @@ export default function Layout({ children }) {
               R
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-headline-md font-semibold leading-tight text-on-background">
-                ระบบสืบค้นผลงานวิจัย
-              </h1>
+              <span className="text-headline-md font-semibold leading-tight text-on-background block">
+                การพัฒนาระบบสืบค้นผลงานวิจัยของนักศึกษาระดับปริญญาตรี
+              </span>
               <p className="text-label-sm text-text-secondary -mt-0.5">
                 Research Project Portal
               </p>
@@ -45,7 +50,7 @@ export default function Layout({ children }) {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1.5">
+          <nav className="hidden lg:flex items-center gap-1.5" aria-label="Main Navigation">
             <Link
               to="/"
               className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-label-sm font-medium transition-all duration-200 ${
@@ -184,7 +189,7 @@ export default function Layout({ children }) {
         {/* ── Mobile Menu ─────────────────────────────────── */}
         {mobileMenuOpen && (
           <div className="lg:hidden border-t border-border-subtle bg-surface-main/95">
-            <nav className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1">
+            <nav className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1" aria-label="Mobile Navigation">
               <Link
                 to="/"
                 onClick={closeMobile}
@@ -278,7 +283,7 @@ export default function Layout({ children }) {
       </header>
 
       {/* ── MAIN CONTENT ───────────────────────────────────── */}
-      <main className={`flex-1 w-full ${isHomePage ? 'pt-16' : 'pt-16 md:pt-20'}`}>
+      <main id="main-content" className={`flex-1 w-full ${isHomePage ? 'pt-16' : 'pt-16 md:pt-20'}`}>
         {isHomePage ? (
           children
         ) : (
@@ -290,6 +295,7 @@ export default function Layout({ children }) {
           </div>
         )}
       </main>
+      <PublicFooter />
     </div>
   );
 }

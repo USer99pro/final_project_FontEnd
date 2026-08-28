@@ -13,7 +13,8 @@ export default function HeroSection({ onScrollToSearch }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
         >
-          คลังข้อมูลงานวิจัยมหาวิทยาลัย
+          คลังข้อมูลงานวิจัยของนักศึกษาระดับปริญญาตรี<br/>วิทยาลัยอาชีวศึกษาอุดรธานี 
+
         </motion.h1>
 
         <motion.p
@@ -22,7 +23,7 @@ export default function HeroSection({ onScrollToSearch }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
         >
-          ค้นพบงานวิจัย นวัตกรรม และองค์ความรู้ใหม่ๆ จากผลงานของนักศึกษาและบุคลากรในมหาวิทยาลัย แหล่งรวมทรัพยากรทางวิชาการที่เชื่อถือได้
+          ค้นพบงานวิจัย นวัตกรรม และองค์ความรู้ใหม่ๆ จากผลงานของนักศึกษาและบุคลากรในวิทยาลัย 
         </motion.p>
 
         <motion.button

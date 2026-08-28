@@ -148,3 +148,9 @@ vite.config.ts.timestamp-*
 
 # Markdown files
 *.md
+
+*.zip
+*.rar
+.DS_Store
+dist/*
+dist

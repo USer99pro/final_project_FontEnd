@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api, { getApiBase } from '../api/client';
+import SEOHead from '../components/SEOHead';
 import { ArrowLeft, FileText, Download, User, Building, Calendar, BookOpen, GraduationCap, Tag } from 'lucide-react';
 
 export default function PublicDetail() {
@@ -17,6 +18,7 @@ export default function PublicDetail() {
 
   if (error) return (
     <div className="max-w-4xl mx-auto py-12 px-4 text-center">
+      <SEOHead title="ไม่พบผลงาน | คลังข้อมูลงานวิจัยมหาวิทยาลัย" />
       <div className="bg-error-container border border-error/30 text-error p-6 rounded-2xl max-w-md mx-auto">
         <p className="font-semibold text-base mb-4">{error}</p>
         <Link to="/" className="inline-flex items-center gap-2 px-4 py-2 bg-error text-white rounded-xl font-semibold text-sm hover:opacity-90 transition">
@@ -28,6 +30,7 @@ export default function PublicDetail() {
 
   if (!work) return (
     <div className="max-w-4xl mx-auto py-16 px-4 text-center text-text-secondary font-medium">
+      <SEOHead title="กำลังโหลดข้อมูลงานวิจัย... | คลังข้อมูลงานวิจัยมหาวิทยาลัย" />
       กำลังโหลดข้อมูล...
     </div>
   );
@@ -35,9 +38,41 @@ export default function PublicDetail() {
   const fileUrl = work.fileUrl || `${getApiBase()}/api/public/projects/${id}/file`;
   const participants = work.participants || [];
   const advisors = work.advisors?.length ? work.advisors : work.advisor ? [work.advisor] : [];
+  const authorName = work.studentName || work.author?.fullName || 'UDVC Researcher';
+  const abstractText = work.abstract || work.description || 'บทคัดย่อผลงานวิจัยและวิทยานิพนธ์ทางวิชาการ';
+
+  // Article JSON-LD Schema
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ScholarlyArticle',
+    headline: work.title,
+    description: abstractText.slice(0, 200),
+    author: {
+      '@type': 'Person',
+      name: authorName,
+    },
+    inLanguage: 'th',
+    url: `https://udvc-research.online/projects/${id}`,
+    datePublished: work.createdAt || new Date().toISOString(),
+    publisher: {
+      '@type': 'Organization',
+      name: 'คลังข้อมูลงานวิจัยมหาวิทยาลัย',
+    },
+  };
 
   return (
     <div className="detail max-w-4xl mx-auto py-8 px-4 space-y-6">
+      <SEOHead
+        title={`${work.title} | คลังข้อมูลงานวิจัยมหาวิทยาลัย`}
+        description={abstractText.slice(0, 160)}
+        canonicalUrl={`https://udvc-research.online/projects/${id}`}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+
       <Link to="/" className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-on-surface-variant bg-surface-main border border-border-subtle rounded-xl hover:bg-surface-muted hover:text-primary-container shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-fixed/40 transition">
         <ArrowLeft className="w-4 h-4" />
         กลับไปหน้าค้นหา
@@ -49,7 +84,7 @@ export default function PublicDetail() {
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-text-secondary border-b border-border-subtle pb-4 font-medium">
           <span className="flex items-center gap-1.5 text-on-background font-semibold">
             <User className="w-4 h-4 text-primary-container" />
-            ผู้จัดทำหลัก: {work.studentName || work.author?.fullName}
+            ผู้จัดทำหลัก: {authorName}
           </span>
           {work.major && (
             <span className="flex items-center gap-1.5">

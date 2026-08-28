@@ -8,9 +8,25 @@ export default defineConfig({
     tailwindcss()
   ],
 
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3500',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 
   build: {
     outDir: 'dist',
     assetsDir: 'assets'
-  }
+  },
+
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: [],
+  },
 })
+

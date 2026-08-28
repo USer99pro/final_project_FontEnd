@@ -1,12 +1,13 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
 import api from '../api/client';
 
+import SEOHead from '../components/SEOHead';
 import HeroSection from '../components/public/HeroSection';
 import SearchSection from '../components/public/SearchSection';
 import ResearchTable from '../components/public/ResearchTable';
 import StatisticsSection from '../components/public/StatisticsSection';
 import CategoryGrid from '../components/public/CategoryGrid';
-import PublicFooter from '../components/public/PublicFooter';
+import FAQSection from '../components/public/FAQSection';
 
 export default function PublicSearch() {
   const [filters, setFilters] = useState({ q: '', studentName: '', major: '', academicYear: '' });
@@ -125,6 +126,12 @@ export default function PublicSearch() {
 
   return (
     <div className="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+      <SEOHead
+        title="คลังข้อมูลงานวิจัยมหาวิทยาลัย | ระบบสืบค้นผลงานวิชาการและนวัตกรรม"
+        description="คลังข้อมูลงานวิจัยมหาวิทยาลัย ค้นหางานวิจัย นวัตกรรม วิทยานิพนธ์ และบทความวิชาการจากนักศึกษาและบุคลากร ครอบคลุมวิทยาการคอมพิวเตอร์ วิศวกรรมศาสตร์ และบริหารธุรกิจ"
+        canonicalUrl="https://udvc-research.online/"
+      />
+
       <HeroSection onScrollToSearch={handleScrollToSearch} />
 
       <SearchSection
@@ -142,7 +149,7 @@ export default function PublicSearch() {
 
       <CategoryGrid categories={categories} onSelectCategory={handleSelectCategory} />
 
-      <PublicFooter />
+      <FAQSection />
     </div>
   );
 }

@@ -1,11 +1,19 @@
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3500";
-console.log(API_URL);
 let refreshRequest = null;
+
+const notifyUnauthorized = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refreshToken');
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('auth:unauthorized'));
+  }
+};
 
 export const api = axios.create({
   baseURL: API_URL,
+  timeout: 15000, // 15 seconds request timeout for security against slowloris
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -20,6 +28,16 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     const refreshToken = localStorage.getItem('refreshToken');
+
+    // Handle 429 Rate Limiting
+    if (error.response?.status === 429) {
+      const retryAfter = error.response.data?.retryAfter || error.response.headers?.['retry-after'];
+      const message = error.response.data?.error || 'คำขอมากเกินไป กรุณาลองใหม่อีกครั้ง';
+      error.rateLimitInfo = {
+        message,
+        retryAfter: retryAfter ? parseInt(retryAfter, 10) : null
+      };
+    }
 
     // Access tokens expire after 15 minutes. Refresh once, then retry the
     // original request with the replacement access token.
@@ -49,15 +67,13 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
+        notifyUnauthorized();
         return Promise.reject(refreshError);
       }
     }
 
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
+      notifyUnauthorized();
     }
     return Promise.reject(error);
   }
@@ -73,9 +89,8 @@ export function getGoogleAuthUrl() {
 
 export async function uploadPaper(file) {
   const formData = new FormData();
-  formData.append('paper', file);
-  formData.append('file', file);
-  const response = await api.post('/api/uploads/paper', formData, {
+  formData.append('pdf', file);
+  const response = await api.post('/api/contents', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
   return response.data;

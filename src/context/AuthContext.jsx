@@ -22,12 +22,27 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
+    const handleUnauthorized = () => {
+      setUser(null);
+      setLoading(false);
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('auth:unauthorized', handleUnauthorized);
+    }
+
     const token = localStorage.getItem('token');
     if (!token) {
       setLoading(false);
-      return;
+    } else {
+      fetchMe().finally(() => setLoading(false));
     }
-    fetchMe().finally(() => setLoading(false));
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('auth:unauthorized', handleUnauthorized);
+      }
+    };
   }, []);
 
   const login = async (email, password) => {
@@ -82,8 +97,8 @@ export function AuthProvider({ children }) {
         logout,
         fetchMe,
         isAdmin: user?.role === 'admin',
-        // Keep private navigation hidden until a user has been authenticated.
-        isGraduate: Boolean(user) && (user.role === 'graduate' || user.role === 'user'),
+        // Graduate features accessible by graduate, user, and admin roles
+        isGraduate: Boolean(user) && (user.role === 'graduate' || user.role === 'user' || user.role === 'admin'),
       }}
     >
       {children}

@@ -10,6 +10,11 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import OAuthCallback from "./pages/OAuthCallback";
 
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
+
 import GraduateDashboard from "./pages/GraduateDashboard";
 import MyWorks from "./pages/MyWorks";
 import WorkForm from "./pages/WorkForm";
@@ -44,6 +49,12 @@ export default function App() {
               path="/api/auth/google/callback"
               element={<OAuthCallback />}
             />
+
+            {/* E-E-A-T TRUST PAGES */}
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
 
             {/* GRADUATE */}
             <Route

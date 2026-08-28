@@ -548,4 +548,22 @@ h1 {
   .ds-link {
     @apply font-medium text-primary-container hover:text-primary transition;
   }
+
+  /* Accessibility Utility Classes */
+  .skip-link {
+    @apply absolute -top-40 left-4 z-[100] bg-primary text-on-primary px-4 py-2 rounded-lg shadow-lg transition-all focus:top-4 outline-none font-semibold text-sm;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
 }
+
