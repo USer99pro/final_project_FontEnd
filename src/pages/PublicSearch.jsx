@@ -13,6 +13,7 @@ export default function PublicSearch() {
   const [filters, setFilters] = useState({ q: '', studentName: '', major: '', academicYear: '' });
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [stats, setStats] = useState({
     totalProjects: 0,
@@ -44,6 +45,7 @@ export default function PublicSearch() {
 
   const load = async (params = filters) => {
     setLoading(true);
+    setError(null);
     try {
       const { data } = await api.get('/api/public/projects', {
         params: Object.fromEntries(Object.entries(params).filter(([, v]) => v)),
@@ -85,10 +87,21 @@ export default function PublicSearch() {
       }
     } catch (err) {
       console.error(err);
+      const isNetworkError = err.code === 'ERR_NETWORK' || err.message?.includes('Network Error');
+      setError(
+        isNetworkError
+          ? 'ไม่สามารถเชื่อมต่อกับระบบหลังบ้านได้ (Render Server อาจกำลัง Cold-Start หรืออินเทอร์เน็ตหลุด)'
+          : 'เกิดข้อผิดพลาดในการโหลดข้อมูลผลงานวิจัย'
+      );
       setProjects([]);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRetry = () => {
+    fetchStats();
+    load(filters);
   };
 
   useEffect(() => {
@@ -143,7 +156,7 @@ export default function PublicSearch() {
         years={availableYears}
       />
 
-      <ResearchTable projects={projects} loading={loading} />
+      <ResearchTable projects={projects} loading={loading} error={error} onRetry={handleRetry} />
 
       <StatisticsSection stats={stats} />
 

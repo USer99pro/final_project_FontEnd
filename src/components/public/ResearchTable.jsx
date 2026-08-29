@@ -3,13 +3,13 @@
  * Clean minimalist table with accent-soft row hover
  */
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, FileText, Loader2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, FileText, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState, useMemo } from 'react';
 
 const ITEMS_PER_PAGE = 8;
 
-export default function ResearchTable({ projects = [], loading = false }) {
+export default function ResearchTable({ projects = [], loading = false, error = null, onRetry = null }) {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -65,6 +65,23 @@ export default function ResearchTable({ projects = [], loading = false }) {
             <div className="flex items-center justify-center py-20">
               <Loader2 className="w-8 h-8 text-primary animate-spin" />
               <span className="ml-3 text-text-secondary text-body-md">กำลังโหลดข้อมูล...</span>
+            </div>
+          ) : error ? (
+            <div className="text-center py-16 px-4">
+              <AlertCircle className="w-12 h-12 text-amber-500 mx-auto mb-3" />
+              <p className="text-text-primary font-medium text-body-lg">เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์</p>
+              <p className="text-text-secondary text-body-md mt-1 mb-4 max-w-md mx-auto">
+                {error || 'ไม่สามารถโหลดข้อมูลได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต หรือลองใหม่อีกครั้ง'}
+              </p>
+              {onRetry && (
+                <button
+                  onClick={onRetry}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-lg font-medium text-body-md hover:bg-primary/90 transition-colors cursor-pointer shadow-sm"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  ลองใหม่อีกครั้ง
+                </button>
+              )}
             </div>
           ) : projects.length === 0 ? (
             <div className="text-center py-20">
@@ -156,3 +173,4 @@ export default function ResearchTable({ projects = [], loading = false }) {
     </section>
   );
 }
+
