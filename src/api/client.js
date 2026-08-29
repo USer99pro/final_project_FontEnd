@@ -52,8 +52,8 @@ api.interceptors.response.use(
         // Several protected views can load in parallel. Reuse one refresh
         // request so token rotation is never attempted more than once.
         if (!refreshRequest) {
-          refreshRequest = axios
-            .post(`${API_URL}/api/auth/refresh`, { refreshToken })
+          refreshRequest = api
+            .post('/api/auth/refresh', { refreshToken })
             .then(({ data }) => {
               localStorage.setItem('token', data.accessToken);
               localStorage.setItem('refreshToken', data.refreshToken);
