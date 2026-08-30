@@ -34,10 +34,10 @@ export default function PublicFooter() {
               <div className="inline-flex items-center gap-2">
                 <Mail className="w-4 h-4 text-sky-400 shrink-0" aria-hidden="true" />
                 <a
-                  href="mailto:contact@udvc-research.online"
+                  href="66309010001@gsuite.udvc.ac.th"
                   className="!text-white hover:!text-sky-300 font-medium transition-colors duration-200 break-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#031B36] rounded"
                 >
-                  contact@udvc-research.online
+                  66309010001@gsuite.udvc.ac.th
                 </a>
               </div>
               <div className="inline-flex items-center gap-2">
@@ -46,7 +46,7 @@ export default function PublicFooter() {
                   href="tel:021234567"
                   className="!text-white hover:!text-sky-300 font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#031B36] rounded"
                 >
-                  02-123-4567
+                  +66 61-809-6515
                 </a>
               </div>
             </address>
