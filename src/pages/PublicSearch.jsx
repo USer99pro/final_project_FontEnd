@@ -88,10 +88,14 @@ export default function PublicSearch() {
       }
     } catch (err) {
       console.error(err);
-      const isNetworkError = err.code === 'ERR_NETWORK' || err.message?.includes('Network Error');
+      const isNetworkError =
+        err.code === 'ERR_NETWORK' ||
+        err.code === 'ECONNABORTED' ||
+        err.message?.includes('Network Error') ||
+        err.message?.includes('timeout');
       setError(
         isNetworkError
-          ? 'ไม่สามารถเชื่อมต่อกับระบบหลังบ้านได้ (Render Server อาจกำลัง Cold-Start หรืออินเทอร์เน็ตหลุด)'
+          ? 'ไม่สามารถเชื่อมต่อกับระบบหลังบ้านได้ (Render Server กำลังเริ่มต้นระบบ/Cold-Start หรือเครือข่ายขัดข้อง กรุณากดลองอีกครั้ง)'
           : 'เกิดข้อผิดพลาดในการโหลดข้อมูลผลงานวิจัย'
       );
       setProjects([]);

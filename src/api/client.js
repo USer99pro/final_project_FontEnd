@@ -13,7 +13,7 @@ const notifyUnauthorized = () => {
 
 export const api = axios.create({
   baseURL: API_URL,
-  timeout: 15000, // 15 seconds request timeout for security against slowloris
+  timeout: 60000, // 60 seconds timeout to accommodate Render.com cold starts
   headers: { 'Content-Type': 'application/json' },
 });
 

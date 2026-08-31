@@ -1,4 +1,4 @@
-import api from './client';
+import api, { getApiBase } from './client';
 import { getVisitorId, getSessionId, getDeviceInfo } from '../utils/analytics';
 
 const cleanParams = (params = {}) => Object.fromEntries(
@@ -10,7 +10,8 @@ const get = async (path, params) => (await api.get(path, { params: cleanParams(p
 // ─── Event Tracking (Public — no auth required) ──────────────────────────────
 
 /**
- * Track an analytics event (PAGE_VIEW, LOGIN, REGISTER).
+ * Track an analytics event (PAGE_VIEW, SEARCH, VIEW_WORK, DOWNLOAD_WORK, LOGIN, REGISTER).
+ * Uses fetch with keepalive for reliable delivery across page navigations.
  * Never throws — analytics failure must not affect UX.
  */
 export async function trackAnalyticsEvent(payload) {
@@ -25,8 +26,14 @@ export async function trackAnalyticsEvent(payload) {
       referrer: typeof document !== 'undefined' ? document.referrer?.slice(0, 500) || null : null,
       ...payload,
     };
-    // Fire-and-forget: do not await in callers for UX
-    api.post('/api/analytics', body).catch(() => {});
+
+    const url = `${getApiBase()}/api/analytics`;
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      keepalive: true,
+    }).catch(() => {});
   } catch {
     // Silently ignore any analytics error
   }
