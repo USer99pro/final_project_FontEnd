@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { trackAnalyticsEvent } from '../api/analyticsService';
 
 export default function Login() {
   const { login } = useAuth();
@@ -14,6 +15,11 @@ export default function Login() {
     setError('');
     try {
       const user = await login(email, password);
+      trackAnalyticsEvent({
+        event: 'LOGIN',
+        page: '/login',
+        userId: user?._id || user?.id || null,
+      });
       if (user.role === 'admin') navigate('/admin');
       else navigate('/graduate');
     } catch (err) {

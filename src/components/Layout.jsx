@@ -16,7 +16,8 @@ import {
   GraduationCap,
   Activity,
   Tag,
-  ChevronDown
+  ChevronDown,
+  BarChart3,
 } from 'lucide-react';
 import PublicFooter from './public/PublicFooter';
 
@@ -63,6 +64,7 @@ export default function Layout({ children }) {
     { to: '/admin/advisors', label: 'จัดการครูที่ปรึกษา', icon: GraduationCap },
     { to: '/admin/categories', label: 'จัดการหมวดหมู่/แท็ก', icon: Tag },
     { to: '/admin/audit', label: 'บันทึก Audit Logs', icon: Activity },
+    { to: '/admin/analytics', label: 'Analytics ผู้เข้าชม', icon: BarChart3 },
   ];
 
   return (

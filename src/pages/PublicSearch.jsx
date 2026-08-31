@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
 import api from '../api/client';
+import { trackAnalyticsEvent } from '../api/analyticsService';
 
 import SEOHead from '../components/SEOHead';
 import HeroSection from '../components/public/HeroSection';
@@ -128,6 +129,14 @@ export default function PublicSearch() {
 
   const handleSearch = () => {
     load(filters);
+    const keyword = filters.q?.trim() || filters.studentName?.trim() || filters.major?.trim();
+    if (keyword) {
+      trackAnalyticsEvent({
+        event: 'SEARCH',
+        page: '/search',
+        searchKeyword: keyword,
+      });
+    }
   };
 
   const handleSelectCategory = (catName) => {
@@ -135,6 +144,13 @@ export default function PublicSearch() {
     setFilters(newFilters);
     load(newFilters);
     handleScrollToSearch();
+    if (catName?.trim()) {
+      trackAnalyticsEvent({
+        event: 'SEARCH',
+        page: '/search',
+        searchKeyword: catName.trim(),
+      });
+    }
   };
 
   return (

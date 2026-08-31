@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { trackAnalyticsEvent } from '../api/analyticsService';
 import SearchableSelect from '../components/SearchableSelect';
 import { UserPlus } from 'lucide-react';
 
@@ -58,7 +59,12 @@ export default function Register() {
     }
 
     try {
-      await register(form);
+      const user = await register(form);
+      trackAnalyticsEvent({
+        event: 'REGISTER',
+        page: '/register',
+        userId: user?._id || user?.id || null,
+      });
       navigate('/graduate');
     } catch (err) {
       setError(err.response?.data?.error || 'สมัครไม่สำเร็จ');

@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { Analytics } from "@vercel/analytics/react";
 
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import RouteAnalytics from "./components/analytics/RouteAnalytics";
 
 import PublicSearch from "./pages/PublicSearch";
 import PublicDetail from "./pages/PublicDetail";
@@ -27,6 +29,7 @@ import WorkManagement from "./pages/admin/WorkManagement";
 import CategoryTagManagement from "./pages/admin/CategoryTagManagement";
 import AuditLogs from "./pages/admin/AuditLogs";
 import AdvisorManagement from "./pages/admin/AdvisorManagement";
+import AnalyticsDashboard from "./pages/admin/AnalyticsDashboard";
 
 import "./index.css";
 
@@ -34,6 +37,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <RouteAnalytics />
         <Layout>
           <Routes>
             {/* HOME */}
@@ -173,9 +177,19 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
+            <Route
+              path="/admin/analytics"
+              element={
+                <ProtectedRoute role="admin">
+                  <AnalyticsDashboard />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </Layout>
       </BrowserRouter>
+      <Analytics />
     </AuthProvider>
   );
 }

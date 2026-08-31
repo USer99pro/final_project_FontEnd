@@ -43,7 +43,7 @@ export default function PublicFooter() {
               <div className="inline-flex items-center gap-2">
                 <Phone className="w-4 h-4 text-sky-400 shrink-0" aria-hidden="true" />
                 <a
-                  href="tel:021234567"
+                  href="tel:061-809-6515"
                   className="!text-white hover:!text-sky-300 font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#031B36] rounded"
                 >
                   +66 61-809-6515

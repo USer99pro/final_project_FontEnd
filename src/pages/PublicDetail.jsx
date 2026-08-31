@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api, { getApiBase } from '../api/client';
+import { trackAnalyticsEvent } from '../api/analyticsService';
 import SEOHead from '../components/SEOHead';
 import { ArrowLeft, FileText, Download, User, Building, Calendar, BookOpen, GraduationCap, Tag } from 'lucide-react';
 
@@ -8,11 +9,22 @@ export default function PublicDetail() {
   const { id } = useParams();
   const [work, setWork] = useState(null);
   const [error, setError] = useState('');
+  const trackedWorkId = useRef(null);
 
   useEffect(() => {
     api
       .get(`/api/public/projects/${id}`)
-      .then((res) => setWork(res.data))
+      .then((res) => {
+        setWork(res.data);
+        if (trackedWorkId.current !== id) {
+          trackedWorkId.current = id;
+          trackAnalyticsEvent({
+            event: 'VIEW_WORK',
+            page: `/projects/${id}`,
+            workId: id,
+          });
+        }
+      })
       .catch(() => setError('ไม่พบผลงานหรือยังไม่เผยแพร่'));
   }, [id]);
 
@@ -174,6 +186,13 @@ export default function PublicDetail() {
             href={fileUrl}
             target="_blank"
             rel="noreferrer"
+            onClick={() => {
+              trackAnalyticsEvent({
+                event: 'DOWNLOAD_WORK',
+                page: `/projects/${id}`,
+                workId: id,
+              });
+            }}
             className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-container hover:opacity-90 active:opacity-80 !text-white font-black text-sm rounded-xl border-2 border-primary-fixed shadow-[0_4px_14px_rgba(30,64,175,0.45)] focus:outline-none focus:ring-4 focus:ring-primary-fixed/40 transition-all duration-200 cursor-pointer opacity-100"
           >
             <FileText className="w-4 h-4 text-white" />
@@ -181,6 +200,13 @@ export default function PublicDetail() {
           </a>
           <a
             href={`${fileUrl}?download=1`}
+            onClick={() => {
+              trackAnalyticsEvent({
+                event: 'DOWNLOAD_WORK',
+                page: `/projects/${id}`,
+                workId: id,
+              });
+            }}
             className="px-6 py-3 bg-surface-main border border-border-strong hover:bg-surface-muted active:bg-surface-accent text-on-background font-bold text-sm rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-outline transition-all duration-200 flex items-center gap-2.5 cursor-pointer"
           >
             <Download className="w-4 h-4 text-text-secondary" />
