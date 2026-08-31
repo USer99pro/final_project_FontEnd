@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { Analytics } from "@vercel/analytics/react";
 
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -35,6 +36,7 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Layout>
+          <Analytics />
           <Routes>
             {/* HOME */}
             <Route path="/" element={<PublicSearch />} />
