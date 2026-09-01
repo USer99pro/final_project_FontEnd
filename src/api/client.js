@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || "localhost:3500";
+const API_URL = import.meta.env.VITE_API_URL || import.meta.env.Vercel_Backend_URL;
 let refreshRequest = null;
 
 const notifyUnauthorized = () => {
