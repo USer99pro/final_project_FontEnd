@@ -16,6 +16,9 @@ export default function OAuthCallback() {
     const err = searchParams.get('error');
 
     if (err) {
+      if (typeof window !== 'undefined' && (window.location.search || window.location.hash)) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
       setError(decodeURIComponent(err) || 'เข้าสู่ระบบด้วย Google ไม่สำเร็จ');
       return;
     }
@@ -23,6 +26,12 @@ export default function OAuthCallback() {
     if (!token) {
       setError('ไม่พบ Token ยืนยันตัวตนจาก Google OAuth');
       return;
+    }
+
+    // Immediately scrub sensitive tokens from the browser address bar and history
+    // to prevent leakage via Referer headers, browser history, or shoulder-surfing.
+    if (typeof window !== 'undefined' && (window.location.search || window.location.hash)) {
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
 
     loginWithToken(token, refreshToken)

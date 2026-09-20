@@ -208,11 +208,19 @@ export default function WorkForm() {
     }
   };
 
+  const MAX_PDF_SIZE_BYTES = 50 * 1024 * 1024; // 50MB max limit
+
   const handlePdfChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.type !== 'application/pdf' || !file.name.toLowerCase().endsWith('.pdf')) {
       alert('กรุณาเลือกไฟล์ PDF เท่านั้น');
+      e.target.value = '';
+      setPdf(null);
+      return;
+    }
+    if (file.size > MAX_PDF_SIZE_BYTES) {
+      alert('ขนาดไฟล์ PDF ต้องไม่เกิน 50MB');
       e.target.value = '';
       setPdf(null);
       return;
@@ -227,6 +235,10 @@ export default function WorkForm() {
 
     if (pdf && (pdf.type !== 'application/pdf' || !pdf.name.toLowerCase().endsWith('.pdf'))) {
       alert('กรุณาเลือกไฟล์ PDF เท่านั้น');
+      return;
+    }
+    if (pdf && pdf.size > MAX_PDF_SIZE_BYTES) {
+      alert('ขนาดไฟล์ PDF ต้องไม่เกิน 50MB');
       return;
     }
     if (finalStatus === 'published' && !pdf && !hasExistingPdf) {

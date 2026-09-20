@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FileText, ArrowRight, Calendar, User, Building } from 'lucide-react';
+import { sanitizeUrl } from '../utils/security';
 
 export default function WorkCard({ work }) {
   return (
@@ -56,9 +57,9 @@ export default function WorkCard({ work }) {
 
         {(work.hasPdf || work.pdfFilename || work.pdfUrl) && (
           <a
-            href={work.fileUrl || work.pdfUrl || `/api/public/projects/${work._id}/file`}
+            href={sanitizeUrl(work.fileUrl || work.pdfUrl || `/api/public/projects/${work._id}/file`, '#')}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant bg-surface-accent hover:bg-surface-container-low hover:text-on-background border border-border-subtle focus:outline-none focus:ring-2 focus:ring-outline/40 transition-all cursor-pointer"
           >
             <FileText className="w-3.5 h-3.5 text-error" />

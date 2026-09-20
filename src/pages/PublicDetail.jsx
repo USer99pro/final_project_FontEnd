@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api, { getApiBase } from '../api/client';
 import { trackAnalyticsEvent } from '../api/analyticsService';
+import { safeJsonLdStringify, sanitizeUrl } from '../utils/security';
 import SEOHead from '../components/SEOHead';
 import { ArrowLeft, FileText, Download, User, Building, Calendar, BookOpen, GraduationCap, Tag } from 'lucide-react';
 
@@ -47,7 +48,8 @@ export default function PublicDetail() {
     </div>
   );
 
-  const fileUrl = work.fileUrl || `${getApiBase()}/api/public/projects/${id}/file`;
+  const defaultFileUrl = `${getApiBase()}/api/public/projects/${id}/file`;
+  const fileUrl = sanitizeUrl(work.fileUrl, defaultFileUrl);
   const participants = work.participants || [];
   const advisors = work.advisors?.length ? work.advisors : work.advisor ? [work.advisor] : [];
   const authorName = work.studentName || work.author?.fullName || 'UDVC Researcher';
@@ -82,7 +84,7 @@ export default function PublicDetail() {
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(articleSchema) }}
       />
 
       <Link to="/" className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-on-surface-variant bg-surface-main border border-border-subtle rounded-xl hover:bg-surface-muted hover:text-primary-container shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-fixed/40 transition">
@@ -185,7 +187,7 @@ export default function PublicDetail() {
           <a
             href={fileUrl}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             onClick={() => {
               trackAnalyticsEvent({
                 event: 'DOWNLOAD_WORK',

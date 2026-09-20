@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { HelpCircle } from 'lucide-react';
+import { safeJsonLdStringify } from '../../utils/security';
 
 const faqs = [
   {
@@ -38,7 +39,7 @@ export default function FAQSection() {
     <section className="py-12 px-gutter-mobile md:px-gutter-desktop bg-surface-container-low">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(faqSchema) }}
       />
       <div className="max-w-4xl mx-auto">
         <motion.div

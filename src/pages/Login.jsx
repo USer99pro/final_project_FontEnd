@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { trackAnalyticsEvent } from '../api/analyticsService';
+import { getGoogleAuthUrl } from '../api/client';
 
 export default function Login() {
   const { login } = useAuth();
@@ -84,7 +85,7 @@ export default function Login() {
           </div>
 
           <a
-            href={`${import.meta.env.VITE_API_URL || ''}/api/auth/google`}
+            href={getGoogleAuthUrl()}
             className="ds-btn-secondary w-full py-3.5 text-body-emphasized shadow-elevation-1"
           >
             <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">

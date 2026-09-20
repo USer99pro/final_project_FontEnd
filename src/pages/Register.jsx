@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { trackAnalyticsEvent } from '../api/analyticsService';
+import { getGoogleAuthUrl } from '../api/client';
 import SearchableSelect from '../components/SearchableSelect';
 import { UserPlus } from 'lucide-react';
 
@@ -226,7 +227,7 @@ export default function Register() {
 
           {/* GOOGLE OAUTH BUTTON */}
           <a
-            href={`${import.meta.env.VITE_API_URL || ''}/api/auth/google`}
+            href={getGoogleAuthUrl()}
             className="w-full py-3.5 px-4 flex items-center justify-center gap-3 rounded-xl border border-border-strong bg-surface-main hover:bg-surface-muted text-on-background font-bold shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-outline transition duration-200"
           >
             <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
