@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { maskSensitiveData } from '../utils/security';
 
-const API_URL = (import.meta.env.VITE_API_URL || import.meta.env.Vercel_Backend_URL || '').replace(/\/+$/, '');
+const API_URL = (import.meta.env.VITE_API_URL).replace(/\/+$/, '');
 let refreshRequest = null;
 
 const notifyUnauthorized = () => {
