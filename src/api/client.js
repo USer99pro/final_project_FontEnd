@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { maskSensitiveData } from '../utils/security';
 
-const API_URL = import.meta.env.VITE_API_URL || import.meta.env.Vercel_Backend_URL;
+const API_URL = (import.meta.env.VITE_API_URL || import.meta.env.Vercel_Backend_URL || '').replace(/\/+$/, '');
 let refreshRequest = null;
 
 const notifyUnauthorized = () => {
@@ -14,7 +14,7 @@ const notifyUnauthorized = () => {
 
 export const api = axios.create({
   baseURL: API_URL,
-  timeout: 60000, // 60 seconds timeout to accommodate Render.com cold starts
+  timeout: 60000,
   headers: { 'Content-Type': 'application/json' },
 });
 
