@@ -147,9 +147,6 @@ export function getApiBase() {
   return API_URL;
 }
 
-export function getGoogleAuthUrl() {
-  return `${API_URL}/api/auth/google`;
-}
 
 export async function uploadPaper(file) {
   const formData = new FormData();

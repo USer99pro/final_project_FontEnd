@@ -10,8 +10,13 @@ export default function ProtectedRoute({ children, role }) {
   if (role === 'admin' && user.role !== 'admin') {
     return <Navigate to="/" replace />;
   }
-  if (role === 'graduate' && user.role !== 'graduate' && user.role !== 'user' && user.role !== 'admin') {
-    return <Navigate to="/" replace />;
+  if (role === 'graduate') {
+    if (user.role === 'admin') {
+      return <Navigate to="/admin" replace />;
+    }
+    if (user.role !== 'graduate' && user.role !== 'user') {
+      return <Navigate to="/" replace />;
+    }
   }
 
   return children;

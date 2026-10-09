@@ -10,7 +10,6 @@ import PublicSearch from "./pages/PublicSearch";
 import PublicDetail from "./pages/PublicDetail";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import OAuthCallback from "./pages/OAuthCallback";
 
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
@@ -29,7 +28,6 @@ import WorkManagement from "./pages/admin/WorkManagement";
 import CategoryTagManagement from "./pages/admin/CategoryTagManagement";
 import AuditLogs from "./pages/admin/AuditLogs";
 import AdvisorManagement from "./pages/admin/AdvisorManagement";
-import AnalyticsDashboard from "./pages/admin/AnalyticsDashboard";
 
 import "./index.css";
 
@@ -47,12 +45,6 @@ export default function App() {
             <Route path="/projects/:id" element={<PublicDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/oauth/callback" element={<OAuthCallback />} />
-            <Route path="/auth/callback" element={<OAuthCallback />} />
-            <Route
-              path="/api/auth/google/callback"
-              element={<OAuthCallback />}
-            />
 
             {/* E-E-A-T TRUST PAGES */}
             <Route path="/about" element={<AboutPage />} />
@@ -63,6 +55,14 @@ export default function App() {
             {/* GRADUATE */}
             <Route
               path="/graduate"
+              element={
+                <ProtectedRoute role="graduate">
+                  <GraduateDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/graduate/:id"
               element={
                 <ProtectedRoute role="graduate">
                   <GraduateDashboard />
@@ -82,7 +82,7 @@ export default function App() {
             <Route
               path="/graduate/works/new"
               element={
-                <ProtectedRoute role="graduate">
+                <ProtectedRoute>
                   <WorkForm />
                 </ProtectedRoute>
               }
@@ -91,7 +91,7 @@ export default function App() {
             <Route
               path="/graduate/works/:id/edit"
               element={
-                <ProtectedRoute role="graduate">
+                <ProtectedRoute>
                   <WorkForm />
                 </ProtectedRoute>
               }
@@ -100,7 +100,7 @@ export default function App() {
             <Route
               path="/graduate/profile"
               element={
-                <ProtectedRoute role="graduate">
+                <ProtectedRoute>
                   <Profile />
                 </ProtectedRoute>
               }
@@ -165,7 +165,7 @@ export default function App() {
               path="/admin/audit"
               element={
                 <ProtectedRoute role="admin">
-                  <AuditLogs />
+                  <AdminDashboard />
                 </ProtectedRoute>
               }
             />
@@ -182,7 +182,7 @@ export default function App() {
               path="/admin/analytics"
               element={
                 <ProtectedRoute role="admin">
-                  <AnalyticsDashboard />
+                  <AdminDashboard />
                 </ProtectedRoute>
               }
             />

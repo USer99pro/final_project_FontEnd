@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import api from '../../api/client';
 import { ShieldAlert, LogIn, Clock, User, Activity, Calendar, Search, RotateCcw, Filter } from 'lucide-react';
 
-export default function AuditLogs() {
+export default function AuditLogs({ embedded = false }) {
   const [audit, setAudit] = useState([]);
   const [logins, setLogins] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,14 +83,16 @@ export default function AuditLogs() {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in pt-6">
+    <div className={`space-y-6 animate-fade-in ${embedded ? 'pt-2' : 'pt-6'}`}>
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-on-background">ประวัติการทำงานและ Audit Logs</h1>
-          <p className="text-sm text-text-secondary">ตรวจสอบประวัติการเข้าสู่ระบบและประวัติกิจกรรมในระบบของผู้ใช้งาน</p>
+      {!embedded && (
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-on-background">ประวัติการทำงานและ Audit Logs</h1>
+            <p className="text-sm text-text-secondary">ตรวจสอบประวัติการเข้าสู่ระบบและประวัติกิจกรรมในระบบของผู้ใช้งาน</p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Filter Section */}
       <div className="bg-surface-main p-5 rounded-2xl border border-border-subtle shadow-sm space-y-4">

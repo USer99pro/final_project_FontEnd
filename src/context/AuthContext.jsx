@@ -45,8 +45,15 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
-  const login = async (email, password) => {
-    const { data } = await api.post('/api/auth/login', { email, password });
+  const login = async (identifier, password) => {
+    const cleanIdentifier = identifier ? String(identifier).trim() : '';
+    const { data } = await api.post('/api/auth/login', {
+      identifier: cleanIdentifier,
+      email: cleanIdentifier,
+      studentId: cleanIdentifier,
+      username: cleanIdentifier,
+      password,
+    });
     if (data.accessToken || data.token) {
       localStorage.setItem('token', data.accessToken || data.token);
     }
@@ -71,15 +78,6 @@ export function AuthProvider({ children }) {
     return userData;
   };
 
-  const loginWithToken = async (token, refreshToken) => {
-    localStorage.setItem('token', token);
-    if (refreshToken) {
-      localStorage.setItem('refreshToken', refreshToken);
-    }
-    const userData = await fetchMe();
-    return userData;
-  };
-
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
@@ -93,12 +91,11 @@ export function AuthProvider({ children }) {
         loading,
         login,
         register,
-        loginWithToken,
         logout,
         fetchMe,
         isAdmin: user?.role === 'admin',
-        // Graduate features accessible by graduate, user, and admin roles
-        isGraduate: Boolean(user) && (user.role === 'graduate' || user.role === 'user' || user.role === 'admin'),
+        // Graduate features accessible only by graduate and user roles (not admin)
+        isGraduate: Boolean(user) && (user.role === 'graduate' || user.role === 'user'),
       }}
     >
       {children}

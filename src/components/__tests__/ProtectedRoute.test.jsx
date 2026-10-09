@@ -93,4 +93,29 @@ describe('ProtectedRoute RBAC Security Component', () => {
 
     expect(screen.getByText('Admin Dashboard')).toBeDefined();
   });
+
+  it('redirects admin user away from graduate routes to /admin', () => {
+    AuthModule.useAuth.mockReturnValue({
+      user: { role: 'admin', email: 'admin@udvc.ac.th' },
+      loading: false,
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/graduate']}>
+        <Routes>
+          <Route
+            path="/graduate"
+            element={
+              <ProtectedRoute role="graduate">
+                <div>Graduate Dashboard</div>
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/admin" element={<div>Admin Page</div>} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Admin Page')).toBeDefined();
+  });
 });
