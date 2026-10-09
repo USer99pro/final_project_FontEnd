@@ -547,7 +547,7 @@ export default function WorkForm() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-on-surface-variant mb-2">ปีการศึกษา</label>
+                    <label className="block text-sm font-medium text-on-surface-variant mb-2">ปีการเผยแพร่</label>
                     <input 
                       value={form.academicYear} 
                       onChange={set('academicYear')} 

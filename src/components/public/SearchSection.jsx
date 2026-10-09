@@ -4,16 +4,34 @@
  */
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
-import { forwardRef } from 'react';
+import { forwardRef, useMemo } from 'react';
 
 const SearchSection = forwardRef(function SearchSection({ filters, onChange, onSearch, majors = [], years = [] }, ref) {
+  // Only display unique years that exist in the database (passed via props), sorted descending
+  const allYearOptions = useMemo(() => {
+    const rawYears = [
+      ...(years || []).map(String).filter(Boolean),
+      ...(filters?.academicYear ? [String(filters.academicYear)] : []),
+    ];
+    const unique = new Set(rawYears);
+    return Array.from(unique)
+      .map(Number)
+      .filter((y) => !isNaN(y) && y > 0)
+      .sort((a, b) => b - a)
+      .map(String);
+  }, [years, filters?.academicYear]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSearch();
+    onSearch?.(filters);
   };
 
   const updateFilter = (key, value) => {
-    onChange({ ...filters, [key]: value });
+    const updated = { ...filters, [key]: value };
+    onChange(updated);
+    if (onSearch && (key === 'academicYear' || key === 'major')) {
+      onSearch(updated);
+    }
   };
 
   return (
@@ -89,28 +107,18 @@ const SearchSection = forwardRef(function SearchSection({ filters, onChange, onS
             {/* Academic year */}
             <div className="md:col-span-1">
               <label className="block text-label-sm font-label-sm text-text-secondary mb-2">
-                ปีการศึกษา
+                ปีการเผยเเพร่
               </label>
-              {years.length > 0 ? (
-                <select
-                  value={filters.academicYear || ''}
-                  onChange={(e) => updateFilter('academicYear', e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-surface-border bg-surface focus:ring-2 focus:ring-primary outline-none text-body-md font-body-md text-text-primary"
-                >
-                  <option value="">ทั้งหมด</option>
-                  {years.map((y) => (
-                    <option key={y} value={y}>{y}</option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  type="text"
-                  value={filters.academicYear || ''}
-                  onChange={(e) => updateFilter('academicYear', e.target.value)}
-                  placeholder="ทั้งหมด"
-                  className="w-full px-4 py-2 rounded-lg border border-surface-border bg-surface focus:ring-2 focus:ring-primary outline-none text-body-md font-body-md text-text-primary placeholder:text-text-secondary"
-                />
-              )}
+              <select
+                value={filters.academicYear || ''}
+                onChange={(e) => updateFilter('academicYear', e.target.value)}
+                className="w-full px-4 py-2 rounded-lg border border-surface-border bg-surface focus:ring-2 focus:ring-primary outline-none text-body-md font-body-md text-text-primary"
+              >
+                <option value="">ทั้งหมด</option>
+                {allYearOptions.map((y) => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
             </div>
 
             {/* Search button */}

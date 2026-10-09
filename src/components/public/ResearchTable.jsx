@@ -97,7 +97,7 @@ export default function ResearchTable({ projects = [], loading = false, error = 
                     <th className="py-3 px-6 font-label-sm text-label-sm text-text-secondary">ชื่อหัวข้อ</th>
                     <th className="py-3 px-6 font-label-sm text-label-sm text-text-secondary">นักศึกษา</th>
                     <th className="py-3 px-6 font-label-sm text-label-sm text-text-secondary">สาขาวิชา</th>
-                    <th className="py-3 px-6 font-label-sm text-label-sm text-text-secondary text-right">ปีการศึกษา</th>
+                    <th className="py-3 px-6 font-label-sm text-label-sm text-text-secondary text-right">ปีการเผยแพร่</th>
                   </tr>
                 </thead>
                 <tbody className="font-body-md text-body-md">

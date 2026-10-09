@@ -15,6 +15,8 @@ export default function PublicSearch() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [allYears, setAllYears] = useState([]);
+  const [allMajors, setAllMajors] = useState([]);
 
   const [stats, setStats] = useState({
     totalProjects: 0,
@@ -55,6 +57,15 @@ export default function PublicSearch() {
       setProjects(projectList);
 
       if (projectList.length > 0) {
+        const yList = projectList.map((p) => String(p.academicYear)).filter(Boolean);
+        if (yList.length > 0) {
+          setAllYears((prev) => Array.from(new Set([...prev, ...yList])).sort((a, b) => Number(b) - Number(a)));
+        }
+        const mList = projectList.map((p) => p.major).filter(Boolean);
+        if (mList.length > 0) {
+          setAllMajors((prev) => Array.from(new Set([...prev, ...mList])));
+        }
+
         // Only use fallback stats if the /api/public/stats call failed
         if (!statsLoadedRef.current) {
           const studentNames = new Set(projectList.map((p) => p.studentName).filter(Boolean));
@@ -104,14 +115,40 @@ export default function PublicSearch() {
     }
   };
 
+  const fetchFilterOptions = async () => {
+    try {
+      const { data } = await api.get('/api/public/projects');
+      const allProjects = data?.projects || [];
+      const yList = allProjects.map((p) => String(p.academicYear)).filter(Boolean);
+      const mList = allProjects.map((p) => p.major).filter(Boolean);
+      if (yList.length > 0) {
+        const sortedYears = Array.from(new Set(yList)).sort((a, b) => Number(b) - Number(a));
+        setAllYears(sortedYears);
+        // Sync latestYear into stats so the stat card always shows the real latest year
+        setStats((prev) => ({
+          ...prev,
+          latestYear: Number(sortedYears[0]),
+        }));
+      }
+      if (mList.length > 0) {
+        setAllMajors(Array.from(new Set(mList)));
+      }
+    } catch (e) {
+      console.warn('Failed to fetch initial filter options from database', e);
+    }
+  };
+
+
   const handleRetry = () => {
     fetchStats();
+    fetchFilterOptions();
     load(filters);
   };
 
   useEffect(() => {
     const init = async () => {
-      await fetchStats();
+      fetchStats();
+      fetchFilterOptions();
       load();
     };
     init();
@@ -131,9 +168,17 @@ export default function PublicSearch() {
     searchRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
-  const handleSearch = () => {
-    load(filters);
-    const keyword = filters.q?.trim() || filters.studentName?.trim() || filters.major?.trim();
+  const handleSearch = (overrideFilters) => {
+    const activeFilters =
+      overrideFilters && typeof overrideFilters === 'object' && !overrideFilters.nativeEvent
+        ? overrideFilters
+        : filters;
+    load(activeFilters);
+    const keyword =
+      activeFilters.q?.trim() ||
+      activeFilters.studentName?.trim() ||
+      activeFilters.major?.trim() ||
+      activeFilters.academicYear?.trim();
     if (keyword) {
       trackAnalyticsEvent({
         event: 'SEARCH',
@@ -172,8 +217,8 @@ export default function PublicSearch() {
         filters={filters}
         onChange={setFilters}
         onSearch={handleSearch}
-        majors={availableMajors}
-        years={availableYears}
+        majors={allMajors.length > 0 ? allMajors : availableMajors}
+        years={allYears.length > 0 ? allYears : availableYears}
       />
 
       <ResearchTable projects={projects} loading={loading} error={error} onRetry={handleRetry} />

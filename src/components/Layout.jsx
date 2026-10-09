@@ -112,29 +112,17 @@ export default function Layout({ children }) {
             )}
 
             {isGraduate && (
-              <>
-                <Link
-                  to="/graduate"
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 ${location.pathname === '/graduate'
-                      ? 'text-primary bg-insight-tint font-semibold'
-                      : 'text-on-surface-variant hover:bg-insight-tint hover:text-primary-container'
-                    }`}
-                >
-                  <LayoutDashboard className="w-4 h-4 shrink-0" />
-                  <span>แดชบอร์ด</span>
-                </Link>
-
-                <Link
-                  to="/graduate/works"
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 ${location.pathname.startsWith('/graduate/works')
-                      ? 'text-primary bg-insight-tint font-semibold'
-                      : 'text-on-surface-variant hover:bg-insight-tint hover:text-primary-container'
-                    }`}
-                >
-                  <FileText className="w-4 h-4 shrink-0" />
-                  <span>ผลงานของฉัน</span>
-                </Link>
-              </>
+              <Link
+                to="/graduate"
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 ${
+                  location.pathname === '/graduate' || location.pathname.startsWith('/graduate/works')
+                    ? 'text-primary bg-insight-tint font-semibold'
+                    : 'text-on-surface-variant hover:bg-insight-tint hover:text-primary-container'
+                }`}
+              >
+                <LayoutDashboard className="w-4 h-4 shrink-0" />
+                <span>แดชบอร์ดผลงานวิจัย</span>
+              </Link>
             )}
 
             {/* Admin Navigation — แสดงเต็ม Navbar ไม่ตกบรรทัด */}
@@ -238,11 +226,7 @@ export default function Layout({ children }) {
                   </div>
                   <Link to="/graduate" onClick={closeMobile} className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:bg-insight-tint hover:text-primary-container transition-all">
                     <LayoutDashboard className="w-4 h-4 shrink-0" />
-                    <span>แดชบอร์ด</span>
-                  </Link>
-                  <Link to="/graduate/works" onClick={closeMobile} className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:bg-insight-tint hover:text-primary-container transition-all">
-                    <FileText className="w-4 h-4 shrink-0" />
-                    <span>ผลงานของฉัน</span>
+                    <span>แดชบอร์ดผลงานวิจัย</span>
                   </Link>
                   <Link to="/graduate/profile" onClick={closeMobile} className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:bg-insight-tint hover:text-primary-container transition-all">
                     <User className="w-4 h-4 shrink-0" />

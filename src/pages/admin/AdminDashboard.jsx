@@ -451,9 +451,9 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {/* Academic Year */}
           <label className="relative">
-            <span className="sr-only">ปีการศึกษา</span>
+            <span className="sr-only">ปีการเผยแพร่</span>
             <input
-              placeholder="ปีการศึกษา เช่น 2567"
+              placeholder="ปีการเผยแพร่ เช่น 2567"
               value={filters.academicYear}
               onChange={(e) => setFilters((old) => ({ ...old, academicYear: e.target.value }))}
               className="w-full rounded-xl border border-border-strong px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -577,7 +577,7 @@ export default function AdminDashboard() {
           {/* Research Trends */}
           <Panel
             title="แนวโน้มผลงานวิจัย"
-            subtitle="จำนวนผลงานตามปีการศึกษา"
+            subtitle="จำนวนผลงานตามปีการเผยแพร่"
             loading={researchState.loading}
             error={r.worksTrend?.error}
             onRetry={loadResearch}

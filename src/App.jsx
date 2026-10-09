@@ -73,7 +73,7 @@ export default function App() {
               path="/graduate/works"
               element={
                 <ProtectedRoute role="graduate">
-                  <MyWorks />
+                  <GraduateDashboard />
                 </ProtectedRoute>
               }
             />
