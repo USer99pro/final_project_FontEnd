@@ -74,14 +74,6 @@ export default function Login() {
               เข้าสู่ระบบ
             </button>
           </form>
-
-
-          <div className="mt-6 text-center text-body-md text-on-surface-variant">
-            ยังไม่มีบัญชี?
-            <Link to="/register" className="ds-link ml-2">
-              สมัครสมาชิก
-            </Link>
-          </div>
         </div>
       </div>
     </div>

@@ -9,7 +9,6 @@ import RouteAnalytics from "./components/analytics/RouteAnalytics";
 import PublicSearch from "./pages/PublicSearch";
 import PublicDetail from "./pages/PublicDetail";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
 
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
@@ -44,7 +43,7 @@ export default function App() {
             {/* PUBLIC */}
             <Route path="/projects/:id" element={<PublicDetail />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            {/* /register route removed — admin creates users via User Management */}
 
             {/* E-E-A-T TRUST PAGES */}
             <Route path="/about" element={<AboutPage />} />
