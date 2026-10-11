@@ -4,7 +4,7 @@ import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import SearchableSelect from '../components/SearchableSelect';
 import AddAdvisorModal from '../components/AddAdvisorModal';
-import { X, Save, FileText, Check, AlertCircle, Plus, Users, GraduationCap } from 'lucide-react';
+import { X, Save, FileText, Check, AlertCircle, Plus, Users, GraduationCap, UserCheck } from 'lucide-react';
 
 export default function WorkForm() {
   const { id } = useParams();
@@ -96,27 +96,39 @@ export default function WorkForm() {
     }
   }, [id, isEdit, user?.major, fetchAdvisors]);
 
+  // Auto-fill ผู้จัดทำหลัก (primary author) and major from logged-in user when creating a new work
+  useEffect(() => {
+    if (!isEdit && user) {
+      setForm((prev) => ({
+        ...prev,
+        studentName: prev.studentName || user.fullName || '',
+        major: prev.major || user.major || '',
+      }));
+    }
+  }, [user, isEdit]);
+
   const department = form.major || user?.major || '';
 
   // advisors limit: maximum 3 advisors per research work (N-to-N)
   const advisorLimit = 3;
 
   useEffect(() => {
-    if (!department) return;
+    const targetDept = department || user?.major || '';
+    if (!targetDept && user?.role !== 'admin') return;
 
     const usersRequest =
       user?.role === 'admin'
-        ? api.get('/api/admin/users', { params: { major: department, isActive: 'true' } }).catch(() =>
-            api.get('/api/users', { params: { major: department } })
+        ? api.get('/api/admin/users', { params: { major: targetDept || undefined, isActive: 'true' } }).catch(() =>
+            api.get('/api/users', { params: { major: targetDept || undefined } })
           )
-        : api.get('/api/users', { params: { major: department } });
+        : api.get('/api/users', { params: { major: targetDept } });
 
     usersRequest
       .then((res) => setAvailableUsers(res.data.users || res.data || []))
       .catch(() => setAvailableUsers([]));
 
     fetchAdvisors();
-  }, [department, user?.role, fetchAdvisors]);
+  }, [department, user?.major, user?.role, fetchAdvisors]);
 
   const set = (key) => (e) => {
     setForm({ ...form, [key]: e.target.value });
@@ -404,17 +416,27 @@ export default function WorkForm() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-on-surface-variant mb-2">ชื่อผู้จัดทำหลัก</label>
-                    <input 
-                      value={form.studentName} 
-                      onChange={set('studentName')} 
-                      className="w-full px-4 py-3 rounded-lg border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition"
-                    />
+                    <div className="space-y-1">
+                      <input 
+                        value={form.studentName} 
+                        onChange={set('studentName')} 
+                        placeholder="ระบุชื่อผู้จัดทำหลัก..."
+                        className="w-full px-4 py-3 rounded-lg border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition"
+                      />
+                      {user && (
+                        <div className="flex items-center gap-1.5 text-xs text-text-secondary pt-1">
+                          <UserCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                          <span>ผู้จัดทำหลัก: <strong className="text-on-background">{form.studentName || user.fullName}</strong>{user.studentId ? ` (${user.studentId})` : ''}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-on-surface-variant mb-2">สาขาวิชา</label>
                     <input 
                       value={form.major} 
                       readOnly
+                      placeholder="สาขาวิชา..."
                       className="w-full px-4 py-3 rounded-lg border border-border-strong focus:ring-2 focus:ring-primary-fixed focus:border-primary-container outline-none transition bg-surface-muted text-on-surface-variant"
                     />
                   </div>
@@ -422,20 +444,25 @@ export default function WorkForm() {
 
                 {/* Project Participants (ผู้ร่วมจัดทำโครงการ) */}
                 <div className="p-4 bg-insight-tint/50 border border-primary-fixed rounded-xl space-y-3">
-                  <label className="block text-sm font-semibold text-on-background flex items-center gap-2">
-                    <Users className="w-4 h-4 text-primary-container" />
-                    เพิ่มผู้ร่วมจัดทำโครงการ (Project Participants)
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="block text-sm font-semibold text-on-background flex items-center gap-2">
+                      <Users className="w-4 h-4 text-primary-container" />
+                      เพิ่มผู้ร่วมจัดทำโครงการ (Project Participants)
+                    </label>
+                    <span className="text-xs text-text-secondary">
+                      เลือกเพื่อนนักศึกษาในสาขาวิชาเดียวกัน
+                    </span>
+                  </div>
                   <p className="text-xs text-text-secondary">
-                    แสดงเฉพาะผู้ใช้ในแผนก {department} เพื่อเพิ่มเป็นผู้ร่วมจัดทำผลงานวิจัยนี้
+                    แสดงเฉพาะผู้ใช้ในแผนก {department || user?.major || 'สาขาวิชาของคุณ'} เพื่อเพิ่มเป็นผู้ร่วมจัดทำผลงานวิจัยนี้
                   </p>
                   
                   <div className="flex gap-2">
                     <div className="flex-1">
                       <SearchableSelect
                         options={availableUsers
-                          .filter((u) => u._id !== user?._id && u.major === department && !form.participants.includes(u._id))
-                          .map((u) => ({ value: u._id, label: u.fullName, sublabel: u.studentId }))}
+                          .filter((u) => u._id !== user?._id && !form.participants.includes(u._id))
+                          .map((u) => ({ value: u._id, label: u.fullName, sublabel: u.studentId || u.major }))}
                         value={selectedParticipantId}
                         onChange={(val) => {
                           setSelectedParticipantId(val);
@@ -446,6 +473,15 @@ export default function WorkForm() {
                         icon={Users}
                       />
                     </div>
+                    {selectedParticipantId && (
+                      <button
+                        type="button"
+                        onClick={() => addParticipant(selectedParticipantId)}
+                        className="px-4 py-2.5 rounded-xl bg-primary-container text-white text-xs font-bold hover:opacity-90 transition cursor-pointer"
+                      >
+                        + เพิ่ม
+                      </button>
+                    )}
                   </div>
 
                   {/* Display Selected Participants */}
@@ -453,7 +489,7 @@ export default function WorkForm() {
                     <div className="flex flex-wrap gap-2 pt-2">
                       {form.participants.map((pId) => {
                         const pUser = availableUsers.find((u) => u._id === pId);
-                        const displayName = pUser ? pUser.fullName : pId;
+                        const displayName = pUser ? `${pUser.fullName} ${pUser.studentId ? `(${pUser.studentId})` : ''}` : pId;
                         return (
                           <span
                             key={pId}
@@ -547,7 +583,7 @@ export default function WorkForm() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-on-surface-variant mb-2">ปีการเผยแพร่</label>
+                    <label className="block text-sm font-medium text-on-surface-variant mb-2">ปี พ.ศ.</label>
                     <input 
                       value={form.academicYear} 
                       onChange={set('academicYear')} 

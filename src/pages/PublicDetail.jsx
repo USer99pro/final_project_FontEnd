@@ -109,7 +109,7 @@ export default function PublicDetail() {
           {work.academicYear && (
             <span className="flex items-center gap-1.5">
               <Calendar className="w-4 h-4 text-outline" />
-              ปีการเผยแพร่: {work.academicYear}
+              ปี พ.ศ.: {work.academicYear}
             </span>
           )}
         </div>

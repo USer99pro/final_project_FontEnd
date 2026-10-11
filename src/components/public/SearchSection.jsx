@@ -107,7 +107,7 @@ const SearchSection = forwardRef(function SearchSection({ filters, onChange, onS
             {/* Academic year */}
             <div className="md:col-span-1">
               <label className="block text-label-sm font-label-sm text-text-secondary mb-2">
-                ปีการเผยเเพร่
+                ปี พ.ศ.
               </label>
               <select
                 value={filters.academicYear || ''}

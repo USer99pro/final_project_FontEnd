@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/client";
+import { useAuth } from "../context/AuthContext";
 import {
   Plus,
   FileText,
@@ -14,11 +15,14 @@ import {
   ChevronLeft,
   ChevronRight,
   History as HistoryIcon,
+  Users,
+  UserCheck,
 } from "lucide-react";
 
 const ITEMS_PER_PAGE = 8;
 
 export default function GraduateDashboard() {
+  const { user } = useAuth();
   const [works, setWorks] = useState([]);
   const [activity, setActivity] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,14 +46,24 @@ export default function GraduateDashboard() {
     load();
   }, []);
 
-  const handleDelete = async (id) => {
+  const isOwner = (work) => {
+    if (!user?._id) return true;
+    const authorId = work.author?._id || work.author;
+    return String(authorId) === String(user._id);
+  };
+
+  const handleDelete = async (id, work) => {
+    if (work && !isOwner(work) && user?.role !== "admin") {
+      alert("เฉพาะเจ้าของผลงานหลักเท่านั้นที่สามารถลบผลงานนี้ได้");
+      return;
+    }
     if (!confirm("ยืนยันที่จะลบผลงานวิจัยนี้ใช่หรือไม่? การลบไม่สามารถกู้คืนได้")) return;
     try {
       await api.delete(`/api/contents/${id}`);
       load();
     } catch (err) {
       console.error(err);
-      alert("เกิดข้อผิดพลาดในการลบผลงาน");
+      alert(err.response?.data?.error || "เกิดข้อผิดพลาดในการลบผลงาน");
     }
   };
 
@@ -186,10 +200,10 @@ export default function GraduateDashboard() {
                         ลำดับ
                       </th>
                       <th className="px-6 py-3.5 text-xs font-bold text-text-secondary uppercase tracking-wider">
-                        ชื่อผลงานวิจัย
+                        ชื่อผลงานวิจัย / บทบาท
                       </th>
                       <th className="px-6 py-3.5 text-xs font-bold text-text-secondary uppercase tracking-wider text-center w-32">
-                        ปีการเผยแพร่
+                        ปี พ.ศ.
                       </th>
                       <th className="px-6 py-3.5 text-xs font-bold text-text-secondary uppercase tracking-wider text-center w-32">
                         สถานะ
@@ -202,6 +216,9 @@ export default function GraduateDashboard() {
                   <tbody className="divide-y divide-border-subtle">
                     {paginatedWorks.map((w, index) => {
                       const rowNumber = (currentPage - 1) * ITEMS_PER_PAGE + index + 1;
+                      const hasOwnership = isOwner(w);
+                      const authorName = w.author?.fullName || w.studentName || "เจ้าของผลงาน";
+
                       return (
                         <tr
                           key={w._id}
@@ -211,9 +228,30 @@ export default function GraduateDashboard() {
                             {rowNumber}
                           </td>
                           <td className="px-6 py-4">
-                            <p className="text-sm font-bold text-on-background line-clamp-2 leading-relaxed">
-                              {w.title}
-                            </p>
+                            <div className="space-y-1.5">
+                              <p className="text-sm font-bold text-on-background line-clamp-2 leading-relaxed">
+                                {w.title}
+                              </p>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                {!hasOwnership ? (
+                                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                                    <Users className="w-3 h-3 text-blue-500 shrink-0" />
+                                    <span>ผู้ร่วมสร้างผลงาน (ผู้สร้าง: {authorName})</span>
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium text-text-secondary bg-surface-muted border border-border-subtle">
+                                    <UserCheck className="w-3 h-3 text-emerald-600 shrink-0" />
+                                    <span>เจ้าของผลงาน</span>
+                                  </span>
+                                )}
+                                {hasOwnership && w.participants && w.participants.length > 0 && (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium text-text-secondary bg-surface-muted border border-border-subtle">
+                                    <Users className="w-3 h-3 text-text-secondary shrink-0" />
+                                    <span>ผู้ร่วม {w.participants.length} คน</span>
+                                  </span>
+                                )}
+                              </div>
+                            </div>
                           </td>
                           <td className="px-6 py-4 text-center">
                             <span className="inline-flex items-center px-2.5 py-1 bg-surface-muted border border-border-subtle rounded-lg text-xs font-semibold text-on-surface-variant">
@@ -227,21 +265,31 @@ export default function GraduateDashboard() {
                             <div className="flex items-center justify-center gap-2">
                               <Link
                                 to={`/graduate/works/${w._id}/edit`}
-                                className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-insight-tint text-primary-container hover:bg-primary-container hover:text-white border border-primary-fixed/80 focus:outline-none focus:ring-2 focus:ring-primary-fixed transition-all duration-200 shadow-xs text-xs font-bold"
+                                className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white border border-blue-200 hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-all duration-150 shadow-xs text-xs font-bold cursor-pointer"
                                 title="แก้ไขผลงาน"
                               >
-                                <Edit className="w-3.5 h-3.5" />
+                                <Edit className="w-3.5 h-3.5 text-blue-600 group-hover:text-white" />
                                 <span>แก้ไข</span>
                               </Link>
-                              <button
-                                type="button"
-                                onClick={() => handleDelete(w._id)}
-                                className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-error-container text-error hover:bg-error hover:text-white border border-error/30 focus:outline-none focus:ring-2 focus:ring-error/40 transition-all duration-200 shadow-xs text-xs font-bold cursor-pointer"
-                                title="ลบผลงาน"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                                <span>ลบ</span>
-                              </button>
+                              {hasOwnership || user?.role === "admin" ? (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDelete(w._id, w)}
+                                  className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-error-container text-error hover:bg-error hover:text-white border border-error/30 focus:outline-none focus:ring-2 focus:ring-error/40 transition-all duration-200 shadow-xs text-xs font-bold cursor-pointer"
+                                  title="ลบผลงาน"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                  <span>ลบ</span>
+                                </button>
+                              ) : (
+                                <span
+                                  className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-surface-muted text-text-secondary/40 border border-border-subtle text-xs font-medium cursor-not-allowed select-none"
+                                  title="เฉพาะเจ้าของผลงานหลักเท่านั้นที่สามารถลบได้"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                  <span>ลบ</span>
+                                </span>
+                              )}
                             </div>
                           </td>
                         </tr>

@@ -473,10 +473,10 @@ export default function AdvisorManagement() {
                           <button
                             type="button"
                             onClick={() => edit(advisor)}
-                            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-insight-tint text-primary hover:bg-primary-container hover:text-white border border-primary-fixed/80 focus:outline-none focus:ring-2 focus:ring-primary-fixed text-xs font-bold transition cursor-pointer"
+                            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white border border-blue-200 hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/40 text-xs font-bold transition cursor-pointer"
                             title="แก้ไข"
                           >
-                            <Edit className="w-3.5 h-3.5" />
+                            <Edit className="w-3.5 h-3.5 text-blue-600 group-hover:text-white" />
                             <span>แก้ไข</span>
                           </button>
                           <button

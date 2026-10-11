@@ -18,7 +18,7 @@ export default function StatisticsSection({ stats }) {
     { label: 'งานวิจัยทั้งหมด', value: stats?.totalProjects ?? 0 },
     { label: 'นักศึกษา', value: stats?.totalStudents ?? 0 },
     { label: 'สาขาวิชา', value: stats?.totalMajors ?? 0 },
-    { label: 'ปีการเผยแพร่ล่าสุด', value: stats?.latestYear ?? new Date().getFullYear() + 543 },
+    { label: 'ปี พ.ศ. ล่าสุด', value: stats?.latestYear ?? new Date().getFullYear() + 543 },
   ];
 
   return (
