@@ -51,7 +51,10 @@ export default function PublicSearch() {
     setError(null);
     try {
       const { data } = await api.get('/api/public/projects', {
-        params: Object.fromEntries(Object.entries(params).filter(([, v]) => v)),
+        params: {
+          summary: '1',
+          ...Object.fromEntries(Object.entries(params).filter(([, v]) => v)),
+        },
       });
       const projectList = data.projects || [];
       setProjects(projectList);
@@ -115,43 +118,14 @@ export default function PublicSearch() {
     }
   };
 
-  const fetchFilterOptions = async () => {
-    try {
-      const { data } = await api.get('/api/public/projects');
-      const allProjects = data?.projects || [];
-      const yList = allProjects.map((p) => String(p.academicYear)).filter(Boolean);
-      const mList = allProjects.map((p) => p.major).filter(Boolean);
-      if (yList.length > 0) {
-        const sortedYears = Array.from(new Set(yList)).sort((a, b) => Number(b) - Number(a));
-        setAllYears(sortedYears);
-        // Sync latestYear into stats so the stat card always shows the real latest year
-        setStats((prev) => ({
-          ...prev,
-          latestYear: Number(sortedYears[0]),
-        }));
-      }
-      if (mList.length > 0) {
-        setAllMajors(Array.from(new Set(mList)));
-      }
-    } catch (e) {
-      console.warn('Failed to fetch initial filter options from database', e);
-    }
-  };
-
-
   const handleRetry = () => {
     fetchStats();
-    fetchFilterOptions();
     load(filters);
   };
 
   useEffect(() => {
-    const init = async () => {
-      fetchStats();
-      fetchFilterOptions();
-      load();
-    };
-    init();
+    fetchStats();
+    load();
   }, []);
 
   const availableMajors = useMemo(() => {
