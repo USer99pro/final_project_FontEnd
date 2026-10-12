@@ -60,6 +60,5 @@ export const analyticsService = {
   // ── New visitor analytics ─────────────────────────────────────────────────
   getAnalyticsSummary: (params) => get('/api/admin/analytics/summary', params),
   getVisitorTrends: (params) => get('/api/admin/analytics/visitor-trends', params),
-  getTopPages: (params) => get('/api/admin/analytics/top-pages', params),
   getDeviceAnalytics: (params) => get('/api/admin/analytics/devices', params),
 };

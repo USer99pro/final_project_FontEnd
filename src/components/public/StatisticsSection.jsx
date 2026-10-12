@@ -18,7 +18,7 @@ export default function StatisticsSection({ stats }) {
     { label: 'งานวิจัยทั้งหมด', value: stats?.totalProjects ?? 0 },
     { label: 'นักศึกษา', value: stats?.totalStudents ?? 0 },
     { label: 'สาขาวิชา', value: stats?.totalMajors ?? 0 },
-    { label: 'ปี พ.ศ. ล่าสุด', value: stats?.latestYear ?? new Date().getFullYear() + 543 },
+    { label: 'ปี พ.ศ. ล่าสุด', value: Number(stats?.latestYear ?? new Date().getFullYear() + 543), format: false },
   ];
 
   return (
@@ -38,7 +38,7 @@ export default function StatisticsSection({ stats }) {
               className="bg-accent-soft p-6 rounded-xl flex flex-col items-center justify-center text-center"
             >
               <div className="font-stats-number text-stats-number text-primary mb-2">
-                {item.value.toLocaleString()}
+                {item.format === false ? item.value : item.value.toLocaleString()}
               </div>
               <div className="font-label-sm text-label-sm text-secondary">
                 {item.label}

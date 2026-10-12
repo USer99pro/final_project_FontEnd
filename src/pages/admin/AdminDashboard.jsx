@@ -44,28 +44,43 @@ const asList = (value) => {
   return Array.isArray(data) ? data : [];
 };
 
+function normalizeUsageTrend(response) {
+  const series = response?.data || response || {};
+  if (Array.isArray(series)) return series;
+  const rows = new Map();
+  ['searches', 'views', 'downloads'].forEach((key) => {
+    (Array.isArray(series[key]) ? series[key] : []).forEach((point) => {
+      rows.set(point.date, { ...(rows.get(point.date) || { date: point.date }), [key]: point[key] ?? 0 });
+    });
+  });
+  return [...rows.values()].sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function normalizeInsights(response) {
+  const data = response?.data || response || {};
+  if (Array.isArray(data)) return data;
+  return [
+    data.worksGrowth !== null && data.worksGrowth !== undefined && {
+      id: 'works-growth', title: 'แนวโน้มผลงานวิจัย',
+      description: `ผลงานเปลี่ยนแปลง ${data.worksGrowth}% จากช่วงก่อนหน้า`,
+    },
+    data.topDepartment && {
+      id: 'top-department', title: 'สาขาที่มีผลงานมากที่สุด',
+      description: `${data.topDepartment.name} จำนวน ${formatNumber(data.topDepartment.count)} ผลงาน`,
+    },
+    data.topKeyword && {
+      id: 'top-keyword', title: 'คำค้นหายอดนิยม',
+      description: `${data.topKeyword.keyword} จำนวน ${formatNumber(data.topKeyword.count)} ครั้ง`,
+    },
+    data.topWork && {
+      id: 'top-work', title: 'ผลงานที่ได้รับความสนใจสูงสุด',
+      description: `${data.topWork.title} · ${formatNumber(data.topWork.views)} views · ${formatNumber(data.topWork.downloads)} downloads`,
+    },
+  ].filter(Boolean);
+}
+
 const formatNumber = (value) =>
   new Intl.NumberFormat('th-TH').format(Number(value || 0));
-
-const PAGE_LABELS = {
-  '/': 'หน้าหลัก',
-  '/search': 'ค้นหาผลงาน',
-  '/login': 'เข้าสู่ระบบ',
-  '/register': 'สมัครสมาชิก',
-  '/about': 'เกี่ยวกับ',
-  '/contact': 'ติดต่อเรา',
-  '/privacy': 'นโยบายความเป็นส่วนตัว',
-  '/terms': 'ข้อตกลง',
-};
-
-function normalizePage(page) {
-  if (!page) return 'Unknown';
-  if (PAGE_LABELS[page]) return PAGE_LABELS[page];
-  if (/^\/projects\//.test(page)) return 'รายละเอียดผลงาน';
-  if (/^\/graduate/.test(page)) return 'พื้นที่นักศึกษา';
-  if (/^\/admin/.test(page)) return 'พื้นที่ผู้ดูแล';
-  return page;
-}
 
 const DEVICE_COLORS = {
   Desktop: '#3b82f6',
@@ -257,7 +272,6 @@ export default function AdminDashboard() {
   // Visitor analytics state
   const [visitorSummary, setVisitorSummary] = useState(null);
   const [visitorTrends, setVisitorTrends] = useState([]);
-  const [topPages, setTopPages] = useState([]);
   const [devices, setDevices] = useState([]);
   const [visitorLoading, setVisitorLoading] = useState(true);
   const [visitorError, setVisitorError] = useState(false);
@@ -276,7 +290,10 @@ export default function AdminDashboard() {
       keywords: analyticsService.getPopularKeywords(params),
       searches: analyticsService.getPopularSearches(params),
       works: analyticsService.getPopularWorks(params),
-      usage: analyticsService.getUsageTrend(params),
+      usage: analyticsService.getUsageTrend({
+        ...params,
+        days: ({ '7d': 7, '30d': 30, '3m': 90, '6m': 180, '1y': 365 })[params.period] || 30,
+      }),
       insights: analyticsService.getInsights(params),
     };
     const entries = Object.entries(calls);
@@ -284,6 +301,9 @@ export default function AdminDashboard() {
     const results = {};
     settled.forEach((item, index) => {
       results[entries[index][0]] = item.status === 'fulfilled' ? { data: item.value } : { error: true };
+      if (item.status === 'rejected' && import.meta.env.DEV) {
+        console.error(`[AdminDashboard] ${entries[index][0]} analytics request failed`, item.reason);
+      }
     });
     setResearchState({
       loading: false,
@@ -296,24 +316,17 @@ export default function AdminDashboard() {
   const loadVisitors = useCallback(async () => {
     setVisitorLoading(true);
     setVisitorError(false);
-    const [summaryRes, trendsRes, topPagesRes, devicesRes] = await Promise.allSettled([
+    const [summaryRes, trendsRes, devicesRes] = await Promise.allSettled([
       analyticsService.getAnalyticsSummary({ period: filters.period }),
       analyticsService.getVisitorTrends({ period: filters.period }),
-      analyticsService.getTopPages({ period: filters.period }),
       analyticsService.getDeviceAnalytics({ period: filters.period }),
     ]);
 
     if (summaryRes.status === 'fulfilled') setVisitorSummary(summaryRes.value);
     if (trendsRes.status === 'fulfilled') setVisitorTrends(Array.isArray(trendsRes.value) ? trendsRes.value : []);
-    if (topPagesRes.status === 'fulfilled') {
-      setTopPages((Array.isArray(topPagesRes.value) ? topPagesRes.value : []).map((p) => ({
-        ...p,
-        label: normalizePage(p.page),
-      })));
-    }
     if (devicesRes.status === 'fulfilled') setDevices(Array.isArray(devicesRes.value) ? devicesRes.value : []);
 
-    const allFailed = [summaryRes, trendsRes, topPagesRes, devicesRes].every((r) => r.status === 'rejected');
+    const allFailed = [summaryRes, trendsRes, devicesRes].every((r) => r.status === 'rejected');
     setVisitorError(allFailed);
     setVisitorLoading(false);
   }, [filters.period]);
@@ -351,9 +364,9 @@ export default function AdminDashboard() {
   const overview = researchState.results.overview?.data || {};
   const r = researchState.results;
   const trend = asList(r.worksTrend?.data);
-  const usage = asList(r.usage?.data);
+  const usage = normalizeUsageTrend(r.usage?.data);
   const popularWorks = asList(r.works?.data);
-  const insights = asList(r.insights?.data);
+  const insights = normalizeInsights(r.insights?.data);
 
   return (
     <div className="w-full max-w-none space-y-6 pb-10 text-slate-950">
@@ -865,53 +878,15 @@ export default function AdminDashboard() {
             ) : null}
           </Panel>
 
-          {/* Top Pages & Device Breakdown */}
-          <div className="grid gap-6 lg:grid-cols-2">
-            {/* Top Pages */}
-            <Panel
-              title="หน้าที่เข้าชมมากที่สุด (Top Visited Pages)"
-              loading={visitorLoading}
-              error={visitorError}
-              onRetry={loadVisitors}
-            >
-              {topPages.length > 0 ? (
-                <div className="h-64 w-full" role="img" aria-label="กราฟหน้าที่เข้าชมมากที่สุด">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={topPages.slice(0, 8)}
-                      layout="vertical"
-                      margin={{ top: 0, right: 16, bottom: 0, left: 8 }}
-                    >
-                      <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" horizontal={false} />
-                      <XAxis type="number" tick={{ fill: '#64748b', fontSize: 11 }} tickLine={false} axisLine={false} />
-                      <YAxis
-                        type="category"
-                        dataKey="label"
-                        width={110}
-                        tick={{ fill: '#64748b', fontSize: 11 }}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <Tooltip
-                        contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0' }}
-                        formatter={(v) => [formatNumber(v), 'Views']}
-                      />
-                      <Bar dataKey="views" name="Views" fill="#3b82f6" radius={[0, 4, 4, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              ) : null}
-            </Panel>
-
-            {/* Devices */}
-            <Panel
-              title="อุปกรณ์ที่ใช้งาน (Device Breakdown)"
-              loading={visitorLoading}
-              error={visitorError}
-              onRetry={loadVisitors}
-            >
-              {devices.length > 0 ? (
-                <div className="flex flex-col gap-4">
+          {/* Device Breakdown */}
+          <Panel
+            title="อุปกรณ์ที่ใช้งาน (Device Breakdown)"
+            loading={visitorLoading}
+            error={visitorError}
+            onRetry={loadVisitors}
+          >
+            {devices.length > 0 ? (
+              <div className="flex flex-col gap-4">
                   <div className="h-44 w-full" role="img" aria-label="กราฟอุปกรณ์ที่ใช้งาน">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -958,10 +933,9 @@ export default function AdminDashboard() {
                       </div>
                     ))}
                   </div>
-                </div>
-              ) : null}
-            </Panel>
-          </div>
+              </div>
+            ) : null}
+          </Panel>
 
           {/* Geography placeholder */}
           <Panel title="ภูมิศาสตร์ผู้ใช้งาน (Geography / GeoIP)">

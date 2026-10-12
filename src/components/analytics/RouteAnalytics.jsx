@@ -20,7 +20,6 @@ export default function RouteAnalytics() {
 
     trackAnalyticsEvent({
       event: 'PAGE_VIEW',
-      page: location.pathname,
     });
   }, [location.pathname, location.search]);
 
